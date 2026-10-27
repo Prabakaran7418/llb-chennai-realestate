@@ -2,6 +2,8 @@
   "framework": null,
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/api/directions", "destination": "/api/directions.js" }
+    { "source": "/api/directions", "destination": "/api/directions.js" },
+    { "source": "/api/llb-events", "destination": "/api/llb-events.js" },
+    { "source": "/webhook/llb-events", "destination": "/api/llb-events.js" }
   ]
 }

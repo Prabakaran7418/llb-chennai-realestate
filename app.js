@@ -4026,21 +4026,29 @@ function setMobileView(view) {
 }
 
 // ==========================================================================
-// 8. STAGE TRANSITIONS (FRONT PAGE <-> CHENNAI MAP PAGE)
+// 8. STAGE TRANSITIONS (FRONT HOME PAGE <-> CHENNAI MAP PAGE)
 // ==========================================================================
 function openChennaiMapPage(targetLocality = null) {
   const frontPage = document.getElementById("house-front-page");
   const mapPage = document.getElementById("map-discovery-page");
 
-  if (frontPage) frontPage.style.display = "none";
+  if (frontPage) {
+    frontPage.style.display = "none";
+    frontPage.classList.add("hidden");
+    frontPage.classList.remove("flex");
+  }
   if (mapPage) {
     mapPage.style.display = "block";
-    mapPage.classList.add("active");
+    mapPage.classList.remove("hidden");
+    mapPage.classList.add("block", "active");
 
-    if (!leafletMap) {
+    if (!mapEngine && !leafletMap) {
       initChennaiMap();
     } else {
-      setTimeout(() => leafletMap.invalidateSize(), 100);
+      setTimeout(() => {
+        if (mapEngine && mapEngine.resize) mapEngine.resize();
+        if (leafletMap && leafletMap.invalidateSize) leafletMap.invalidateSize();
+      }, 150);
     }
 
     if (targetLocality) {
@@ -4059,10 +4067,13 @@ function returnToFrontPage() {
 
   if (mapPage) {
     mapPage.style.display = "none";
-    mapPage.classList.remove("active");
+    mapPage.classList.add("hidden");
+    mapPage.classList.remove("block", "active");
   }
   if (frontPage) {
     frontPage.style.display = "flex";
+    frontPage.classList.remove("hidden");
+    frontPage.classList.add("flex");
   }
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -4405,14 +4416,31 @@ async function handleEmailProspectus(event, propertyId) {
     }
   };
 
-  // Dispatch to local Express server
+  // Open receipt modal immediately
+  closePropertyModal();
+  openEmailReceiptModal(payload);
+
+  // Dispatch to Vercel Serverless Email Function
   try {
-    fetch("/api/llb-events", {
+    const res = await fetch("/api/llb-events", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
-    }).catch(e => console.log("Local dispatch:", e.message));
-  } catch (e) {}
+    });
+    const result = await res.json();
+    const statusBox = document.getElementById("email-delivery-live-status");
+    if (statusBox) {
+      if (result && result.success) {
+        statusBox.className = "p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center justify-center gap-2";
+        statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Email Successfully Delivered!';
+      } else {
+        statusBox.className = "p-2.5 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold flex items-center justify-center gap-2";
+        statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600"></i> ${result.error || 'Dispatched to queue'}`;
+      }
+    }
+  } catch (e) {
+    console.log("Email dispatch:", e.message);
+  }
 
   // Dispatch to user n8n webhook if configured
   if (n8nWebhookUrl) {
@@ -4424,9 +4452,6 @@ async function handleEmailProspectus(event, propertyId) {
       }).catch(e => console.log("n8n dispatch:", e.message));
     } catch (e) {}
   }
-
-  closePropertyModal();
-  openEmailReceiptModal(payload);
 }
 
 function openEmailReceiptModal(payload) {
@@ -4437,7 +4462,7 @@ function openEmailReceiptModal(payload) {
   content.innerHTML = `
     <div class="bg-white border border-neutral-300 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative text-center animate-fade-in">
       <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
-        <i class="fa-solid fa-check"></i>
+        <i class="fa-solid fa-envelope-circle-check"></i>
       </div>
       <h3 class="text-2xl font-black text-black font-serif-luxury">Prospectus Dispatched!</h3>
       <p class="text-xs text-neutral-600 mt-1">
@@ -4446,12 +4471,17 @@ function openEmailReceiptModal(payload) {
       <div class="my-3 p-3 bg-neutral-100 rounded-xl font-mono text-xs font-black text-black">
         ${payload.customer.email}
       </div>
-      <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-left text-xs text-emerald-900 space-y-1">
+
+      <div id="email-delivery-live-status" class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-center gap-2 my-2">
+        <i class="fa-solid fa-spinner fa-spin text-emerald-600"></i> Sending official prospectus to your email...
+      </div>
+
+      <div class="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-left text-xs text-neutral-800 space-y-1 mt-3">
         <div><strong>Plot:</strong> ${payload.property.title}</div>
         <div><strong>Price:</strong> ${payload.property.price} (${payload.property.dimensions})</div>
         <div><strong>Directions:</strong> <a href="${payload.property.googleMapsUrl}" target="_blank" class="underline font-bold text-emerald-700">Open in Google Maps</a></div>
       </div>
-      <button onclick="closeEmailReceiptModal()" class="mt-5 w-full py-3 rounded-xl bg-black text-white font-black text-xs">
+      <button onclick="closeEmailReceiptModal()" class="mt-5 w-full py-3 rounded-xl bg-black text-white font-black text-xs hover:bg-neutral-800 transition">
         Done
       </button>
     </div>
@@ -4517,7 +4547,40 @@ function closeSiteVisitModal() {
 
 function handleSiteVisitSubmit(event) {
   event.preventDefault();
-  alert("Site Visit Request Confirmed! Our senior relationship manager will call you within 15 minutes to coordinate complimentary AC car pickup.");
+  const nameInput = document.getElementById("visit-name");
+  const phoneInput = document.getElementById("visit-phone");
+  const propertySelect = document.getElementById("visit-property-select");
+  const dateInput = document.getElementById("visit-date");
+  const cabInput = document.getElementById("visit-cab");
+
+  const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : "Valued Customer";
+  const phone = phoneInput && phoneInput.value.trim() ? phoneInput.value.trim() : "";
+  const propertyTitle = propertySelect ? propertySelect.options[propertySelect.selectedIndex].text : "Selected Chennai Plot";
+  const preferredDate = dateInput && dateInput.value ? dateInput.value : "Upcoming Date";
+  const needCab = cabInput ? cabInput.checked : true;
+
+  const payload = {
+    event: "site.visit.booking",
+    timestamp: new Date().toISOString(),
+    customer: {
+      name: name,
+      email: "prabakaransethu7@gmail.com",
+      phone: phone,
+      preferredDate: preferredDate,
+      needCab: needCab
+    },
+    property: {
+      title: propertyTitle
+    }
+  };
+
+  fetch("/api/llb-events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
+
+  alert(`✓ Site Visit Confirmed for ${name}!\n\nDate: ${preferredDate}\nProperty: ${propertyTitle}\n\nOur senior relationship manager will call you at ${phone} to arrange complimentary AC car pickup.`);
   closeSiteVisitModal();
 }
 
@@ -4656,40 +4719,27 @@ function clearGoogleMapsApiKey() {
 }
 
 // ==========================================================================
-// 15. INITIALIZATION ON PAGE LOAD (MAP FIRST DEFAULT)
+// 15. INITIALIZATION ON PAGE LOAD (HOME SHOWCASE FIRST DEFAULT)
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Immediately initialize Leaflet Chennai map with all 24 verified plots
-  initChennaiMap();
-
-  // 2. Render plot cards list
+  // 1. Render plot cards list in background
   renderPlotCardsList();
 
-  // 3. Calculate default EMI
+  // 2. Calculate default EMI
   calculateEMI();
 
-  // 4. Check URL params for direct area link
+  // 3. Check URL params: if direct area/map requested, open map; otherwise land on Home Page first!
   const params = new URLSearchParams(window.location.search);
   const areaParam = params.get("area");
-  if (areaParam) {
-    const localitySelect = document.getElementById("filter-locality");
-    if (localitySelect) {
-      localitySelect.value = areaParam;
-      handleSearchFilterChange();
-    }
+  const mapParam = params.get("map");
+
+  if (areaParam || mapParam === "true") {
+    openChennaiMapPage(areaParam);
+  } else {
+    returnToFrontPage();
   }
 
-  // 5. Trigger Leaflet tile layout recalculation
-  setTimeout(() => {
-    if (leafletMap) leafletMap.invalidateSize();
-    if (mapEngine && mapEngine.resize) mapEngine.resize();
-  }, 200);
-  setTimeout(() => {
-    if (leafletMap) leafletMap.invalidateSize();
-    if (mapEngine && mapEngine.resize) mapEngine.resize();
-  }, 600);
-
-  // 6. Responsive resize handler for all screen resolutions & mobile device orientation changes
+  // 4. Responsive resize handler for all screen resolutions & mobile device orientation changes
   window.addEventListener("resize", () => {
     if (mapEngine && mapEngine.resize) {
       mapEngine.resize();

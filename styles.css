@@ -66,7 +66,7 @@ body {
 #house-front-page {
   position: relative;
   min-height: calc(100vh - 64px);
-  display: none; /* Map shows FIRST by default! */
+  display: flex; /* Home Showcase lands FIRST by default! */
   flex-direction: column;
   align-items: center;
   justify-content: center;

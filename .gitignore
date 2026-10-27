@@ -1,0 +1,7 @@
+cloudflared.exe
+*.exe
+*.bat
+*.log
+.vercel/
+node_modules/
+test-maplibre.html

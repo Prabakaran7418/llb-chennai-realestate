@@ -1,0 +1,9 @@
+{
+  "name": "llb-chennai-realestate",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LLB Realty Chennai Interactive Real Estate Portal",
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}
