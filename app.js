@@ -4031,12 +4031,26 @@ function setMobileView(view) {
 function openChennaiMapPage(targetLocality = null) {
   const frontPage = document.getElementById("house-front-page");
   const mapPage = document.getElementById("map-discovery-page");
+  const mainHeader = document.getElementById("main-site-header");
+  const mainFooter = document.getElementById("main-site-footer");
+  const whatsappBtn = document.getElementById("floating-whatsapp-btn");
 
   if (frontPage) {
     frontPage.style.display = "none";
     frontPage.classList.add("hidden");
     frontPage.classList.remove("flex");
   }
+
+  if (mainHeader) {
+    mainHeader.classList.remove("hidden");
+  }
+  if (mainFooter) {
+    mainFooter.classList.remove("hidden");
+  }
+  if (whatsappBtn) {
+    whatsappBtn.classList.remove("hidden");
+  }
+
   if (mapPage) {
     mapPage.style.display = "block";
     mapPage.classList.remove("hidden");
@@ -4064,12 +4078,26 @@ function openChennaiMapPage(targetLocality = null) {
 function returnToFrontPage() {
   const frontPage = document.getElementById("house-front-page");
   const mapPage = document.getElementById("map-discovery-page");
+  const mainHeader = document.getElementById("main-site-header");
+  const mainFooter = document.getElementById("main-site-footer");
+  const whatsappBtn = document.getElementById("floating-whatsapp-btn");
 
   if (mapPage) {
     mapPage.style.display = "none";
     mapPage.classList.add("hidden");
     mapPage.classList.remove("block", "active");
   }
+
+  if (mainHeader) {
+    mainHeader.classList.add("hidden");
+  }
+  if (mainFooter) {
+    mainFooter.classList.add("hidden");
+  }
+  if (whatsappBtn) {
+    whatsappBtn.classList.add("hidden");
+  }
+
   if (frontPage) {
     frontPage.style.display = "flex";
     frontPage.classList.remove("hidden");
