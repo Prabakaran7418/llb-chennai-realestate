@@ -1,0 +1,6 @@
+cloudflared.exe
+*.exe
+*.bat
+*.log
+scratch/
+test-maplibre.html

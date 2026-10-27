@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLB Realty | Chennai Plots & Independent Homes</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- MapLibre GL 3D Engine Stylesheet (Local) -->
+  <link rel="stylesheet" href="libs/maplibre-gl.css" />
+  <!-- Leaflet Fallback CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#09090b',
+              surface: '#f9fafb',
+              muted: '#71717a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-white text-neutral-900 min-h-screen flex flex-col antialiased selection:bg-black selection:text-white">
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Main Dynamic Header Bar (Smooth scrollable - moves naturally with page, never frozen) -->
+  <header id="main-site-header" class="relative z-40 bg-white border-b border-neutral-200 w-full transition-all duration-300">
+    <div class="max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-2 sm:gap-3 cursor-pointer shrink-0" onclick="returnToFrontPage()">
+        <div class="w-9 h-9 sm:w-11 sm:h-11 bg-black text-white rounded-xl flex items-center justify-center font-serif-luxury text-xl sm:text-2xl font-black shadow-sm">
+          L
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="font-serif-luxury text-lg sm:text-xl font-black tracking-wider text-black">LLB <span class="text-neutral-400 font-light">REALTY</span></span>
+            <span class="text-[8px] sm:text-[9px] bg-neutral-100 text-black border border-neutral-200 px-1 sm:px-1.5 py-0.5 rounded font-black tracking-wider">CHENNAI</span>
+          </div>
+          <p class="text-[8px] sm:text-[9px] tracking-widest text-neutral-500 uppercase font-bold hidden xs:block">Plots &amp; Independent Houses</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-4 xl:gap-6 text-xs uppercase tracking-wider font-extrabold">
+        <button id="nav-map-btn" onclick="openChennaiMapPage()" class="text-black font-black transition flex items-center gap-1.5 group">
+          <i class="fa-solid fa-map-location-dot text-emerald-600"></i> 
+          Chennai Map (24 Plots)
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        </button>
+        <button id="nav-home-btn" onclick="returnToFrontPage()" class="text-neutral-500 hover:text-black transition flex items-center gap-1.5">
+          <i class="fa-solid fa-house"></i> Home Showcase
+        </button>
+        <button onclick="openMobileLinkModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 text-[11px] font-black transition">
+          <i class="fa-solid fa-mobile-screen-button"></i> Mobile Link
+        </button>
+        <button onclick="openWebhookSettingsModal()" class="text-neutral-500 hover:text-black transition flex items-center gap-1.5 font-mono text-[11px]">
+          <i class="fa-solid fa-bolt text-amber-500"></i> n8n
+        </button>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        <button onclick="openMobileLinkModal()" class="lg:hidden flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 text-[11px] sm:text-xs font-bold transition">
+          <i class="fa-solid fa-mobile-screen-button"></i> <span class="hidden xs:inline">Mobile</span>
+        </button>
+        <button onclick="openSiteVisitModal()" class="hidden md:flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-white border border-neutral-300 text-black hover:border-black text-xs font-bold transition shadow-sm">
+          <i class="fa-solid fa-car"></i> <span class="hidden xl:inline">Free Cab Visit</span><span class="xl:hidden">Cab Visit</span>
+        </button>
+        <a href="https://wa.me/919840000000?text=Hi%20LLB%20Realty,%20I%20am%20looking%20for%20plots%20and%20small%20homes%20in%20Chennai" target="_blank" class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full bg-black text-white hover:bg-neutral-800 text-xs font-black tracking-wide shadow-md transition whitespace-nowrap">
+          <i class="fa-brands fa-whatsapp text-sm text-emerald-400"></i> <span class="hidden sm:inline">WhatsApp</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 1. STAGE 1: FRONT PAGE (AVAILABLE VIA "HOME SHOWCASE" TOGGLE)             -->
+  <!-- ========================================================================= -->
+  <section id="house-front-page" class="hidden">
+    
+    <!-- Realistic House Front Facade Background -->
+    <div class="house-facade-image"></div>
+    <div class="house-facade-overlay"></div>
+
+    <!-- Centered Content: Luxury LLB Logo Emblem & CTA -->
+    <div class="relative z-20 flex flex-col items-center justify-center text-center p-4 max-w-2xl">
+      
+      <!-- Top Subtitle Pill -->
+      <div class="mb-6 inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/80 backdrop-blur-md border border-neutral-700 shadow-2xl">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="text-xs font-black uppercase tracking-widest text-white font-mono">
+          LLB Signature Properties • Greater Chennai
+        </span>
+      </div>
+
+      <!-- THE LUXURY LLB LOGO EMBLEM (CLICKABLE TO OPEN NEXT PAGE) -->
+      <div class="llb-logo-container group" onclick="openChennaiMapPage()" title="Click to Explore Chennai Corridors">
+        
+        <!-- Outer Glowing Pulse Ring -->
+        <div class="logo-pulse-ring"></div>
+
+        <!-- Central Black & Gold Crest Emblem -->
+        <div class="llb-emblem-box">
+          <div class="llb-emblem-content">
+            <span class="llb-lettermark">LLB</span>
+            <span class="llb-submark">REALTY</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Interactive Call to Action Under Logo -->
+      <div class="mt-8">
+        <button 
+          onclick="openChennaiMapPage()" 
+          class="px-8 py-4 rounded-full bg-white hover:bg-neutral-100 text-black font-black text-xs sm:text-sm uppercase tracking-wider flex items-center gap-3 shadow-2xl transition transform hover:scale-105 active:scale-95 border-2 border-white">
+          <i class="fa-solid fa-map-location-dot text-base text-black"></i>
+          <span>CLICK THE LOGO TO EXPLORE CHENNAI PLOTS & HOUSES</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <p class="text-white/80 text-xs font-semibold mt-3 drop-shadow">
+          16+ Chennai Localities · CMDA Approved Plots & Compact Family Houses · Clear Titles
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+    <!-- ========================================================================= -->
+  <!-- 2. STAGE 2: CHENNAI MAP & CORRIDORS DISCOVERY PAGE (SHOWS FIRST!)          -->
+  <!-- ========================================================================= -->
+  <main id="map-discovery-page" class="block active">
+    
+    <!-- TOP SEARCH & FILTER CONTROL BAR (Scrolls smoothly with page) -->
+    <div class="bg-white border-b border-neutral-200 relative z-30 shadow-sm w-full">
+      <div class="max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 py-3">
+        
+        <!-- Row 1: Brand / Back, Search Bar, Mobile View Switcher -->
+        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3">
+          
+          <div class="flex items-center gap-2 sm:gap-3">
+            <button onclick="returnToFrontPage()" class="px-3 sm:px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-black hover:text-white text-xs font-black text-neutral-800 flex items-center gap-2 transition border border-neutral-200 shrink-0">
+              <i class="fa-solid fa-arrow-left"></i> Home
+            </button>
+            <div class="h-4 w-px bg-neutral-200 hidden sm:block"></div>
+            <div class="hidden sm:flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-black text-black uppercase tracking-wider">
+                Chennai Plot Geospatial Booking
+              </span>
+            </div>
+          </div>
+
+          <!-- Real-Time Search Input -->
+          <div class="relative flex-1 max-w-full md:max-w-lg">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 text-xs"></i>
+            <input 
+              type="text" 
+              id="search-input" 
+              placeholder="Search Project, Locality (KK Nagar, Tambaram, Porur, OMR), or Plot #..." 
+              oninput="handleSearchFilterChange()"
+              class="w-full pl-9 pr-8 py-2 bg-neutral-50 border border-neutral-300 rounded-full text-xs text-black placeholder-neutral-400 focus:outline-none focus:border-black focus:bg-white transition"
+            />
+            <button id="search-clear-btn" onclick="clearSearchFilter()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black text-xs">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Mobile View Switcher (Visible on mobile screens) -->
+          <div class="flex md:hidden items-center justify-center p-1 bg-neutral-100 rounded-xl border border-neutral-200 text-xs font-black">
+            <button id="mobile-toggle-map" onclick="setMobileView('map')" class="flex-1 py-1.5 px-3 rounded-lg bg-black text-white transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-map-location-dot"></i> Map View
+            </button>
+            <button id="mobile-toggle-list" onclick="setMobileView('list')" class="flex-1 py-1.5 px-3 rounded-lg text-neutral-700 hover:bg-neutral-200 transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-list-ul"></i> Plot List (<span id="mobile-plots-count">0</span>)
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Row 2: Comprehensive Multi-Filter Bar (Locality, Budget, Size, Availability) -->
+        <div class="mt-3 pt-3 border-t border-neutral-100 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
+          
+          <div class="flex flex-wrap items-center gap-2">
+            
+            <!-- Locality Quick Selector -->
+            <div class="relative">
+              <select id="filter-locality" onchange="handleSearchFilterChange()" class="text-xs font-black bg-neutral-100 hover:bg-neutral-200 text-neutral-800 py-1.5 pl-3 pr-7 rounded-xl border border-neutral-200 focus:outline-none cursor-pointer">
+                <option value="all">📍 All Chennai Localities (24)</option>
+                <option value="kk-nagar">KK Nagar</option>
+                <option value="mgr-nagar">MGR Nagar</option>
+                <option value="tambaram">Tambaram</option>
+                <option value="porur">Porur</option>
+                <option value="velachery">Velachery</option>
+                <option value="omr">OMR / Sholinganallur</option>
+                <option value="mogappair">Mogappair</option>
+                <option value="medavakkam">Medavakkam</option>
+                <option value="koyambedu">Koyambedu</option>
+                <option value="anna-nagar">Anna Nagar</option>
+                <option value="t-nagar">T. Nagar</option>
+                <option value="adyar">Adyar</option>
+                <option value="besant-nagar">Besant Nagar</option>
+                <option value="ecr">ECR</option>
+                <option value="chromepet">Chromepet</option>
+                <option value="avadi">Avadi</option>
+                <option value="poonamallee">Poonamallee</option>
+                <option value="kundrathur">Kundrathur</option>
+                <option value="perambur">Perambur</option>
+                <option value="guduvanchery">Guduvanchery</option>
+                <option value="maduravoyal">Maduravoyal</option>
+              </select>
+            </div>
+
+            <!-- Budget Dropdown -->
+            <div class="relative">
+              <select id="filter-budget" onchange="handleSearchFilterChange()" class="text-xs font-black bg-neutral-100 hover:bg-neutral-200 text-neutral-800 py-1.5 pl-3 pr-7 rounded-xl border border-neutral-200 focus:outline-none cursor-pointer">
+                <option value="all">💰 All Budgets</option>
+                <option value="under-35">Under ₹ 35 Lakhs</option>
+                <option value="35-60">₹ 35 Lakhs - ₹ 60 Lakhs</option>
+                <option value="60-100">₹ 60 Lakhs - ₹ 1.0 Crore</option>
+                <option value="above-100">Above ₹ 1.0 Crore (Luxury)</option>
+              </select>
+            </div>
+
+            <!-- Plot Size Dropdown -->
+            <div class="relative">
+              <select id="filter-size" onchange="handleSearchFilterChange()" class="text-xs font-black bg-neutral-100 hover:bg-neutral-200 text-neutral-800 py-1.5 pl-3 pr-7 rounded-xl border border-neutral-200 focus:outline-none cursor-pointer">
+                <option value="all">📐 All Plot Sizes</option>
+                <option value="compact">Compact (&lt; 1,000 sq.ft)</option>
+                <option value="standard">Standard (1,000 - 1,500 sq.ft)</option>
+                <option value="large">Large (1,500 - 2,400 sq.ft)</option>
+                <option value="ground">1 Ground &amp; Above (≥ 2,400 sq.ft)</option>
+              </select>
+            </div>
+
+            <!-- Availability Status Chips -->
+            <div class="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-xl border border-neutral-200">
+              <button onclick="setAvailabilityFilter('all')" id="status-btn-all" class="px-2 sm:px-2.5 py-1 rounded-lg text-xs font-black bg-black text-white transition">
+                All
+              </button>
+              <button onclick="setAvailabilityFilter('available')" id="status-btn-available" class="px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span class="hidden xs:inline">Available</span>
+              </button>
+              <button onclick="setAvailabilityFilter('reserved')" id="status-btn-reserved" class="px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span> <span class="hidden xs:inline">Reserved</span>
+              </button>
+              <button onclick="setAvailabilityFilter('sold')" id="status-btn-sold" class="px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-slate-500"></span> <span class="hidden xs:inline">Sold</span>
+              </button>
+            </div>
+
+            <!-- Travel Mode Selector (Car, Bike, Bus, Walk) -->
+            <div class="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-xl border border-neutral-200">
+              <span class="text-[10px] font-black uppercase text-neutral-400 px-1.5 hidden md:inline"><i class="fa-solid fa-route mr-1"></i>Travel:</span>
+              <button onclick="setTravelMode('car')" id="travel-btn-car" class="travel-mode-pill px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1" title="Navigate by Car">
+                <i class="fa-solid fa-car-side text-emerald-500"></i> <span class="hidden sm:inline">Car</span>
+              </button>
+              <button onclick="setTravelMode('bike')" id="travel-btn-bike" class="travel-mode-pill active px-2 sm:px-2.5 py-1 rounded-lg text-xs font-black transition flex items-center gap-1" title="Navigate by Superbike">
+                <i class="fa-solid fa-motorcycle text-sky-500"></i> <span class="hidden sm:inline">Bike</span>
+              </button>
+              <button onclick="setTravelMode('bus')" id="travel-btn-bus" class="travel-mode-pill px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1" title="Navigate by Bus">
+                <i class="fa-solid fa-bus-simple text-purple-500"></i> <span class="hidden sm:inline">Bus</span>
+              </button>
+              <button onclick="setTravelMode('walk')" id="travel-btn-walk" class="travel-mode-pill px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1" title="Navigate by Walking">
+                <i class="fa-solid fa-person-walking text-amber-500"></i> <span class="hidden sm:inline">Walk</span>
+              </button>
+            </div>
+
+            <!-- Reset Filters -->
+            <button onclick="resetAllFilters()" class="text-neutral-500 hover:text-black text-xs font-bold px-2 py-1 transition" title="Reset all filters">
+              <i class="fa-solid fa-rotate-left mr-1"></i> <span class="hidden xs:inline">Reset</span>
+            </button>
+
+          </div>
+
+          <div class="text-xs font-bold text-neutral-500">
+            Showing <span id="filtered-plots-count" class="font-black text-black">0</span> plots
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FULL-WIDTH IMMERSIVE TOP MAP (MAP AT TOP - ZERO CLUTTER) -->
+    <div class="max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
+      <div id="map-panel-container" class="w-full">
+        
+        <div class="relative bg-neutral-900 rounded-2xl sm:rounded-3xl overflow-hidden border border-neutral-300 shadow-2xl h-[440px] sm:h-[540px] lg:h-[640px] min-h-[380px]">
+          
+          <!-- Map Layer Switcher & Toolbar (Top Left) -->
+          <div class="absolute top-2 sm:top-4 left-2 sm:left-4 z-20 flex flex-wrap items-center gap-1.5 sm:gap-2 max-w-[calc(100%-16px)] sm:max-w-none">
+            <div class="bg-white/95 backdrop-blur-md p-0.5 sm:p-1 rounded-xl border border-neutral-200 flex items-center gap-0.5 sm:gap-1 shadow-md">
+              <button id="layer-hybrid" onclick="setMapLayer('hybrid')" class="map-layer-btn px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-black bg-black text-white transition flex items-center gap-1 sm:gap-1.5">
+                <i class="fa-solid fa-layer-group"></i> <span class="hidden xs:inline">Satellite + Roads</span><span class="xs:hidden">Hybrid</span>
+              </button>
+              <button id="layer-streets" onclick="setMapLayer('streets')" class="map-layer-btn px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold text-neutral-700 hover:bg-neutral-100 transition flex items-center gap-1 sm:gap-1.5">
+                <i class="fa-solid fa-map"></i> <span class="hidden xs:inline">Real Streets</span><span class="xs:hidden">Streets</span>
+              </button>
+              <button id="layer-satellite" onclick="setMapLayer('satellite')" class="map-layer-btn px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold text-neutral-700 hover:bg-neutral-100 transition flex items-center gap-1 sm:gap-1.5">
+                <i class="fa-solid fa-satellite"></i> <span class="hidden xs:inline">Pure Satellite</span><span class="xs:hidden">Sat</span>
+              </button>
+            </div>
+
+            <button onclick="resetToChennaiOverview()" class="bg-white/95 backdrop-blur-md px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border border-neutral-200 text-[11px] sm:text-xs font-black text-black hover:bg-neutral-100 transition shadow-md flex items-center gap-1 sm:gap-1.5" title="Return to Greater Chennai Overview">
+              <i class="fa-solid fa-arrows-rotate"></i> <span class="hidden sm:inline">Reset Overview</span><span class="sm:hidden">Reset</span>
+            </button>
+
+            <button id="toggle-3d-btn" onclick="toggle3DPerspective()" class="bg-white/95 backdrop-blur-md px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-neutral-200 text-[11px] sm:text-xs font-black text-neutral-800 hover:text-black hover:bg-neutral-100 transition shadow-md flex items-center gap-1 sm:gap-1.5" title="Toggle 3D Forward-Facing Camera Perspective">
+              <i class="fa-solid fa-cube text-emerald-600"></i> <span id="perspective-label">3D Tilt</span>
+            </button>
+
+            <!-- Motorcycle Navigation Journey Primary Button -->
+            <button id="toolbar-sv-btn" onclick="startMotorcycleMapJourney()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black transition shadow-md flex items-center gap-1.5" title="Start Animated Navigation along Chennai Roads to Selected Plot">
+              <i class="fa-solid fa-motorcycle text-white"></i> <span id="toolbar-sv-label">Ride to Plot</span>
+            </button>
+
+            <div class="hidden md:flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 text-[10px] font-black px-3 py-2 rounded-xl backdrop-blur-md">
+              <i class="fa-solid fa-shield-check text-emerald-600"></i> Zero API Key Required
+            </div>
+
+            <button onclick="openApiKeyModal()" class="bg-white/95 backdrop-blur-md px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-neutral-200 text-[11px] font-bold text-neutral-600 hover:text-black transition shadow-md flex items-center gap-1" title="Google Maps API Key Settings">
+              <i class="fa-brands fa-google text-xs text-emerald-600"></i> <span class="hidden sm:inline">Google Key</span>
+            </button>
+          </div>
+
+          <!-- GOOGLE MAPS REPLICA NAVIGATION HUD (Top Center Over Map) -->
+          <div id="live-travel-hud" class="hidden">
+            <div class="gmaps-nav-top-banner">
+              <div class="flex items-center gap-3">
+                <div id="hud-maneuver-icon" class="gmaps-maneuver-box">
+                  <i class="fa-solid fa-arrow-up"></i>
+                </div>
+                <div>
+                  <div class="text-[10px] uppercase font-mono tracking-widest text-emerald-200 flex items-center gap-2">
+                    <span class="px-1.5 py-0.5 rounded bg-black border border-amber-400 text-amber-400 font-serif font-black text-[9px] shadow-sm tracking-wider">LLB</span>
+                    <span id="hud-nav-mode-badge" class="font-black text-white px-1.5 py-0.5 rounded bg-emerald-800">DRIVE</span>
+                    <span id="hud-distance-to-turn">In 350 m</span>
+                    <span id="hud-road-tag" class="hidden sm:inline text-emerald-300 font-bold">• <i class="fa-solid fa-road text-[9px] mr-1"></i><span id="hud-active-road-name">GST Road (NH 45)</span></span>
+                  </div>
+                  <div id="hud-instruction-text" class="text-xs sm:text-sm font-black text-white truncate max-w-[220px] sm:max-w-md">
+                    Navigate onto arterial road towards plot
+                  </div>
+                </div>
+              </div>
+
+              <!-- Journey Controls: POV Toggle, Stop/Pause, Skip -->
+              <div class="flex items-center gap-1.5">
+                <button onclick="toggleRouteDirectionsDrawer()" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 text-xs font-bold transition border border-emerald-500/30 whitespace-nowrap flex items-center gap-1" title="Open Turn-by-Turn Directions Guide">
+                  <i class="fa-solid fa-list-ol"></i> <span class="hidden md:inline">Route Steps</span>
+                </button>
+                <button id="hud-pov-btn" onclick="toggleDrivingPOV()" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 text-xs font-bold transition border border-emerald-500/30 whitespace-nowrap flex items-center gap-1" title="Toggle First-Person Driver POV / 3D Chase Cam">
+                  <i class="fa-solid fa-video"></i> <span id="hud-pov-label" class="hidden md:inline">Chase Cam</span>
+                </button>
+                <button id="hud-pause-btn" onclick="togglePauseJourney()" class="px-2.5 py-1.5 rounded-lg bg-amber-950/80 hover:bg-amber-900 text-amber-300 text-xs font-bold transition border border-amber-500/30 whitespace-nowrap flex items-center gap-1" title="Stop / Pause Journey">
+                  <i class="fa-solid fa-pause"></i> <span id="hud-pause-label" class="hidden md:inline">Stop</span>
+                </button>
+                <button onclick="skipTravelToArrival()" class="px-2.5 py-1.5 rounded-lg bg-black/40 hover:bg-black text-white text-xs font-bold transition border border-white/20 whitespace-nowrap flex items-center gap-1" title="Skip to Plot Arrival">
+                  <span class="hidden sm:inline">Skip</span> <i class="fa-solid fa-forward-step"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="gmaps-nav-bottom-bar">
+              <div class="flex items-center gap-3 sm:gap-4 text-xs font-mono">
+                <!-- Live Speedometer -->
+                <div class="hud-speedometer" title="Simulated Road Speed">
+                  <i class="fa-solid fa-gauge-high text-emerald-400 text-xs mr-0.5"></i>
+                  <span id="hud-live-speed">38</span>
+                  <span class="unit">KM/H</span>
+                </div>
+
+                <div class="h-6 w-px bg-neutral-800"></div>
+
+                <div>
+                  <span class="text-neutral-400 text-[9px] block">TOTAL REMAINING</span>
+                  <span id="hud-remaining-distance" class="text-white font-black text-sm">-- km</span>
+                </div>
+                <div class="h-6 w-px bg-neutral-800"></div>
+                <div>
+                  <span class="text-neutral-400 text-[9px] block">ESTIMATED TIME</span>
+                  <span id="hud-remaining-time" class="text-emerald-400 font-black text-sm">-- mins</span>
+                </div>
+                <div class="h-6 w-px bg-neutral-800 hidden lg:block"></div>
+                <div class="hidden lg:block">
+                  <span class="text-neutral-400 text-[9px] block">DESTINATION</span>
+                  <span id="hud-destination-name" class="text-neutral-300 font-bold truncate max-w-[160px] inline-block">Plot Target</span>
+                </div>
+              </div>
+
+              <!-- Quick Mode Switcher while in Navigation -->
+              <div class="flex items-center gap-1 bg-neutral-900 p-0.5 rounded-lg border border-neutral-800">
+                <button onclick="setTravelMode('bike')" id="hud-btn-bike" class="px-2.5 py-1 rounded text-xs text-white bg-neutral-800 transition flex items-center gap-1 font-bold" title="Superbike Mode">
+                  <i class="fa-solid fa-motorcycle text-cyan-400"></i><span class="hidden sm:inline">Bike</span>
+                </button>
+                <button onclick="setTravelMode('car')" id="hud-btn-car" class="px-2.5 py-1 rounded text-xs text-neutral-400 hover:text-white transition flex items-center gap-1 font-bold" title="Car / AC Cab Mode">
+                  <i class="fa-solid fa-car-side"></i><span class="hidden sm:inline">Car</span>
+                </button>
+                <button onclick="setTravelMode('bus')" id="hud-btn-bus" class="px-2.5 py-1 rounded text-xs text-neutral-400 hover:text-white transition flex items-center gap-1 font-bold" title="MTC City Bus Mode">
+                  <i class="fa-solid fa-bus-simple"></i><span class="hidden sm:inline">Bus</span>
+                </button>
+                <button onclick="setTravelMode('walk')" id="hud-btn-walk" class="px-2.5 py-1 rounded text-xs text-neutral-400 hover:text-white transition flex items-center gap-1 font-bold" title="Walking Pedestrian Mode">
+                  <i class="fa-solid fa-person-walking"></i><span class="hidden sm:inline">Walk</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leaflet Map Viewport -->
+          <div id="wall-mounted-map" class="w-full h-full"></div>
+
+          <!-- EXPANDABLE TURN-BY-TURN PROPER DIRECTIONS SHEET -->
+          <div id="route-directions-drawer" class="absolute top-16 right-4 z-20 hidden w-80 sm:w-96 max-h-[480px] bg-neutral-900/95 backdrop-blur-xl border border-neutral-700/80 rounded-2xl shadow-2xl flex flex-col text-white overflow-hidden transition-all duration-300">
+            <!-- Drawer Header -->
+            <div class="px-4 py-3 bg-neutral-800/90 border-b border-neutral-700 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div id="drawer-mode-icon" class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
+                  <i class="fa-solid fa-diamond-turn-right"></i>
+                </div>
+                <div>
+                  <h4 class="text-xs font-black text-white">PROPER ROAD DIRECTIONS</h4>
+                  <p id="drawer-route-summary" class="text-[10px] text-neutral-400 font-mono">Kathipara &rarr; Destination</p>
+                </div>
+              </div>
+              <button onclick="toggleRouteDirectionsDrawer()" class="w-6 h-6 rounded-lg bg-neutral-700/60 hover:bg-neutral-600 text-neutral-300 hover:text-white flex items-center justify-center text-xs transition">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <!-- Route Metrics Bar -->
+            <div class="px-4 py-2 bg-neutral-950/60 border-b border-neutral-800 flex items-center justify-between text-xs font-mono">
+              <div>
+                <span class="text-neutral-400 text-[9px] block">TOTAL DISTANCE</span>
+                <span id="drawer-total-dist" class="text-white font-black">-- km</span>
+              </div>
+              <div class="h-6 w-px bg-neutral-800"></div>
+              <div>
+                <span class="text-neutral-400 text-[9px] block">ESTIMATED TIME</span>
+                <span id="drawer-total-time" class="text-emerald-400 font-black">-- mins</span>
+              </div>
+              <div class="h-6 w-px bg-neutral-800"></div>
+              <div>
+                <span class="text-neutral-400 text-[9px] block">TRANSIT MODE</span>
+                <span id="drawer-mode-name" class="text-cyan-400 font-bold uppercase text-[10px]">MOTORCYCLE</span>
+              </div>
+            </div>
+
+            <!-- Route Steps List -->
+            <div id="drawer-steps-list" class="flex-1 overflow-y-auto p-3 space-y-2 max-h-[320px] custom-scrollbar">
+              <!-- Populated dynamically with turn-by-turn guidance -->
+            </div>
+          </div>
+
+          <!-- REAL STREET-LEVEL IMAGERY JOURNEY STAGE -->
+          <div id="street-view-stage" class="absolute inset-0 z-30 hidden flex-col bg-neutral-950 overflow-hidden">
+            <!-- Top Controls Bar -->
+            <div class="street-view-top-bar flex items-center justify-between px-3 sm:px-4 py-2.5 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800 text-white z-30 shrink-0">
+              <div class="flex items-center gap-2 sm:gap-3">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 font-mono text-[11px] font-black tracking-wide border border-emerald-500/30">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <i class="fa-solid fa-motorcycle"></i> MOTORCYCLE STREET NAV
+                </span>
+                <span id="street-view-title" class="text-xs sm:text-sm font-bold text-neutral-200 truncate max-w-[180px] sm:max-w-xs">
+                  Munusamy Salai, KK Nagar
+                </span>
+              </div>
+
+              <!-- View Mode Switcher -->
+              <div class="flex items-center gap-1 bg-black/60 p-1 rounded-xl border border-neutral-700 text-xs font-bold">
+                <button id="sv-mode-btn-full" onclick="setStreetViewDisplayMode('full')" class="px-2.5 py-1 rounded-lg bg-white/20 text-white transition hover:bg-white/30" title="Full Street View">
+                  <i class="fa-solid fa-expand mr-1"></i><span class="hidden md:inline">Full Street</span>
+                </button>
+                <button id="sv-mode-btn-split" onclick="setStreetViewDisplayMode('split')" class="px-2.5 py-1 rounded-lg text-neutral-300 transition hover:bg-white/20" title="Split Screen (Street + Map)">
+                  <i class="fa-solid fa-table-columns mr-1"></i><span class="hidden md:inline">Split View</span>
+                </button>
+                <button id="sv-mode-btn-map" onclick="switchToMapMode()" class="px-2.5 py-1 rounded-lg text-neutral-300 transition hover:bg-white/20" title="Switch to Overhead 2D/3D Map">
+                  <i class="fa-solid fa-map mr-1"></i><span class="hidden md:inline">Overhead Map</span>
+                </button>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button onclick="exitStreetViewJourney()" class="px-3 py-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-neutral-700">
+                  <i class="fa-solid fa-xmark"></i> <span class="hidden sm:inline">Close</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Main Stage Body -->
+            <div id="street-view-body" class="relative flex-1 w-full h-full overflow-hidden flex flex-row">
+              <!-- Left/Main: 360 Panorama Viewport -->
+              <div id="street-view-pano-container" class="relative flex-1 w-full h-full bg-black overflow-hidden">
+                <!-- Panorama Iframe (Official Google Street View Interactive 360 Embed) -->
+                <iframe id="street-view-iframe" class="w-full h-full border-0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+                <!-- Loading / Transition Overlay -->
+                <div id="street-view-loading" class="absolute inset-0 bg-neutral-950/80 backdrop-blur-sm flex flex-col items-center justify-center text-white transition-opacity duration-300 pointer-events-none opacity-0 z-30">
+                  <i class="fa-solid fa-circle-notch fa-spin text-3xl text-emerald-400 mb-3"></i>
+                  <span id="street-view-loading-text" class="text-xs font-mono font-bold tracking-wider">NAVIGATING TO CHENNAI WAYPOINT...</span>
+                </div>
+
+                <!-- Floating Street View HUD (Turn-by-turn guidance overlay) -->
+                <div id="street-view-floating-hud" class="absolute top-4 left-4 right-4 sm:right-auto sm:max-w-md z-20 pointer-events-auto">
+                  <div class="bg-black/85 backdrop-blur-md rounded-2xl border border-white/15 p-3.5 shadow-2xl text-white">
+                    <div class="flex items-start gap-3">
+                      <div id="sv-hud-maneuver" class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-lg shrink-0 shadow-lg">
+                        <i class="fa-solid fa-arrow-up"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2 text-[10px] font-mono uppercase text-emerald-400 tracking-wider">
+                          <span id="sv-hud-waypoint-badge">VIEWPOINT 1 OF 6</span>
+                          <span id="sv-hud-dist">0.8 KM TO NEXT</span>
+                        </div>
+                        <div id="sv-hud-road-name" class="font-black text-sm text-white truncate mt-0.5">
+                          Kathipara Flyover (GST Road NH-45)
+                        </div>
+                        <div id="sv-hud-instructions" class="text-xs text-neutral-300 truncate mt-0.5">
+                          Continue onto Inner Ring Road towards KK Nagar
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Progress Dots along Road Route -->
+                    <div class="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between gap-2">
+                      <div id="sv-progress-dots" class="flex items-center gap-1.5 flex-1 overflow-x-auto py-1">
+                        <!-- Dots populated dynamically -->
+                      </div>
+                      <div class="text-[10px] font-mono text-neutral-400 shrink-0">
+                        <span id="sv-compass-heading">🧭 045° NE</span>
+                      </div>
+                    </div>
+
+                    <!-- Controls: Prev, Play/Pause Tour, Next, Jump to Plot -->
+                    <div class="mt-3 flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-1.5">
+                        <button onclick="prevStreetWaypoint()" id="sv-btn-prev" class="px-2.5 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-bold text-white transition flex items-center gap-1">
+                          <i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Prev</span>
+                        </button>
+                        <button onclick="toggleStreetTourAutoplay()" id="sv-btn-play" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-black text-white transition flex items-center gap-1.5 shadow-md">
+                          <i id="sv-btn-play-icon" class="fa-solid fa-play"></i> <span id="sv-btn-play-label">Auto Tour</span>
+                        </button>
+                        <button onclick="nextStreetWaypoint()" id="sv-btn-next" class="px-2.5 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-bold text-white transition flex items-center gap-1">
+                          <span class="hidden sm:inline">Next</span> <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                      </div>
+
+                      <button onclick="jumpToPlotStreetArrival()" class="px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition border border-amber-500/40 flex items-center gap-1">
+                        <i class="fa-solid fa-flag-checkered"></i> <span class="hidden sm:inline">Arrival View</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- FIRST-PERSON MOTORCYCLE COCKPIT & CONTROLS OVERLAY -->
+                <div id="motorcycle-cockpit-overlay" class="absolute inset-x-0 bottom-0 pointer-events-none z-20 flex flex-col items-center select-none overflow-hidden transition-transform duration-300">
+                  
+                  <!-- Dynamic Motorcycle Handlebar Assembly (Steers & Leans on Turns!) -->
+                  <div id="motorcycle-handlebar-rig" class="relative w-full max-w-[850px] flex flex-col items-center transition-transform duration-500 ease-out origin-bottom">
+                    
+                    <!-- Left & Right Rearview Mirrors with Road Reflections -->
+                    <div class="w-full flex justify-between px-6 sm:px-14 mb-[-12px] relative z-10">
+                      <!-- Left Mirror -->
+                      <div class="motorcycle-mirror left-mirror pointer-events-auto" title="Left Rearview Mirror (Chennai Traffic Horizon)">
+                        <div class="mirror-housing">
+                          <div class="mirror-glass">
+                            <div class="mirror-reflection"></div>
+                            <div class="mirror-glare"></div>
+                            <span class="mirror-tag">L</span>
+                          </div>
+                        </div>
+                        <div class="mirror-stem left-stem"></div>
+                      </div>
+
+                      <!-- Right Mirror -->
+                      <div class="motorcycle-mirror right-mirror pointer-events-auto" title="Right Rearview Mirror (Chennai Traffic Horizon)">
+                        <div class="mirror-housing">
+                          <div class="mirror-glass">
+                            <div class="mirror-reflection"></div>
+                            <div class="mirror-glare"></div>
+                            <span class="mirror-tag">R</span>
+                          </div>
+                        </div>
+                        <div class="mirror-stem right-stem"></div>
+                      </div>
+                    </div>
+
+                    <!-- Center Digital Motorcycle Instrument Cluster / Cockpit Dashboard -->
+                    <div class="motorcycle-dashboard relative z-20 pointer-events-auto">
+                      <div class="dashboard-bezel">
+                        <!-- Dashboard Top Row: Turn Signals & Gear -->
+                        <div class="flex items-center justify-between px-3 pt-2 pb-1 text-xs">
+                          <!-- Left Blinker -->
+                          <div id="bike-blinker-left" class="bike-blinker"><i class="fa-solid fa-arrow-left"></i></div>
+                          
+                          <!-- Gear Indicator: N, 1, 2, 3, 4, 5 -->
+                          <div class="flex items-center gap-1.5 font-mono">
+                            <span id="bike-gear-badge" class="px-2 py-0.5 rounded font-black text-xs bg-emerald-500 text-black shadow-[0_0_8px_#10b981]">GEAR 4</span>
+                            <span id="bike-rpm-display" class="text-[10px] text-emerald-400 font-bold hidden sm:inline">5,400 RPM</span>
+                          </div>
+
+                          <!-- Right Blinker -->
+                          <div id="bike-blinker-right" class="bike-blinker"><i class="fa-solid fa-arrow-right"></i></div>
+                        </div>
+
+                        <!-- Dashboard Center: Digital Speedometer & Tachometer Bar -->
+                        <div class="flex items-center justify-between px-4 py-1 bg-black/60 border-y border-emerald-500/30">
+                          <div class="flex items-baseline gap-1 font-mono">
+                            <span id="bike-digital-speed" class="text-3xl sm:text-4xl font-black text-white tracking-tight drop-shadow-[0_0_10px_#10b981]">48</span>
+                            <span class="text-emerald-400 text-xs font-bold">KM/H</span>
+                          </div>
+                          
+                          <!-- Live Chennai Trip Telemetry -->
+                          <div class="text-right font-mono text-[10px]">
+                            <div class="text-neutral-400">CHENNAI ROAD NAV</div>
+                            <div id="bike-road-telemetry" class="text-emerald-300 font-bold truncate max-w-[140px] sm:max-w-[190px]">Kathipara &rarr; GST Road</div>
+                          </div>
+                        </div>
+
+                        <!-- Dashboard Bottom: Tachometer LED Strip & Sound / POV Controls -->
+                        <div class="flex items-center justify-between px-3 py-1 bg-neutral-950/80 text-[10px] font-mono">
+                          <!-- RPM LED Bar -->
+                          <div class="flex items-center gap-0.5 flex-1 max-w-[110px] sm:max-w-[150px]">
+                            <div id="bike-tacho-fill" class="tacho-bar" style="width: 72%;"></div>
+                          </div>
+
+                          <!-- Quick Motorcycle Actions: Sound, POV, Leaning -->
+                          <div class="flex items-center gap-1.5 ml-2">
+                            <button id="bike-sound-btn" onclick="toggleMotorcycleEngineSound()" class="px-2 py-0.5 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition flex items-center gap-1" title="Toggle Realistic Motorcycle Engine Rumble">
+                              <i id="bike-sound-icon" class="fa-solid fa-volume-xmark text-[10px]"></i>
+                              <span class="hidden sm:inline text-[9px]">Audio</span>
+                            </button>
+                            <button onclick="toggleMotorcycleCockpitVisibility()" class="px-2 py-0.5 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition" title="Toggle Handlebars View">
+                              <i class="fa-solid fa-eye text-[10px]"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Handlebar Stem & Triple Tree Clamp -->
+                    <div class="handlebar-triple-tree relative w-full flex items-center justify-between px-2 sm:px-6">
+                      <!-- Left Handlebar Grip & Clutch Lever with Rider Gloved Hand -->
+                      <div class="handlebar-side left-side flex items-center">
+                        <div class="rider-hand left-hand">
+                          <div class="glove-palm"></div>
+                          <div class="glove-fingers"></div>
+                          <div class="glove-cuff"></div>
+                        </div>
+                        <div class="handlebar-grip left-grip">
+                          <div class="clutch-lever"></div>
+                          <div class="bar-end-weight"></div>
+                        </div>
+                      </div>
+
+                      <!-- Center Metallic Handlebar Bar -->
+                      <div class="handlebar-center-bar"></div>
+
+                      <!-- Right Handlebar Grip & Throttle Lever with Rider Gloved Hand -->
+                      <div class="handlebar-side right-side flex items-center justify-end">
+                        <div class="handlebar-grip right-grip">
+                          <div class="front-brake-lever"></div>
+                          <div class="bar-end-weight"></div>
+                        </div>
+                        <div class="rider-hand right-hand">
+                          <div class="glove-palm"></div>
+                          <div class="glove-fingers"></div>
+                          <div class="glove-cuff"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Fuel Tank Top Arc -->
+                    <div class="motorcycle-tank-crest"></div>
+
+                  </div>
+                </div>
+
+                <!-- 360 Drag Interaction Badge (Bottom Center) -->
+                <div class="sv-drag-badge absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white text-[11px] font-medium shadow-lg pointer-events-none flex items-center gap-2">
+                  <i class="fa-solid fa-arrows-up-down-left-right text-emerald-400"></i>
+                  <span>Click &amp; drag inside view to look 360° around Chennai streets</span>
+                </div>
+
+                <!-- Arrival Banner Overlay (when reaching plot viewpoint) -->
+                <div id="street-view-arrival-banner" class="hidden absolute inset-x-4 bottom-14 sm:bottom-6 sm:inset-x-auto sm:left-4 sm:max-w-md z-30 bg-emerald-950/95 backdrop-blur-md border-2 border-emerald-500 p-4 rounded-2xl shadow-2xl text-white">
+                  <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white text-lg shrink-0 shadow-lg">
+                      <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div>
+                      <div class="text-[10px] font-mono uppercase text-emerald-300 font-bold tracking-wider">
+                        DESTINATION ARRIVAL • REAL STREET VIEW
+                      </div>
+                      <div id="sv-arrival-plot-title" class="text-sm font-black text-white mt-0.5">
+                        Plot #14 - Munusamy Grand Layout
+                      </div>
+                      <p id="sv-arrival-coverage-note" class="text-xs text-emerald-100 mt-1">
+                        Verified authentic street-level photograph captured outside property entrance.
+                      </p>
+                      <div class="mt-3 flex items-center gap-2">
+                        <button onclick="viewPlotDetailsFromStreetView()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-neutral-100 text-black text-xs font-black transition shadow-lg flex items-center gap-1.5">
+                          <i class="fa-solid fa-file-contract text-emerald-600"></i> View Plot Dossier
+                        </button>
+                        <button onclick="switchToMapMode()" class="px-3 py-2 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 text-xs font-bold transition border border-emerald-600">
+                          <i class="fa-solid fa-map-location-dot"></i> Boundary Map
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Right/Inset: Synchronized Mini Route Map -->
+              <div id="street-view-minimap-wrapper" class="absolute bottom-4 right-4 z-20 w-64 h-52 sm:w-80 sm:h-64 rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl bg-neutral-900 transition-all duration-300">
+                <div class="w-full h-full relative">
+                  <div id="street-view-minimap" class="w-full h-full"></div>
+                  <!-- Mini-map Header -->
+                  <div class="absolute top-2 left-2 z-10 bg-black/80 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-mono text-white font-bold flex items-center gap-1.5 border border-white/10">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> ROUTE TRACKER
+                  </div>
+                  <!-- Expand/Contract Button -->
+                  <button onclick="toggleMinimapSize()" class="absolute top-2 right-2 z-10 w-7 h-7 rounded-lg bg-black/80 hover:bg-black text-white text-xs flex items-center justify-center transition border border-white/10" title="Toggle Size">
+                    <i id="minimap-size-icon" class="fa-solid fa-up-right-and-down-left-from-center text-[10px]"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Floating Map Legend -->
+          <div class="absolute bottom-4 left-4 z-20 hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl border border-neutral-200 text-[11px] shadow-lg">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <span class="font-bold text-neutral-800">Available</span>
+            </div>
+            <span class="text-neutral-300">|</span>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+              <span class="font-bold text-neutral-800">Reserved</span>
+            </div>
+            <span class="text-neutral-300">|</span>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+              <span class="font-bold text-neutral-800">Sold</span>
+            </div>
+            <span class="text-neutral-300">|</span>
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-2 border-2 border-dashed border-emerald-600 bg-emerald-200 rounded-sm"></span>
+              <span class="font-bold text-neutral-800">Demarcated Boundary</span>
+            </div>
+          </div>
+
+          <!-- Mobile Bottom Sheet Drawer (Slides up on plot marker tap on small screens) -->
+          <div id="mobile-plot-drawer" class="drawer-closed absolute bottom-3 inset-x-3 z-30 sm:hidden bg-white rounded-3xl p-4 shadow-2xl border-2 border-emerald-500">
+            <div id="mobile-drawer-content">
+              <!-- Rendered dynamically by app.js -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Hidden internal container for legacy filter count references -->
+      <div id="plots-panel-container" class="hidden">
+        <div id="active-directions-panel" class="hidden"></div>
+        <div id="plots-list-scroll-area" class="hidden"></div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- DEDICATED PLOT DETAILS SECTION (SHOWS DIRECTLY BELOW THE MAP ON CLICK)   -->
+    <!-- ========================================================================= -->
+    <section id="selected-plot-detail-section" class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-500">
+      
+      <!-- Unselected Initial State (Inviting the customer to click any plot on the map above) -->
+      <div id="plot-unselected-placeholder" class="bg-gradient-to-br from-neutral-900 via-neutral-950 to-black text-white rounded-3xl p-8 sm:p-12 border border-neutral-800 shadow-2xl text-center relative overflow-hidden">
+        <div class="max-w-2xl mx-auto">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-black uppercase tracking-wider mb-4">
+            <i class="fa-solid fa-map-location-dot"></i> Interactive Geospatial Explorer
+          </div>
+          <h3 class="text-2xl sm:text-4xl font-black font-serif-luxury text-white">Click Any Plot on the Map Above</h3>
+          <p class="text-xs sm:text-sm text-neutral-400 mt-3 leading-relaxed">
+            Select any verified residential plot on the map above. You will travel inside the map along real Chennai roads by <strong class="text-white">Car, Bike, Bus, or Walk</strong>. Upon reaching the location, the full plot specifications, 4-corner boundary demarcation, photo gallery, and instant email enquiry form will load right here!
+          </p>
+          <div class="mt-6 flex flex-wrap justify-center gap-2 text-xs">
+            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-shield-check text-emerald-400 mr-1.5"></i> CMDA &amp; RERA Approved</span>
+            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-droplet text-sky-400 mr-1.5"></i> Potable Drinking Water</span>
+            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-road text-amber-400 mr-1.5"></i> 30-Ft Tar Roads</span>
+            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-bolt text-purple-400 mr-1.5"></i> 3-Phase Underground EB</span>
+            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-building-columns text-emerald-400 mr-1.5"></i> 90% Bank Loans</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selected Plot Detailed Content (Rendered dynamically by app.js below the map) -->
+      <div id="plot-selected-container" class="hidden">
+        <!-- Injected dynamically on plot arrival -->
+      </div>
+
+    </section>
+
+  </main>
+
+    <!-- HOME LOAN EMI CALCULATOR SECTION -->
+    <div id="loan-calculator-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="bg-white rounded-3xl p-6 sm:p-10 border border-neutral-200 shadow-lg">
+        
+        <div class="max-w-2xl mb-8">
+          <span class="text-xs font-mono font-bold text-neutral-500 uppercase tracking-widest"><i class="fa-solid fa-calculator mr-1"></i> Loan Calculator</span>
+          <h3 class="text-2xl sm:text-3xl font-black text-black font-serif-luxury mt-1">Chennai Plot & Home Loan EMI Estimator</h3>
+          <p class="text-xs text-neutral-600 mt-2 leading-relaxed">
+            LLB Realty has direct tie-ups with SBI, HDFC, ICICI, and Axis Bank. Calculate your estimated monthly payment based on current interest rates.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 items-center">
+          
+          <div class="md:col-span-2 space-y-6">
+            
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs font-bold">
+                <span class="text-neutral-700">Loan Amount Required</span>
+                <span id="label-loan-amount" class="text-black font-mono text-sm font-black">₹ 35 Lakhs</span>
+              </div>
+              <input 
+                type="range" 
+                id="loan-amount" 
+                min="10" 
+                max="200" 
+                step="5" 
+                value="35" 
+                oninput="calculateEMI()"
+                class="w-full accent-black h-2 bg-neutral-200 rounded-lg cursor-pointer"
+              />
+              <div class="flex justify-between text-[10px] text-neutral-400 font-semibold">
+                <span>₹ 10 Lakhs</span>
+                <span>₹ 1 Crore</span>
+                <span>₹ 2 Crores</span>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs font-bold">
+                <span class="text-neutral-700">Loan Tenure (Years)</span>
+                <span id="label-loan-tenure" class="text-black font-mono text-sm font-black">20 Years</span>
+              </div>
+              <input 
+                type="range" 
+                id="loan-tenure" 
+                min="5" 
+                max="30" 
+                step="1" 
+                value="20" 
+                oninput="calculateEMI()"
+                class="w-full accent-black h-2 bg-neutral-200 rounded-lg cursor-pointer"
+              />
+              <div class="flex justify-between text-[10px] text-neutral-400 font-semibold">
+                <span>5 Years</span>
+                <span>15 Years</span>
+                <span>30 Years</span>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs font-bold">
+                <span class="text-neutral-700">Interest Rate (% p.a.)</span>
+                <span id="label-loan-rate" class="text-black font-mono text-sm font-black">8.5 %</span>
+              </div>
+              <input 
+                type="range" 
+                id="loan-rate" 
+                min="7.5" 
+                max="13.0" 
+                step="0.1" 
+                value="8.5" 
+                oninput="calculateEMI()"
+                class="w-full accent-black h-2 bg-neutral-200 rounded-lg cursor-pointer"
+              />
+              <div class="flex justify-between text-[10px] text-neutral-400 font-semibold">
+                <span>7.5% (Prime)</span>
+                <span>10% (Standard)</span>
+                <span>13% (Max)</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="bg-black text-white p-6 rounded-2xl flex flex-col justify-between shadow-xl space-y-6">
+            <div>
+              <span class="text-[10px] text-neutral-400 uppercase tracking-widest font-bold">Estimated Monthly EMI</span>
+              <div id="calculated-emi" class="text-3xl font-black text-white mt-1">₹ 30,373 /mo</div>
+              <span class="text-[10px] text-emerald-400 flex items-center gap-1 mt-1 font-bold">
+                <i class="fa-solid fa-check"></i> 80C Tax Deduction Eligible
+              </span>
+            </div>
+
+            <div class="space-y-2 pt-4 border-t border-neutral-800 text-xs">
+              <div class="flex justify-between text-neutral-400">
+                <span>Principal Loan:</span>
+                <span id="calc-principal" class="text-white font-mono font-bold">₹ 35,00,000</span>
+              </div>
+              <div class="flex justify-between text-neutral-400">
+                <span>Total Interest Payable:</span>
+                <span id="calc-interest" class="text-white font-mono font-bold">₹ 37,89,715</span>
+              </div>
+              <div class="flex justify-between text-neutral-400 pt-2 border-t border-neutral-800 font-bold">
+                <span class="text-neutral-200">Total Repayment:</span>
+                <span id="calc-total" class="text-white font-mono">₹ 72,89,715</span>
+              </div>
+            </div>
+
+            <button onclick="openSiteVisitModal()" class="w-full py-3 rounded-xl bg-white text-black font-black text-xs uppercase tracking-wider hover:bg-neutral-200 transition">
+              Apply Bank Pre-Approval &rarr;
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 1: ELABORATED PROPERTY DETAILS WITH MULTI-PHOTO GALLERY & EMAIL     -->
+  <!-- ========================================================================= -->
+  <div id="property-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div id="property-modal-content" class="w-full flex justify-center">
+      <!-- Rendered dynamically by app.js -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 2: DIGITAL EMAIL PROSPECTUS & SITE VISIT RECEIPT                    -->
+  <!-- ========================================================================= -->
+  <div id="email-receipt-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div id="email-receipt-content" class="w-full flex justify-center">
+      <!-- Rendered dynamically by app.js -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 3: N8N AUTOMATION SETTINGS                                          -->
+  <!-- ========================================================================= -->
+  <div id="webhook-settings-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-neutral-300 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+      
+      <button onclick="closeWebhookSettingsModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-neutral-100 text-neutral-600 hover:text-black flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-2 text-xs font-black text-black uppercase tracking-widest">
+        <i class="fa-solid fa-bolt text-amber-500"></i> n8n Automation Engine
+      </div>
+      <h3 class="text-2xl font-black text-black font-serif-luxury mt-1">Webhook Configuration</h3>
+      <p class="text-xs text-neutral-600 mt-1">
+        Whenever a user requests property details, their full enquiry, photos, price, and live site visit details are pushed to this n8n webhook to deliver instant luxury emails.
+      </p>
+
+      <div class="mt-6 space-y-4">
+        <div>
+          <label class="block text-xs font-black text-neutral-700 mb-1">Active n8n Webhook URL</label>
+          <input 
+            type="url" 
+            id="webhook-url-input" 
+            value="http://localhost:5678/webhook/llb-events" 
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs font-mono text-black focus:outline-none focus:border-black"
+          />
+          <p class="text-[10px] text-neutral-400 mt-1">
+            Pre-built workflow file available in project: <strong class="text-neutral-700">n8n-workflow-llb-chennai.json</strong>
+          </p>
+        </div>
+
+        <div id="webhook-test-status" class="text-xs"></div>
+
+        <div class="flex items-center gap-3 pt-2">
+          <button 
+            type="button" 
+            onclick="testWebhookPing()" 
+            class="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-black text-xs font-bold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-paper-plane text-xs"></i> Test Ping Webhook
+          </button>
+          <button 
+            type="button" 
+            onclick="saveWebhookSettings()" 
+            class="px-5 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white text-xs font-black transition">
+            Save Webhook URL
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 4: FREE SITE VISIT BOOKING                                          -->
+  <!-- ========================================================================= -->
+  <div id="site-visit-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-neutral-300 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+      
+      <button onclick="closeSiteVisitModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-neutral-100 text-neutral-600 hover:text-black flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-2 text-xs font-black text-black uppercase tracking-widest">
+        <i class="fa-solid fa-car"></i> Complimentary Service
+      </div>
+      <h3 class="text-2xl font-black text-black font-serif-luxury mt-1">Book Free Site Visit</h3>
+      <p class="text-xs text-neutral-600 mt-1">
+        We provide air-conditioned car pickup and drop from anywhere in Chennai with our Senior Property Manager.
+      </p>
+
+      <form onsubmit="handleSiteVisitSubmit(event)" class="mt-6 space-y-4">
+        <div>
+          <label class="block text-xs font-black text-neutral-700 mb-1">Your Full Name</label>
+          <input 
+            type="text" 
+            id="visit-name" 
+            required 
+            placeholder="e.g. Ramesh Kumar" 
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-neutral-700 mb-1">Mobile Number (WhatsApp Enabled)</label>
+          <input 
+            type="tel" 
+            id="visit-phone" 
+            required 
+            placeholder="e.g. 98401 23456" 
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-neutral-700 mb-1">Select Property to Inspect</label>
+          <select 
+            id="visit-property-select" 
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
+          >
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-neutral-700 mb-1">Preferred Date</label>
+          <input 
+            type="date" 
+            id="visit-date" 
+            required 
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
+          />
+        </div>
+
+        <div class="flex items-center gap-2 pt-2">
+          <input type="checkbox" id="visit-cab" checked class="accent-black w-4 h-4 rounded">
+          <label for="visit-cab" class="text-xs text-neutral-700 font-semibold">
+            Yes, please arrange complimentary AC Cab pickup from my residence
+          </label>
+        </div>
+
+        <button type="submit" class="w-full py-3 mt-4 rounded-xl bg-black hover:bg-neutral-800 text-white font-black text-xs uppercase tracking-wider shadow-md transition">
+          Confirm Free Site Visit &rarr;
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 5: MOBILE SINGLE LINK & QR CODE                                     -->
+  <!-- ========================================================================= -->
+  <div id="mobile-link-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-neutral-300 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative text-center">
+      
+      <button onclick="closeMobileLinkModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-neutral-100 text-neutral-600 hover:text-black flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+      </div>
+
+      <h3 class="text-2xl font-black text-black font-serif-luxury">Open on Mobile Phone</h3>
+      <p class="text-xs text-neutral-600 mt-1">
+        Access this entire portal on any smartphone over 4G/5G or Wi-Fi using this single public link.
+      </p>
+
+      <!-- Auto-Generated QR Code -->
+      <div class="my-5 p-3 bg-neutral-50 rounded-2xl border border-neutral-200 inline-block shadow-inner">
+        <img 
+          id="mobile-qr-code" 
+          src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://schema-opposite-plaintiff-desirable.trycloudflare.com" 
+          alt="Scan with Mobile Camera" 
+          class="w-44 h-44 rounded-xl mx-auto block"
+        />
+        <span class="text-[10px] text-neutral-500 font-bold block mt-2">
+          <i class="fa-solid fa-camera mr-1"></i> Point your phone camera to open instantly
+        </span>
+      </div>
+
+      <!-- Single Link Display & Copy Button -->
+      <div class="bg-neutral-100 p-3.5 rounded-xl border border-neutral-200 text-left">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] uppercase font-bold text-neutral-500">Official Deployed Link (No Password)</span>
+          <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Active</span>
+        </div>
+        <div class="flex items-center justify-between gap-2 mt-1.5">
+          <a 
+            id="mobile-link-href" 
+            href="https://schema-opposite-plaintiff-desirable.trycloudflare.com" 
+            target="_blank"
+            class="text-xs font-mono font-black text-black hover:underline truncate select-all">
+            <span id="mobile-link-text">https://schema-opposite-plaintiff-desirable.trycloudflare.com</span>
+          </a>
+          <button 
+            onclick="copyMobileLink()" 
+            class="px-3.5 py-1.5 rounded-lg bg-black text-white text-xs font-black shrink-0 hover:bg-neutral-800 transition">
+            <i class="fa-solid fa-copy mr-1"></i> Copy
+          </button>
+        </div>
+      </div>
+
+      <!-- Wi-Fi Direct Option -->
+      <div class="mt-3 p-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-[11px] text-neutral-600 text-left">
+        <strong>Direct LAN / Wi-Fi Access:</strong><br>
+        <a href="http://192.168.0.26:3000" target="_blank" class="text-black font-mono font-bold underline">http://192.168.0.26:3000</a>
+      </div>
+
+      <!-- Share via WhatsApp -->
+      <div class="mt-4 flex gap-2">
+        <a 
+          id="mobile-share-whatsapp-btn"
+          href="https://wa.me/?text=Check%20out%20LLB%20Realty%20Chennai%20website:%20https://schema-opposite-plaintiff-desirable.trycloudflare.com" 
+          target="_blank"
+          class="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition">
+          <i class="fa-brands fa-whatsapp text-sm"></i> Send to WhatsApp
+        </a>
+        <button 
+          onclick="closeMobileLinkModal()" 
+          class="px-5 py-3 rounded-xl bg-neutral-200 hover:bg-neutral-300 text-black font-bold text-xs transition">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 6: GOOGLE MAPS API KEY ACCESS (OPTIONAL PRIVATE DEVELOPER ACCESS)   -->
+  <!-- ========================================================================= -->
+  <div id="api-key-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-neutral-300 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
+      <button onclick="closeApiKeyModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-neutral-100 text-neutral-600 hover:text-black flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-2 text-xs font-black text-black uppercase tracking-widest">
+        <i class="fa-brands fa-google text-emerald-600"></i> Map Configuration
+      </div>
+      <h3 class="text-xl font-black text-black font-serif-luxury mt-1">Google Maps API Access</h3>
+      <p class="text-xs text-neutral-600 mt-1">
+        This platform runs on <strong>100% Free High-Resolution GIS Maps (ESRI & OSM) with zero API keys required</strong>. If you have your own Google Cloud API Key and wish to connect it, paste it below:
+      </p>
+
+      <div class="mt-4 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-neutral-700 mb-1">Your Google Maps API Key</label>
+          <input 
+            type="text" 
+            id="google-maps-api-key-input" 
+            placeholder="AIzaSy..." 
+            class="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs font-mono text-black focus:outline-none focus:border-black"
+          />
+        </div>
+        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-[11px] text-emerald-900">
+          <strong>✓ Zero Key Guarantee:</strong> The interactive street map, satellite layers, road routing, and traveler animation are active with 0 keys and 0 errors!
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button onclick="saveGoogleMapsApiKey()" class="flex-1 py-2.5 rounded-xl bg-black hover:bg-neutral-800 text-white font-bold text-xs">
+            Save Key &amp; Enable
+          </button>
+          <button onclick="clearGoogleMapsApiKey()" class="py-2.5 px-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-xs">
+            Reset to Keyless Map
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-neutral-900 text-neutral-400 py-10 px-4 sm:px-6 lg:px-8 text-xs">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-serif-luxury text-lg font-black text-white">LLB <span class="text-neutral-400 font-light">REALTY</span></span>
+        <span class="text-[10px] text-neutral-500 font-mono">CHENNAI REAL ESTATE PORTAL</span>
+      </div>
+      <div>&copy; 2026 LLB Realty & Promoters Pvt Ltd. All Rights Reserved.</div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Quick Button -->
+  <a 
+    href="https://wa.me/919840000000?text=Hi%20LLB%20Realty,%20I%20am%20exploring%20your%20website%20and%20looking%20for%20plots%20in%20Chennai" 
+    target="_blank" 
+    class="fixed bottom-6 left-6 z-50 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-2.5 font-bold text-xs hover:scale-105 transition-all"
+    title="Chat with LLB Chennai Advisor"
+  >
+    <i class="fa-brands fa-whatsapp text-lg"></i>
+    <span class="hidden sm:inline">WhatsApp Advisor</span>
+  </a>
+
+  <!-- MapLibre GL 3D Engine JS (Local Zero-Key Engine) -->
+  <script src="libs/maplibre-gl.js"></script>
+
+  <!-- Leaflet JS CDN Fallback -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Main Application Script -->
+  <script src="app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+{
+  "name": "LLB Realty Chennai - Property Prospectus & Live Site Visit Email Dispatcher",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "llb-events",
+        "options": {}
+      },
+      "id": "node-webhook-llb",
+      "name": "LLB Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "webhookId": "llb-chennai-events"
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.body.event || 'property.enquiry' }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "property.enquiry",
+              "outputKey": "propertyEnquiry"
+            },
+            {
+              "value2": "sitevisit.scheduled",
+              "outputKey": "siteVisit"
+            }
+          ]
+        }
+      },
+      "id": "node-switch-event",
+      "name": "Route Event",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || {};\nconst customer = body.customer || {};\nconst property = body.property || {};\nconst company = body.company || {\n  name: 'LLB Realty & Promoters',\n  city: 'Chennai',\n  phone: '+91 98400 00000',\n  supportEmail: 'sales@llbrealty.com'\n};\n\nconst visitDate = customer.preferredDate ? customer.preferredDate : 'To be confirmed with Property Advisor';\nconst cabStatus = customer.needCab ? 'Complimentary AC Cab Pickup Requested from Residence' : 'Self-Drive / Direct Visit';\n\nconst mainImage = (property.images && property.images.length > 0) ? property.images[0] : (property.image || 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80');\n\nconst htmlBody = `\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>LLB Realty Property Prospectus</title>\n  <style>\n    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 24px; color: #09090b; }\n    .container { max-width: 640px; margin: 0 auto; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }\n    .header { background: #09090b; color: #ffffff; padding: 28px 24px; text-align: center; }\n    .logo-badge { display: inline-block; width: 42px; height: 42px; line-height: 42px; background: #ffffff; color: #09090b; font-weight: 900; font-size: 22px; border-radius: 8px; margin-bottom: 8px; font-family: Georgia, serif; }\n    .brand-title { font-size: 20px; font-weight: 900; letter-spacing: 2px; margin: 0; text-transform: uppercase; }\n    .brand-sub { font-size: 10px; color: #a1a1aa; letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }\n    .content { padding: 32px 24px; }\n    .greeting { font-size: 18px; font-weight: 800; color: #09090b; margin-bottom: 12px; }\n    .text { font-size: 14px; line-height: 1.6; color: #52525b; margin-bottom: 20px; }\n    .prop-card { border: 1px solid #e4e4e7; border-radius: 10px; overflow: hidden; background: #fafafa; margin: 24px 0; }\n    .prop-img { width: 100%; height: 260px; object-fit: cover; display: block; }\n    .prop-body { padding: 20px; }\n    .prop-tag { display: inline-block; background: #09090b; color: #ffffff; font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 9999px; letter-spacing: 1px; }\n    .prop-title { font-size: 18px; font-weight: 900; color: #09090b; margin: 10px 0 6px 0; }\n    .prop-price { font-size: 22px; font-weight: 900; color: #09090b; }\n    .table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }\n    .table td { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }\n    .table td.lbl { color: #71717a; width: 45%; }\n    .table td.val { color: #09090b; font-weight: 700; text-align: right; }\n    .visit-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 24px 0; }\n    .visit-title { font-size: 13px; font-weight: 800; color: #166534; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }\n    .visit-text { font-size: 13px; color: #15803d; line-height: 1.5; margin: 0; }\n    .btn-wrap { text-align: center; margin: 30px 0 10px 0; }\n    .btn { display: inline-block; background: #09090b; color: #ffffff !important; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }\n    .footer { background: #f4f4f5; border-top: 1px solid #e4e4e7; padding: 20px 24px; text-align: center; font-size: 11px; color: #71717a; line-height: 1.6; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <div class=\"logo-badge\">L</div>\n      <div class=\"brand-title\">LLB REALTY & PROMOTERS</div>\n      <div class=\"brand-sub\">CHENNAI RESIDENTIAL PROPERTIES · 100% CLEAR TITLES</div>\n    </div>\n    <div class=\"content\">\n      <div class=\"greeting\">Vanakkam ${customer.name || 'Valued Home Seeker'}!</div>\n      <p class=\"text\">\n        Thank you for your enquiry with <strong>LLB Realty</strong>. As requested, here is your complete official property brochure, legal verification details, and verified pricing breakdown for your selected Chennai property:\n      </p>\n\n      <div class=\"prop-card\">\n        <img src=\"${mainImage}\" alt=\"${property.title || 'Property'}\" class=\"prop-img\">\n        <div class=\"prop-body\">\n          <span class=\"prop-tag\">${property.type === 'plot' ? 'Demarcated Residential Plot' : 'Independent Family House'}</span>\n          <div class=\"prop-title\">${property.title || 'Premium Property'}</div>\n          <div class=\"prop-price\">${property.price || 'Price on Request'} <span style=\"font-size:12px; font-weight:normal; color:#71717a;\">(${property.pricePerSqft || 'Verified'})</span></div>\n          \n          <table class=\"table\">\n            <tr><td class=\"lbl\">Locality</td><td class=\"val\">${property.areaName || 'Chennai'}</td></tr>\n            <tr><td class=\"lbl\">Plot / Built-up Size</td><td class=\"val\">${property.size || 'Standard'}</td></tr>\n            <tr><td class=\"lbl\">Vasthu / Facing</td><td class=\"val\">${property.facing || 'East Facing'}</td></tr>\n            <tr><td class=\"lbl\">Approvals</td><td class=\"val\">${property.approval || 'CMDA & RERA Approved'}</td></tr>\n            <tr><td class=\"lbl\">Groundwater Depth</td><td class=\"val\">${property.waterTable || 'Sweet Potable Water at 22 ft'}</td></tr>\n            <tr><td class=\"lbl\">Bank Loan Tie-ups</td><td class=\"val\">SBI, HDFC, ICICI, Axis Bank (Up to 90%)</td></tr>\n          </table>\n        </div>\n      </div>\n\n      <div class=\"visit-box\">\n        <div class=\"visit-title\">✓ Live Site Visit Update</div>\n        <p class=\"visit-text\">\n          <strong>Scheduled Date:</strong> ${visitDate}<br>\n          <strong>Cab Service:</strong> ${cabStatus}<br>\n          <strong>Assigned Property Manager:</strong> S. Karthik (+91 98401 55678)<br>\n          Our representative will call your mobile (${customer.phone || 'provided number'}) 30 minutes prior to coordinate the complimentary pickup.\n        </p>\n      </div>\n\n      <div class=\"btn-wrap\">\n        <a href=\"https://wa.me/919840000000?text=Hi%20LLB%20Realty,%20I%20received%20the%20email%20prospectus%20for%20${encodeURIComponent(property.title || 'Property')}\" class=\"btn\">\n          Connect on WhatsApp &rarr;\n        </a>\n      </div>\n    </div>\n\n    <div class=\"footer\">\n      <strong>LLB Realty & Promoters Private Limited</strong><br>\n      Corporate Office: Anna Nagar Western Extension, Chennai - 600101<br>\n      Helpline: +91 98400 00000 · Email: sales@llbrealty.com · Web: www.llbrealty.com\n    </div>\n  </div>\n</body>\n</html>\n`;\n\nreturn [{\n  json: {\n    toEmail: customer.email || 'customer@example.com',\n    subject: `[LLB Realty Chennai] Property Prospectus & Live Visit Update: ${property.title || 'Your Selected Home'}`,\n    htmlBody: htmlBody\n  }\n}];"
+      },
+      "id": "node-format-email",
+      "name": "Format Luxury HTML Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "sales@llbrealty.com",
+        "toEmail": "={{ $json.toEmail }}",
+        "subject": "={{ $json.subject }}",
+        "html": "={{ $json.htmlBody }}",
+        "options": {}
+      },
+      "id": "node-send-email",
+      "name": "Send Prospectus & Visit Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "llb-smtp-credential",
+          "name": "LLB SMTP Account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "LLB Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Route Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Event": {
+      "main": [
+        [
+          {
+            "node": "Format Luxury HTML Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Luxury HTML Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Luxury HTML Email": {
+      "main": [
+        [
+          {
+            "node": "Send Prospectus & Visit Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

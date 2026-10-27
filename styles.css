@@ -1,0 +1,2142 @@
+/* ==========================================================================
+   LLB REALTY CHENNAI - ULTRA-REALISTIC LUXURY WEB EXPERIENCE
+   90% White & 10% Black Architectural Aesthetic
+   Front House with LLB Logo -> Smooth Transition -> Chennai Map & Properties
+   Elaborated Property Specs, Multi-Image Gallery, and n8n Email Automation
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  --bg-white: #ffffff;
+  --bg-light: #f8fafc;
+  --text-black: #09090b;
+  --text-muted: #52525b;
+  --border-subtle: #e2e8f0;
+  --accent-gold: #c59b27;
+  --accent-gold-light: #fef08a;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  overflow-x: hidden;
+  max-width: 100vw;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-white);
+  color: var(--text-black);
+  overflow-x: hidden;
+  max-width: 100vw;
+  letter-spacing: -0.01em;
+}
+
+.font-serif-luxury {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-mono-luxury {
+  font-family: 'Space Grotesk', monospace;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #09090b;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   STAGE 1: FRONT PAGE (HOUSE FRONT FACADE WITH LUXURY LLB LOGO)
+   ========================================================================== */
+
+#house-front-page {
+  position: relative;
+  min-height: calc(100vh - 64px);
+  display: none; /* Map shows FIRST by default! */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #09090b;
+}
+
+@media (min-width: 640px) {
+  #house-front-page {
+    min-height: calc(100vh - 80px);
+  }
+}
+
+/* Real High-Resolution House Front Facade */
+.house-facade-image {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85');
+  background-size: cover;
+  background-position: center center;
+  filter: brightness(0.92);
+  transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.house-facade-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(9, 9, 11, 0.35) 0%, rgba(9, 9, 11, 0.75) 100%);
+  backdrop-filter: blur(1px);
+}
+
+/* Centered Luxury LLB Logo Crest */
+.llb-logo-container {
+  position: relative;
+  z-index: 20;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.llb-logo-container:hover {
+  transform: translateY(-6px) scale(1.03);
+}
+
+.llb-emblem-box {
+  width: 170px;
+  height: 170px;
+  background: #09090b;
+  border: 4px solid #ffffff;
+  border-radius: 2.25rem;
+  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 255, 255, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+@media (min-width: 640px) {
+  .llb-emblem-box {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+.llb-emblem-box::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.4) 90deg, transparent 180deg);
+  animation: rotateGlow 5s linear infinite;
+}
+
+.llb-emblem-box::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  background: #09090b;
+  border-radius: 2rem;
+  z-index: 1;
+}
+
+@keyframes rotateGlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.llb-emblem-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.llb-lettermark {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+.llb-submark {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 10px;
+  font-weight: 800;
+  color: #d4d4d8;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* Pulsing Click Target */
+.logo-pulse-ring {
+  position: absolute;
+  inset: -15px;
+  border: 2px dashed rgba(255, 255, 255, 0.6);
+  border-radius: 2.75rem;
+  animation: pulseRing 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  pointer-events: none;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 0.2; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* ==========================================================================
+   GOOGLE MAPS STYLE NAVIGATION PANNING TRANSITION (RIGHT TO LEFT SEARCH)
+   ========================================================================== */
+
+#maps-navigation-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #09090b;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#maps-navigation-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Moving Map Track (Slides from Right to Left) */
+.nav-map-track {
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 250vw;
+  height: 140vh;
+  transform: translateX(0);
+  will-change: transform;
+}
+
+#maps-navigation-overlay.animating .nav-map-track {
+  animation: panRightToLeft 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes panRightToLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-55vw);
+  }
+}
+
+.nav-map-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=2600&q=85');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.45) contrast(1.2) saturate(1.1);
+}
+
+.nav-map-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center;
+}
+
+/* Radar Scan Beam */
+.nav-map-grid-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(16, 185, 129, 0.15) 50%, rgba(59, 130, 246, 0.25) 100%);
+  animation: radarSweep 1.8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes radarSweep {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Top Google Maps Navigation HUD */
+.nav-hud-header {
+  position: relative;
+  z-index: 20;
+  padding: 24px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-search-bar-pill {
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  padding: 10px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  max-width: 650px;
+  width: 100%;
+}
+
+/* Navigation Route Scene (Right to Left sweep) */
+.nav-route-scene {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.nav-route-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.route-line-bg {
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 10;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.route-line-fg {
+  stroke: url(#routeGrad);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  fill: none;
+}
+
+#maps-navigation-overlay.animating .route-line-fg {
+  animation: drawRouteLine 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes drawRouteLine {
+  0% {
+    stroke-dashoffset: 1400;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Moving GPS Navigation Puck (Right to Left) */
+.nav-moving-puck {
+  position: absolute;
+  right: 6%;
+  top: 58%;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform-origin: center;
+}
+
+#maps-navigation-overlay.animating .nav-moving-puck {
+  animation: puckMoveRightToLeft 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes puckMoveRightToLeft {
+  0% {
+    right: 6%;
+    top: 60%;
+    transform: rotate(-30deg) scale(0.9);
+  }
+  35% {
+    right: 44%;
+    top: 42%;
+    transform: rotate(-60deg) scale(1.15);
+  }
+  75% {
+    right: 74%;
+    top: 46%;
+    transform: rotate(-45deg) scale(1.05);
+  }
+  100% {
+    right: 88%;
+    top: 40%;
+    transform: rotate(-40deg) scale(1);
+  }
+}
+
+.puck-body {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #3b82f6;
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.9), 0 10px 20px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 2;
+}
+
+.puck-radar-ring {
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  border: 2px solid rgba(59, 130, 246, 0.8);
+  animation: radarWave 1.2s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes radarWave {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.puck-label {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 11px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Landmark Checkpoint Tags along the path */
+.landmark-tag {
+  position: absolute;
+  z-index: 25;
+  background: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  padding: 5px 12px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(10px) scale(0.9);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.landmark-tag.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.tag-east {
+  right: 14%;
+  top: 48%;
+}
+
+.tag-central {
+  right: 48%;
+  top: 30%;
+}
+
+.tag-west {
+  left: 12%;
+  top: 26%;
+}
+
+/* Destination Target Marker on the Left */
+.nav-destination-target {
+  position: absolute;
+  left: 8%;
+  top: 40%;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.3;
+  transform: scale(0.85);
+  transition: all 0.5s ease;
+}
+
+.nav-destination-target.locked {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.dest-target-pin {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 3.5px solid #ffffff;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.9), 0 15px 30px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 2;
+}
+
+.dest-target-pulse {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(16, 185, 129, 0.9);
+  animation: radarWave 1.4s infinite ease-out;
+  pointer-events: none;
+}
+
+.dest-target-text {
+  background: #ffffff;
+  color: #09090b;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+/* Bottom HUD Progress Bar */
+.nav-hud-bottom {
+  position: relative;
+  z-index: 20;
+  padding: 20px 24px;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   STAGE 2: CHENNAI MAP & PROPERTIES DISCOVERY PAGE
+   ========================================================================== */
+
+#map-discovery-page {
+  display: none;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+#map-discovery-page.active {
+  display: block;
+}
+
+/* Grand Map Frame */
+.wall-mounted-map-frame {
+  position: relative;
+  background: #09090b;
+  border-radius: 1.5rem;
+  padding: 10px;
+  box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.25), 0 0 0 1px #27272a;
+}
+
+.wall-map-viewport {
+  width: 100%;
+  height: 100%;
+  min-height: 580px;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  z-index: 10;
+}
+@media (max-width: 1024px) {
+  .wall-map-viewport {
+    min-height: 440px;
+    height: 440px;
+  }
+}
+
+/* Custom 3D Pin Marker */
+.custom-pin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.pin-bubble {
+  background: #09090b;
+  border: 2px solid #ffffff;
+  border-radius: 9999px;
+  padding: 5px 12px;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 11px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+}
+
+.custom-pin-container:hover .pin-bubble {
+  transform: scale(1.12);
+  background: #000000;
+}
+
+.pin-marker-head {
+  width: 42px;
+  height: 42px;
+  border-radius: 50% 50% 50% 0;
+  background: #09090b;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  border: 2.5px solid #ffffff;
+  margin-top: 4px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.custom-pin-container:hover .pin-marker-head {
+  transform: rotate(-45deg) scale(1.22);
+}
+
+.pin-icon-inner {
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.pin-ripple {
+  position: absolute;
+  bottom: 0px;
+  width: 24px;
+  height: 10px;
+  background: rgba(9, 9, 11, 0.35);
+  border-radius: 50%;
+  animation: pinPulse 2s infinite;
+  z-index: -1;
+}
+
+@keyframes pinPulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* Property Cards */
+.luxury-card {
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.luxury-card:hover {
+  border-color: #09090b;
+  box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
+/* Multi-Photo Gallery in Modal */
+.gallery-hero-container {
+  position: relative;
+  height: 380px;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #09090b;
+}
+
+.gallery-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-thumb {
+  width: 76px;
+  height: 56px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.gallery-thumb:hover {
+  opacity: 0.95;
+}
+
+.gallery-thumb.active {
+  border-color: #09090b;
+  opacity: 1;
+  box-shadow: 0 0 0 2px #09090b;
+}
+
+/* Specification Detail Chips */
+.spec-chip {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 10px 14px;
+}
+
+/* Email Receipt Simulation Card */
+.receipt-paper {
+  background: #ffffff;
+  border: 1px dashed #71717a;
+  border-radius: 1rem;
+  padding: 24px;
+  position: relative;
+}
+
+.receipt-paper::before,
+.receipt-paper::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: #09090b;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.receipt-paper::before { left: -8px; }
+.receipt-paper::after { right: -8px; }
+
+/* Toast Container */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   IN-MAP GOOGLE MAPS TURN-BY-TURN NAVIGATION STYLES
+   ========================================================================== */
+
+.nav-route-glow {
+  filter: drop-shadow(0 0 6px rgba(37, 99, 235, 0.8));
+}
+
+.nav-gps-vehicle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.gps-arrow-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #2563eb;
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.8), 0 4px 10px rgba(0,0,0,0.4);
+  transition: transform 0.25s ease;
+}
+
+.gps-radar-pulse {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 2px solid rgba(37, 99, 235, 0.6);
+  animation: radarWave 1.2s infinite ease-out;
+  pointer-events: none;
+}
+
+/* House Destination Pin on Arrival */
+.house-arrival-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  animation: dropBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes dropBounce {
+  0% { transform: translateY(-40px) scale(0.6); opacity: 0; }
+  60% { transform: translateY(4px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.house-arrival-bubble {
+  background: #10b981;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  white-space: nowrap;
+}
+
+.house-arrival-head {
+  width: 44px;
+  height: 44px;
+  border-radius: 50% 50% 50% 0;
+  background: #10b981;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid #ffffff;
+  margin-top: 4px;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);
+}
+
+.house-arrival-icon {
+  transform: rotate(45deg);
+  color: #ffffff;
+  font-size: 18px;
+}
+
+/* Selected Property Card Highlight on Arrival */
+.luxury-card.nav-highlight {
+  border: 2px solid #10b981 !important;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.25) !important;
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS OPTIMIZATIONS
+   ========================================================================== */
+@media (max-width: 640px) {
+  .wall-map-viewport {
+    height: 380px !important;
+  }
+  .gallery-hero-container {
+    height: 240px !important;
+  }
+  .llb-emblem-box {
+    width: 140px !important;
+    height: 140px !important;
+    border-radius: 1.5rem !important;
+  }
+  .llb-lettermark {
+    font-size: 46px !important;
+  }
+  .llb-submark {
+    font-size: 8px !important;
+    letter-spacing: 3px !important;
+  }
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents auto-zoom in mobile Safari / Chrome */
+  }
+  .receipt-paper {
+    padding: 16px !important;
+  }
+  .receipt-paper::before,
+  .receipt-paper::after {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   REAL-ESTATE GEOSPATIAL PLOT MARKERS & BOUNDARIES
+   ========================================================================== */
+
+.plot-marker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
+  user-select: none;
+}
+.plot-marker-container:hover {
+  transform: scale(1.15) translateY(-5px);
+  z-index: 9999 !important;
+}
+.plot-marker-container.selected {
+  transform: scale(1.22) translateY(-8px);
+  z-index: 10000 !important;
+}
+
+.plot-marker-pill {
+  padding: 5px 10px;
+  border-radius: 12px;
+  background: #09090b;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  border: 2px solid #ffffff;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+  min-width: 105px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.marker-area-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.marker-area-name {
+  font-size: 11px;
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.marker-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.marker-status-dot.available { background: #10b981; }
+.marker-status-dot.reserved { background: #f59e0b; }
+.marker-status-dot.sold { background: #94a3b8; }
+
+.marker-details-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #d1d5db;
+}
+
+.marker-plot-no {
+  color: #a7f3d0;
+  font-weight: 800;
+}
+
+.marker-price {
+  color: #fbbf24;
+  font-weight: 800;
+}
+
+.plot-marker-pill.available {
+  border-color: #10b981;
+}
+.plot-marker-pill.reserved {
+  border-color: #f59e0b;
+}
+.plot-marker-pill.sold {
+  border-color: #64748b;
+}
+
+.plot-marker-container.selected .plot-marker-pill {
+  background: #000000;
+  border-color: #facc15 !important;
+  box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.45), 0 8px 25px rgba(0, 0, 0, 0.6);
+  transform: scale(1.08);
+}
+
+.plot-marker-arrow {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid #ffffff;
+  margin-top: -1px;
+}
+.plot-marker-container.selected .plot-marker-arrow {
+  border-top-color: #facc15;
+}
+
+.plot-pulse-ring {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.4);
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: plotMarkerPulse 1.8s infinite;
+  pointer-events: none;
+}
+@keyframes plotMarkerPulse {
+  0% { transform: translateX(-50%) scale(0.5); opacity: 0.9; }
+  100% { transform: translateX(-50%) scale(2.4); opacity: 0; }
+}
+
+/* Plot Boundary Tooltips */
+.plot-dim-tooltip {
+  background: #09090b !important;
+  color: #ffffff !important;
+  border: 1px solid #34d399 !important;
+  border-radius: 8px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  padding: 3px 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Highlighted Plot Card in Listing */
+.plot-card-selected {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35), 0 20px 35px -10px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-4px);
+}
+
+/* Route Distance Chip on Map */
+.route-distance-chip {
+  background: #09090b;
+  color: #ffffff;
+  border: 1.5px solid #10b981;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Mobile Bottom Sheet Drawer */
+#mobile-plot-drawer {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+#mobile-plot-drawer.drawer-closed {
+  transform: translateY(115%);
+  pointer-events: none;
+  opacity: 0;
+}
+#mobile-plot-drawer.drawer-open {
+  transform: translateY(0%);
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* Custom Scrollbar for Plots List */
+.custom-plots-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-plots-scroll::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+.custom-plots-scroll::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 8px;
+}
+.custom-plots-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+
+.nav-highlight {
+  box-shadow: 0 0 0 4px #10b981, 0 20px 40px -10px rgba(16, 185, 129, 0.5) !important;
+  transform: translateY(-6px);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   INTERACTIVE ROAD TRAVELER ANIMATION & LIVE NAVIGATION HUD
+   ========================================================================== */
+
+/* Road Traveler Marker Icon */
+.road-traveler-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.traveler-bubble {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #09090b;
+  border: 2.5px solid #10b981;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 20px rgba(16, 185, 129, 0.5);
+  position: relative;
+  transition: transform 0.08s linear;
+}
+
+.traveler-bubble.bike {
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.5);
+}
+
+.traveler-bubble.bus {
+  border-color: #c084fc;
+  color: #c084fc;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 20px rgba(192, 132, 252, 0.5);
+}
+
+.traveler-bubble.walk {
+  border-color: #f59e0b;
+  color: #f59e0b;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 20px rgba(245, 158, 11, 0.5);
+}
+
+.traveler-you-tag {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  color: #09090b;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 1px 4.5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.traveler-radar-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(16, 185, 129, 0.7);
+  animation: radarWave 1s infinite;
+}
+
+@keyframes radarWave {
+  0% { transform: scale(0.7); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Floating Travel HUD Banner on Map (Authentic Google Maps Replica) */
+#live-travel-hud {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: 95%;
+  width: 640px;
+  background: #0f172a;
+  border: 1.5px solid #10b981;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  animation: slideDownHud 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.gmaps-nav-top-banner {
+  background: #064e3b;
+  color: #ffffff;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gmaps-maneuver-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #10b981;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  shrink-0: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.gmaps-nav-bottom-bar {
+  background: #09090b;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Digital Speedometer Gauge in HUD */
+.hud-speedometer {
+  background: #020617;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  padding: 3px 8px;
+  border-radius: 8px;
+  color: #34d399;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 900;
+  font-size: 13px;
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.hud-speedometer span.unit {
+  font-size: 8px;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+@keyframes slideDownHud {
+  from { transform: translate(-50%, -25px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* Responsive adjustments for Navigation HUD across mobile & tablet */
+@media (max-width: 640px) {
+  #live-travel-hud {
+    top: 8px;
+    width: 96%;
+    max-width: 96%;
+    border-radius: 0.9rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  }
+  .gmaps-nav-top-banner {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+  .gmaps-maneuver-box {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+  .gmaps-nav-bottom-bar {
+    padding: 6px 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: space-between;
+  }
+  #route-directions-drawer {
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    max-width: calc(100vw - 16px) !important;
+    max-height: 380px !important;
+    top: 56px !important;
+  }
+  #street-view-minimap-wrapper {
+    width: 140px !important;
+    height: 110px !important;
+    bottom: 8px !important;
+    right: 8px !important;
+    border-radius: 0.75rem !important;
+  }
+  #street-view-floating-hud {
+    left: 8px !important;
+    right: 8px !important;
+    top: 8px !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+  .street-view-top-bar {
+    padding: 6px 10px !important;
+  }
+}
+
+.travel-mode-pill.active {
+  background: #09090b !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Detail section smooth fade-in */
+#selected-plot-detail-section {
+  scroll-margin-top: 80px;
+}
+
+/* Demarcation Corner Pegs / Survey Boundary Stones */
+.boundary-peg-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.peg-marker-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: pegDropBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.peg-stone {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: #ffffff;
+  border: 2px solid #059669;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8), 0 2px 4px rgba(0,0,0,0.4);
+  transform: rotate(45deg);
+}
+
+.peg-label {
+  font-size: 8px;
+  font-weight: 900;
+  color: #064e3b;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1px 3px;
+  border-radius: 4px;
+  margin-top: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+@keyframes pegDropBounce {
+  0% { transform: translateY(-30px) scale(0.2); opacity: 0; }
+  70% { transform: translateY(4px) scale(1.15); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Pulsing Plot Demarcation Line */
+.plot-demarcation-polygon {
+  animation: dashCycle 20s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
+}
+
+@keyframes dashCycle {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+/* Selected Plot Target Spotlight */
+.plot-marker-container.selected {
+  z-index: 9999 !important;
+}
+
+.plot-marker-container.selected .plot-marker-pill {
+  border-color: #facc15 !important;
+  box-shadow: 0 0 25px rgba(250, 204, 21, 0.9), 0 0 50px rgba(16, 185, 129, 0.6) !important;
+  transform: scale(1.1);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ==========================================================================
+   REAL STREET-LEVEL IMAGERY JOURNEY STYLES
+   Photographic Road Viewport, Mini Route Map & Camera Heading Cone
+   ========================================================================== */
+#street-view-stage {
+  transition: opacity 0.3s ease;
+}
+
+#street-view-stage.active {
+  display: flex !important;
+}
+
+.street-view-top-bar {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Split-View Layout Support */
+#street-view-body.mode-split #street-view-pano-container {
+  width: 58% !important;
+  flex: none !important;
+}
+
+#street-view-body.mode-split #street-view-minimap-wrapper {
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  width: 42% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  border: none !important;
+  border-left: 2px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+  #street-view-body.mode-split {
+    flex-direction: column !important;
+  }
+  #street-view-body.mode-split #street-view-pano-container {
+    width: 100% !important;
+    height: 60% !important;
+  }
+  #street-view-body.mode-split #street-view-minimap-wrapper {
+    width: 100% !important;
+    height: 40% !important;
+    border-left: none !important;
+    border-top: 2px solid rgba(255, 255, 255, 0.15) !important;
+  }
+}
+
+/* Expanded PiP Mini-Map */
+#street-view-minimap-wrapper.expanded {
+  width: 420px !important;
+  height: 310px !important;
+}
+
+/* Camera Marker & FOV Direction Cone on Mini-Map */
+.sv-camera-marker-container {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.sv-camera-cone-wrapper {
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 35px 35px;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sv-camera-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.9);
+  position: relative;
+  z-index: 2;
+}
+
+.sv-camera-pulse {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #10b981;
+  animation: svPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  z-index: 1;
+}
+
+@keyframes svPing {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Waypoint Progress Dots */
+.sv-waypoint-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+  shrink-0: 0;
+}
+
+.sv-waypoint-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.25);
+}
+
+.sv-waypoint-dot.active {
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981, 0 0 20px rgba(16, 185, 129, 0.6);
+  transform: scale(1.45);
+}
+
+.sv-waypoint-dot.completed {
+  background: #059669;
+}
+
+.sv-waypoint-dot.arrival {
+  border: 1.5px solid #f59e0b;
+}
+
+.sv-waypoint-dot.arrival.active {
+  background: #f59e0b;
+  box-shadow: 0 0 12px #f59e0b;
+}
+
+/* 360 Drag Interaction Badge */
+@keyframes svBadgeFloat {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -4px); }
+}
+
+.sv-drag-badge {
+  animation: svBadgeFloat 3s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   FIRST-PERSON MOTORCYCLE NAVIGATION COCKPIT & PHYSICS
+   Real Handlebars, Rearview Mirrors, Digital Instrument Cluster & Rider Gloves
+   ========================================================================== */
+
+#motorcycle-cockpit-overlay {
+  pointer-events: none;
+  z-index: 25;
+}
+
+#motorcycle-handlebar-rig {
+  transition: transform 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  animation: bikeEngineRumble 0.18s infinite alternate ease-in-out;
+}
+
+@keyframes bikeEngineRumble {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-0.8px); }
+}
+
+/* Leaning Classes for Dynamic Cornering */
+#motorcycle-handlebar-rig.lean-left {
+  transform: rotate(-6.5deg) translateX(-8px) translateY(3px) !important;
+}
+
+#motorcycle-handlebar-rig.lean-right {
+  transform: rotate(6.5deg) translateX(8px) translateY(3px) !important;
+}
+
+#motorcycle-handlebar-rig.lean-center {
+  transform: rotate(0deg) translateX(0) translateY(0) !important;
+}
+
+/* Rearview Mirrors */
+.motorcycle-mirror {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mirror-housing {
+  width: 78px;
+  height: 52px;
+  background: radial-gradient(circle at 30% 30%, #3f3f46, #18181b 80%);
+  border-radius: 40px / 28px;
+  padding: 3px;
+  border: 1.5px solid #71717a;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.7), inset 0 1px 3px rgba(255,255,255,0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.mirror-glass {
+  width: 100%;
+  height: 100%;
+  border-radius: 36px / 24px;
+  background: linear-gradient(180deg, #38bdf8 0%, #1e293b 45%, #0f172a 50%, #1e1b4b 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.8);
+}
+
+.mirror-reflection {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 45%, rgba(0,0,0,0.4) 100%);
+}
+
+.mirror-glare {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 30px;
+  height: 12px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.5), transparent);
+  border-radius: 20px;
+  transform: rotate(-15deg);
+}
+
+.mirror-tag {
+  position: absolute;
+  bottom: 2px;
+  right: 6px;
+  font-size: 8px;
+  font-family: monospace;
+  color: rgba(255,255,255,0.4);
+  font-weight: bold;
+}
+
+.mirror-stem {
+  width: 5px;
+  height: 38px;
+  background: linear-gradient(90deg, #71717a, #d4d4d8, #27272a);
+  border-radius: 2px;
+  margin-top: -4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+}
+
+.left-stem { transform: rotate(-22deg) translateX(4px); }
+.right-stem { transform: rotate(22deg) translateX(-4px); }
+
+/* Center Digital Instrument Cluster */
+.motorcycle-dashboard {
+  width: 290px;
+  margin-bottom: -18px;
+  filter: drop-shadow(0 10px 25px rgba(0,0,0,0.9));
+}
+
+.dashboard-bezel {
+  background: linear-gradient(180deg, #27272a 0%, #09090b 100%);
+  border: 2px solid #3f3f46;
+  border-radius: 22px 22px 14px 14px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 0 20px rgba(0,0,0,0.8);
+}
+
+.bike-blinker {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #52525b;
+  font-size: 10px;
+  transition: all 0.15s ease;
+}
+
+.bike-blinker.blinking {
+  background: #10b981 !important;
+  color: #000000 !important;
+  box-shadow: 0 0 14px #10b981 !important;
+  animation: blinkerFlash 0.5s infinite alternate;
+}
+
+@keyframes blinkerFlash {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.tacho-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #10b981 0%, #10b981 70%, #f59e0b 85%, #ef4444 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+  transition: width 0.3s ease-out;
+}
+
+/* Handlebar Bar & Grips */
+.handlebar-triple-tree {
+  height: 68px;
+  position: relative;
+  z-index: 15;
+}
+
+.handlebar-center-bar {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  top: 36px;
+  height: 12px;
+  background: linear-gradient(180deg, #d4d4d8 0%, #71717a 50%, #27272a 100%);
+  border-radius: 6px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.4);
+}
+
+.handlebar-side {
+  position: relative;
+  z-index: 18;
+}
+
+.handlebar-grip {
+  width: 110px;
+  height: 28px;
+  background: repeating-linear-gradient(90deg, #18181b, #18181b 4px, #27272a 4px, #27272a 8px);
+  border-radius: 8px;
+  border: 2px solid #3f3f46;
+  position: relative;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.8), inset 0 2px 4px rgba(255,255,255,0.1);
+}
+
+.bar-end-weight {
+  position: absolute;
+  top: -2px;
+  width: 14px;
+  height: 32px;
+  background: linear-gradient(180deg, #a1a1aa, #52525b);
+  border-radius: 4px;
+  border: 1px solid #71717a;
+}
+.left-grip .bar-end-weight { left: -14px; }
+.right-grip .bar-end-weight { right: -14px; }
+
+/* Control Levers */
+.clutch-lever, .front-brake-lever {
+  position: absolute;
+  top: -8px;
+  width: 80px;
+  height: 6px;
+  background: linear-gradient(180deg, #f4f4f5 0%, #a1a1aa 50%, #52525b 100%);
+  border-radius: 3px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+}
+.clutch-lever { left: 10px; transform: rotate(-8deg); }
+.front-brake-lever { right: 10px; transform: rotate(8deg); }
+
+/* Rider Gloves */
+.rider-hand {
+  position: absolute;
+  z-index: 20;
+  width: 76px;
+  height: 62px;
+  pointer-events: none;
+}
+
+.left-hand {
+  left: 20px;
+  top: -12px;
+}
+
+.right-hand {
+  right: 20px;
+  top: -12px;
+}
+
+.glove-palm {
+  width: 58px;
+  height: 48px;
+  background: radial-gradient(circle at 40% 40%, #27272a, #09090b 85%);
+  border-radius: 16px 16px 20px 20px;
+  border: 2px solid #3f3f46;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.8);
+  position: relative;
+}
+
+.glove-fingers {
+  position: absolute;
+  top: 14px;
+  width: 50px;
+  height: 18px;
+  background: repeating-linear-gradient(90deg, #18181b, #18181b 9px, #3f3f46 9px, #3f3f46 12px);
+  border-radius: 6px;
+  border: 1px solid #52525b;
+}
+.left-hand .glove-fingers { left: 4px; }
+.right-hand .glove-fingers { right: 4px; }
+
+.glove-cuff {
+  position: absolute;
+  bottom: -6px;
+  width: 44px;
+  height: 10px;
+  background: #10b981;
+  border-radius: 4px;
+  border: 1px solid #34d399;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+.left-hand .glove-cuff { left: 7px; }
+.right-hand .glove-cuff { right: 7px; }
+
+/* Fuel Tank Crest Arc at Bottom Center */
+.motorcycle-tank-crest {
+  width: 220px;
+  height: 24px;
+  background: radial-gradient(ellipse at 50% 0%, #10b981 0%, #064e3b 40%, #022c22 80%, #09090b 100%);
+  border-radius: 120px 120px 0 0;
+  border-top: 2px solid rgba(52, 211, 153, 0.4);
+  box-shadow: 0 -4px 15px rgba(16, 185, 129, 0.3);
+  margin-top: -12px;
+  position: relative;
+  z-index: 12;
+}
+
+@media (max-width: 640px) {
+  #motorcycle-handlebar-rig {
+    transform: scale(0.85);
+    transform-origin: bottom center;
+  }
+}
+
+/* ==========================================================================
+   ANIMATED 3D MOTORCYCLE RIDER MAP MODEL & HEADLIGHT CONE
+   Visible Motorcycle with Rider, Headlight Beam, and Leaning Physics
+   ========================================================================== */
+
+.map-motorcycle-rider-container {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Headlight Projection Beam shining forward onto the road */
+.motorcycle-headlight-cone {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  width: 90px;
+  height: 150px;
+  margin-left: -45px;
+  transform-origin: 45px 95px;
+  background: radial-gradient(ellipse at 50% 85%, rgba(254, 240, 138, 0.55) 0%, rgba(254, 240, 138, 0.25) 45%, rgba(254, 240, 138, 0.05) 75%, transparent 100%);
+  clip-path: polygon(42% 10%, 58% 10%, 95% 0%, 5% 0%);
+  filter: drop-shadow(0 0 12px rgba(254, 240, 138, 0.7));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.motorcycle-model-wrapper {
+  position: relative;
+  width: 44px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 22px 37px;
+  transition: transform 0.08s ease-out;
+  z-index: 5;
+}
+
+.motorcycle-ground-shadow {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 32px;
+  height: 60px;
+  margin-left: -16px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  filter: blur(4px);
+  transform: translateY(4px);
+  z-index: -1;
+}
+
+.motorcycle-3d-svg {
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.75));
+}
+
+.tail-light-glow {
+  filter: drop-shadow(0 0 6px #ef4444);
+}
+
+.headlight-bulb-glow {
+  filter: drop-shadow(0 0 8px #fef08a);
+}
+
+/* Pulsating Radar Wave around the Rider */
+.motorcycle-radar-pulse {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1.5px solid #10b981;
+  animation: motoRadarWave 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes motoRadarWave {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ==========================================================================
+   FLOATING LLB LOGO CREST (Positioned prominently at the HEAD / FRONT of the Avatar)
+   Shows ONLY the clear, large, high-visibility "LLB" brand logo
+   ========================================================================== */
+.motorcycle-rider-pill {
+  position: absolute;
+  top: -30px; /* Positioned directly at the HEAD / FRONT of the avatar */
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #09090b;
+  border: 2px solid #f59e0b;
+  padding: 3px 12px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.95), 0 0 16px rgba(245, 158, 11, 0.75);
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Little golden pointer arrow anchoring the badge to the head of the vehicle */
+.motorcycle-rider-pill::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px 5px 0;
+  border-style: solid;
+  border-color: #f59e0b transparent transparent transparent;
+  display: block;
+  width: 0;
+}
+
+.llb-avatar-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+  font-family: 'Times New Roman', Georgia, serif;
+  font-weight: 900;
+  font-size: 13.5px;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.9), 0 1px 2px #000000;
+  user-select: none;
+}
+
+/* ==========================================================================
+   CAR, BUS & PEDESTRIAN TRAVELER VEHICLE MODELS & DIRECTIONS DRAWER
+   ========================================================================== */
+
+/* Car Vehicle Styles */
+.map-car-container, .map-bus-container, .map-walker-container {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.car-headlight-cone {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  width: 100px;
+  height: 160px;
+  margin-left: -50px;
+  transform-origin: 50px 100px;
+  background: radial-gradient(ellipse at 50% 85%, rgba(56, 189, 248, 0.5) 0%, rgba(56, 189, 248, 0.2) 45%, transparent 80%);
+  clip-path: polygon(35% 10%, 65% 10%, 100% 0%, 0% 0%);
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.7));
+  pointer-events: none;
+}
+
+.car-model-wrapper {
+  position: relative;
+  width: 48px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 24px 44px;
+  transition: transform 0.08s ease-out;
+  z-index: 5;
+}
+
+.car-ground-shadow {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  width: 44px;
+  height: 80px;
+  margin-left: -22px;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 18px;
+  filter: blur(5px);
+  transform: translateY(4px);
+  z-index: -1;
+}
+
+/* Bus Vehicle Styles */
+.bus-headlight-cone {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  width: 120px;
+  height: 180px;
+  margin-left: -60px;
+  transform-origin: 60px 115px;
+  background: radial-gradient(ellipse at 50% 85%, rgba(254, 240, 138, 0.6) 0%, rgba(254, 240, 138, 0.25) 45%, transparent 80%);
+  clip-path: polygon(30% 10%, 70% 10%, 100% 0%, 0% 0%);
+  filter: drop-shadow(0 0 16px rgba(254, 240, 138, 0.8));
+  pointer-events: none;
+}
+
+.bus-model-wrapper {
+  position: relative;
+  width: 48px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 24px 55px;
+  transition: transform 0.08s ease-out;
+  z-index: 5;
+}
+
+.bus-ground-shadow {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  width: 44px;
+  height: 102px;
+  margin-left: -22px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  filter: blur(6px);
+  transform: translateY(6px);
+  z-index: -1;
+}
+
+/* Walker Pedestrian Styles */
+.walker-direction-cone {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  width: 70px;
+  height: 110px;
+  margin-left: -35px;
+  transform-origin: 35px 70px;
+  background: radial-gradient(ellipse at 50% 85%, rgba(245, 158, 11, 0.45) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 80%);
+  clip-path: polygon(40% 15%, 60% 15%, 90% 0%, 10% 0%);
+  pointer-events: none;
+}
+
+.walker-model-wrapper {
+  position: relative;
+  width: 36px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 18px 24px;
+  transition: transform 0.08s ease-out;
+  z-index: 5;
+}
+
+.walker-ground-shadow {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 24px;
+  height: 38px;
+  margin-left: -12px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  filter: blur(3px);
+  transform: translateY(2px);
+  z-index: -1;
+}
+
+.walker-leg-left, .walker-arm-left {
+  animation: walkerStrideLeft 0.6s infinite alternate ease-in-out;
+}
+.walker-leg-right, .walker-arm-right {
+  animation: walkerStrideRight 0.6s infinite alternate ease-in-out;
+}
+
+@keyframes walkerStrideLeft {
+  0% { transform: translateY(-3px); }
+  100% { transform: translateY(3px); }
+}
+
+@keyframes walkerStrideRight {
+  0% { transform: translateY(3px); }
+  100% { transform: translateY(-3px); }
+}
+
+/* Route Directions Itinerary Sheet */
+#route-directions-drawer {
+  animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.step-item-card {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.step-item-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(4px);
+}
+
+.car-3d-svg, .bus-3d-svg, .walker-3d-svg {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.6);
+}
+
+
+
+
+
+
