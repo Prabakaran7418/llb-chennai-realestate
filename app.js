@@ -4576,14 +4576,6 @@ async function testWebhookPing() {
 // ==========================================================================
 function openMobileLinkModal() {
   const modal = document.getElementById("mobile-link-modal");
-  if (modal) {
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-  }
-}
-
-function openMobileLinkModal() {
-  const modal = document.getElementById("mobile-link-modal");
   const publicUrl = window.location.origin.includes("localhost")
     ? "https://schema-opposite-plaintiff-desirable.trycloudflare.com"
     : window.location.origin;
