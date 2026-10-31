@@ -2504,3 +2504,110 @@ body {
 #mobile-filter-drawer.drawer-open {
   transform: translateY(0);
 }
+
+/* ==========================================================================
+   CLEAN, CRISP UNCOLLAPSED CHENNAI AREA CHIPS (ZERO CLUMSINESS, ALL AREAS)
+   ========================================================================== */
+
+.chennai-area-chip-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transform-origin: 50% 100%;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.1s ease;
+  z-index: 100;
+}
+
+.chennai-area-chip-container:hover {
+  transform: scale(1.15) translateY(-3px);
+  z-index: 9999 !important;
+}
+
+.chennai-area-chip-container.selected {
+  transform: scale(1.22) translateY(-5px);
+  z-index: 10000 !important;
+}
+
+.chennai-area-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(12, 14, 20, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(16, 185, 129, 0.7);
+  border-radius: 9999px;
+  padding: 3px 9px 3px 7px;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), 0 0 10px rgba(16, 185, 129, 0.2);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.chennai-area-chip.available {
+  border-color: #10b981;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+.chennai-area-chip.reserved {
+  border-color: #f59e0b;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), 0 0 10px rgba(245, 158, 11, 0.25);
+}
+
+.chennai-area-chip.sold {
+  border-color: #64748b;
+}
+
+.chip-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.chip-status-dot.reserved {
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+}
+
+.chip-status-dot.sold {
+  background: #64748b;
+  box-shadow: none;
+}
+
+.chip-name {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: #ffffff;
+}
+
+.chip-count {
+  font-size: 9px;
+  font-weight: 900;
+  background: #10b981;
+  color: #000000;
+  border-radius: 10px;
+  padding: 1px 5px;
+  margin-left: 1px;
+}
+
+.chip-price-tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #a7f3d0;
+  font-family: monospace;
+}
+
+.chip-pointer-stem {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid rgba(12, 14, 20, 0.94);
+  margin-top: -1px;
+}

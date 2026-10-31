@@ -1,4 +1,30 @@
 
+// Smart Anti-Collision Offsets: Gives each of the 21 Chennai localities dedicated breathing room
+const AREA_DISPLAY_OFFSETS = {
+  "KK Nagar": { x: 10, y: -12 },
+  "MGR Nagar": { x: -10, y: 12 },
+  "Anna Nagar": { x: 0, y: -14 },
+  "Koyambedu": { x: -16, y: -4 },
+  "T. Nagar": { x: 16, y: 0 },
+  "Adyar": { x: -14, y: -8 },
+  "Besant Nagar": { x: 14, y: 8 },
+  "Maduravoyal": { x: -12, y: -10 },
+  "Porur": { x: 12, y: 10 },
+  "Mogappair": { x: 0, y: -12 },
+  "Velachery": { x: 12, y: -6 },
+  "ECR": { x: 14, y: 8 },
+  "Medavakkam": { x: 14, y: 0 },
+  "Chromepet": { x: -14, y: -8 },
+  "Tambaram": { x: -8, y: 14 },
+  "Kundrathur": { x: -12, y: 6 },
+  "Avadi": { x: 0, y: -12 },
+  "Poonamallee": { x: -12, y: 0 },
+  "Perambur": { x: 0, y: -12 },
+  "OMR / Sholinganallur": { x: 14, y: 10 },
+  "Guduvanchery": { x: 0, y: 12 }
+};
+
+
 // Major Chennai Regional Zones for clean, uncluttered city overview
 const CHENNAI_REGIONAL_ZONES = {
   "Central Chennai": {
@@ -1438,66 +1464,22 @@ function resetToChennaiOverview() {
 function renderPlotMarkersOnMap() {
   const filteredPlots = getFilteredPlots();
   const currentZoom = mapEngine ? mapEngine.getZoom() : (leafletMap ? leafletMap.getZoom() : 11.0);
-  const screenWidth = window.innerWidth;
   
   // Update floating badge count
   const badge = document.getElementById("filtered-plots-badge");
   if (badge) badge.textContent = filteredPlots.length;
 
-  // Multi-tier Zoom Hierarchy:
-  // 1. Zoomed Out City Overview (zoom < 13.0 on mobile, < 12.4 on desktop):
-  //    Displays 7 clean, separated regional zone badges (100% zero overlap guaranteed)
-  // 2. Mid-Zoom (13.0 - 14.8):
-  //    Displays distinct locality pins with dynamic collision detection
-  // 3. Close Zoom (>= 14.8):
-  //    Displays individual plot pins with plot numbers, pricing and demarcated boundaries
-
-  const isCityLevel = currentZoom < (screenWidth < 640 ? 13.0 : 12.4);
-  const isLocalityLevel = currentZoom >= (screenWidth < 640 ? 13.0 : 12.4) && currentZoom < 14.8;
+  // Zoom modes:
+  // - City & Locality Overview (< 14.8): Shows ALL 21 Chennai areas with slim, uncollapsed micro-capsule chips
+  // - Detailed Close Zoom (>= 14.8): Shows individual plot pins with plot #, pricing and boundary demarcation
+  const isCloseZoom = currentZoom >= 14.8;
 
   if (mapEngine) {
     Object.values(plotMarkersMap).forEach(m => m.remove());
     plotMarkersMap = {};
 
-    if (isCityLevel) {
-      // 7 Clean Regional Hubs - Guaranteed Spacing Across Greater Chennai
-      Object.entries(CHENNAI_REGIONAL_ZONES).forEach(([zoneKey, zone]) => {
-        const plotsInZone = filteredPlots.filter(p => zone.localities.includes(p.localityName));
-        if (plotsInZone.length === 0) return;
-
-        const el = document.createElement('div');
-        el.className = 'plot-marker-div';
-        el.innerHTML = `
-          <div class="plot-marker-container" id="map-zone-${zoneKey.replace(/\s+/g, '-')}">
-            <div class="plot-marker-pill available marker-pill-zone">
-              <i class="fa-solid fa-map-pin text-emerald-400 text-xs shrink-0"></i>
-              <div class="flex flex-col text-left leading-tight">
-                <span class="marker-area-name">${zone.name}</span>
-                <span class="marker-sub-name">${zone.subName}</span>
-              </div>
-              <span class="marker-count-badge">${plotsInZone.length} Plots</span>
-            </div>
-            <div class="plot-marker-arrow"></div>
-          </div>
-        `;
-
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          mapEngine.flyTo({
-            center: [zone.center[1], zone.center[0]],
-            zoom: 14.2,
-            duration: 1000
-          });
-        });
-
-        const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
-          .setLngLat([zone.center[1], zone.center[0]])
-          .addTo(mapEngine);
-
-        plotMarkersMap['zone_' + zoneKey] = marker;
-      });
-    } else if (isLocalityLevel) {
-      // Clean Locality Badges with Dynamic Screen Collision Avoidance
+    if (!isCloseZoom) {
+      // Group plots by locality to show ALL areas clearly without clumsiness
       const localityGroups = {};
       filteredPlots.forEach(plot => {
         const loc = plot.localityName;
@@ -1505,36 +1487,24 @@ function renderPlotMarkersOnMap() {
         localityGroups[loc].push(plot);
       });
 
-      const placedPixels = [];
-
       Object.entries(localityGroups).forEach(([locName, plotsInLoc]) => {
         const repPlot = plotsInLoc.find(p => p.id === activePlotId) || plotsInLoc[0];
         const isSelected = plotsInLoc.some(p => p.id === activePlotId);
         const count = plotsInLoc.length;
         const statusClass = repPlot.availability || "available";
-        const desc = getPlotSpecificDescriptor(repPlot);
-
-        // Screen collision check
-        const pt = mapEngine.project([repPlot.longitude, repPlot.latitude]);
-        const tooClose = placedPixels.some(p => Math.abs(p.x - pt.x) < 65 && Math.abs(p.y - pt.y) < 30);
-        if (tooClose && !isSelected) return; // Skip overlapping badge
-        placedPixels.push(pt);
+        const offset = AREA_DISPLAY_OFFSETS[locName] || { x: 0, y: 0 };
 
         const el = document.createElement('div');
         el.className = 'plot-marker-div';
+        el.style.transform = `translate(${offset.x}px, ${offset.y}px)`;
         el.innerHTML = `
-          <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}">
-            <div class="plot-marker-pill ${statusClass} marker-pill-specific">
-              <div class="marker-area-row">
-                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px] shrink-0"></i>
-                <div class="flex flex-col text-left leading-tight">
-                  <span class="marker-area-name">${desc.mainName}</span>
-                  <span class="marker-sub-name">${desc.subName}</span>
-                </div>
-                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : repPlot.plotNumber}</span>
-              </div>
+          <div class="chennai-area-chip-container ${isSelected ? 'selected' : ''}" id="map-area-${repPlot.id}">
+            <div class="chennai-area-chip ${statusClass}">
+              <span class="chip-status-dot ${statusClass}"></span>
+              <span class="chip-name">${locName}</span>
+              ${count > 1 ? `<span class="chip-count">${count}</span>` : `<span class="chip-price-tag">${repPlot.price}</span>`}
             </div>
-            <div class="plot-marker-arrow"></div>
+            <div class="chip-pointer-stem"></div>
             ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
           </div>
         `;
@@ -1562,7 +1532,7 @@ function renderPlotMarkersOnMap() {
         plotMarkersMap['loc_' + locName] = marker;
       });
     } else {
-      // Detailed Individual Plots
+      // Detailed Individual Plots on Close Zoom
       filteredPlots.forEach(plot => {
         const isSelected = activePlotId === plot.id;
         const statusClass = plot.availability || "available";
@@ -1608,41 +1578,7 @@ function renderPlotMarkersOnMap() {
     Object.values(plotMarkersMap).forEach(m => leafletMap.removeLayer(m));
     plotMarkersMap = {};
 
-    if (isCityLevel) {
-      Object.entries(CHENNAI_REGIONAL_ZONES).forEach(([zoneKey, zone]) => {
-        const plotsInZone = filteredPlots.filter(p => zone.localities.includes(p.localityName));
-        if (plotsInZone.length === 0) return;
-
-        const markerHtml = `
-          <div class="plot-marker-container" id="map-zone-${zoneKey.replace(/\s+/g, '-')}">
-            <div class="plot-marker-pill available marker-pill-zone">
-              <i class="fa-solid fa-map-pin text-emerald-400 text-xs shrink-0"></i>
-              <div class="flex flex-col text-left leading-tight">
-                <span class="marker-area-name">${zone.name}</span>
-                <span class="marker-sub-name">${zone.subName}</span>
-              </div>
-              <span class="marker-count-badge">${plotsInZone.length} Plots</span>
-            </div>
-            <div class="plot-marker-arrow"></div>
-          </div>
-        `;
-
-        const icon = L.divIcon({
-          className: "plot-marker-div",
-          html: markerHtml,
-          iconSize: [160, 44],
-          iconAnchor: [80, 42]
-        });
-
-        const marker = L.marker([zone.center[0], zone.center[1]], { icon, zIndexOffset: 800 }).addTo(leafletMap);
-        marker.on("click", (e) => {
-          L.DomEvent.stopPropagation(e);
-          leafletMap.flyTo([zone.center[0], zone.center[1]], 14.2);
-        });
-
-        plotMarkersMap['zone_' + zoneKey] = marker;
-      });
-    } else if (isLocalityLevel) {
+    if (!isCloseZoom) {
       const localityGroups = {};
       filteredPlots.forEach(plot => {
         const loc = plot.localityName;
@@ -1650,33 +1586,20 @@ function renderPlotMarkersOnMap() {
         localityGroups[loc].push(plot);
       });
 
-      const placedPixels = [];
-
       Object.entries(localityGroups).forEach(([locName, plotsInLoc]) => {
         const repPlot = plotsInLoc.find(p => p.id === activePlotId) || plotsInLoc[0];
         const isSelected = plotsInLoc.some(p => p.id === activePlotId);
         const count = plotsInLoc.length;
         const statusClass = repPlot.availability || "available";
-        const desc = getPlotSpecificDescriptor(repPlot);
-
-        const pt = leafletMap.latLngToContainerPoint([repPlot.latitude, repPlot.longitude]);
-        const tooClose = placedPixels.some(p => Math.abs(p.x - pt.x) < 65 && Math.abs(p.y - pt.y) < 30);
-        if (tooClose && !isSelected) return;
-        placedPixels.push(pt);
 
         const markerHtml = `
-          <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}">
-            <div class="plot-marker-pill ${statusClass} marker-pill-specific">
-              <div class="marker-area-row">
-                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px] shrink-0"></i>
-                <div class="flex flex-col text-left leading-tight">
-                  <span class="marker-area-name">${desc.mainName}</span>
-                  <span class="marker-sub-name">${desc.subName}</span>
-                </div>
-                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : repPlot.plotNumber}</span>
-              </div>
+          <div class="chennai-area-chip-container ${isSelected ? 'selected' : ''}" id="map-area-${repPlot.id}">
+            <div class="chennai-area-chip ${statusClass}">
+              <span class="chip-status-dot ${statusClass}"></span>
+              <span class="chip-name">${locName}</span>
+              ${count > 1 ? `<span class="chip-count">${count}</span>` : `<span class="chip-price-tag">${repPlot.price}</span>`}
             </div>
-            <div class="plot-marker-arrow"></div>
+            <div class="chip-pointer-stem"></div>
             ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
           </div>
         `;
@@ -1684,8 +1607,8 @@ function renderPlotMarkersOnMap() {
         const icon = L.divIcon({
           className: "plot-marker-div",
           html: markerHtml,
-          iconSize: [135, 42],
-          iconAnchor: [67, 40]
+          iconSize: [110, 28],
+          iconAnchor: [55, 26]
         });
 
         const marker = L.marker([repPlot.latitude, repPlot.longitude], {
