@@ -5054,3 +5054,29 @@ window.addEventListener("touchend", (e) => {
     }
   }
 }, { passive: true });
+
+
+// ==========================================================================
+// ULTRA-COMPACT HUD CONTROLS (MINIMIZE / CLOSE / RESTORE)
+// ==========================================================================
+function toggleHudMinimize() {
+  const hud = document.getElementById("live-travel-hud");
+  const subBar = document.getElementById("hud-details-sub-bar");
+  const minBtn = document.getElementById("hud-minimize-btn");
+  if (!hud) return;
+
+  const isMin = hud.classList.toggle("hud-minimized");
+  if (subBar) {
+    if (isMin) subBar.classList.add("hidden");
+    else subBar.classList.remove("hidden");
+  }
+  if (minBtn) {
+    minBtn.innerHTML = isMin ? '<i class="fa-solid fa-chevron-down"></i>' : '<i class="fa-solid fa-chevron-up"></i>';
+    minBtn.title = isMin ? "Expand Details" : "Minimize Overlay";
+  }
+}
+
+function closeNavigationHud() {
+  const hud = document.getElementById("live-travel-hud");
+  if (hud) hud.classList.add("hidden");
+}

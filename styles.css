@@ -1223,78 +1223,109 @@ body {
 }
 
 /* Floating Travel HUD Banner on Map (Authentic Google Maps Replica) */
+
+/* ==========================================================================
+   MINIMAL FLOATING NAVIGATION HUD (CLEAN, ULTRA-COMPACT & UNCLUTTERED)
+   ========================================================================== */
 #live-travel-hud {
   position: absolute;
-  top: 16px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  max-width: 95%;
-  width: 640px;
-  background: #0f172a;
-  border: 1.5px solid #10b981;
-  border-radius: 1.25rem;
-  overflow: hidden;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
-  animation: slideDownHud 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 96%;
+  width: auto;
+  min-width: 310px;
+  background: rgba(9, 9, 11, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  border-radius: 9999px;
+  overflow: visible;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+  animation: slideDownHud 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
+  transition: all 0.25s ease;
 }
 
+/* Compact Single-Row Floating Bar on Mobile & Desktop */
 .gmaps-nav-top-banner {
-  background: #064e3b;
+  background: transparent;
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 6px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 8px;
+  border-bottom: none;
 }
 
 .gmaps-maneuver-box {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   background: #10b981;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  shrink-0: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  font-size: 13px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
+/* Bottom secondary row: ultra-slim and collapsible */
 .gmaps-nav-bottom-bar {
-  background: #09090b;
-  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 4px 12px 6px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0 0 9999px 9999px;
 }
 
-/* Digital Speedometer Gauge in HUD */
-.hud-speedometer {
-  background: #020617;
-  border: 1px solid rgba(16, 185, 129, 0.4);
-  padding: 3px 8px;
-  border-radius: 8px;
-  color: #34d399;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-weight: 900;
-  font-size: 13px;
-  display: flex;
-  align-items: baseline;
-  gap: 3px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 0 10px rgba(16, 185, 129, 0.2);
+/* When minimized by user, hide bottom bar and make top banner even smaller */
+#live-travel-hud.hud-minimized {
+  border-radius: 9999px;
+  min-width: unset;
+  background: rgba(9, 9, 11, 0.88);
 }
 
-.hud-speedometer span.unit {
-  font-size: 8px;
-  color: #94a3b8;
-  font-weight: 700;
+#live-travel-hud.hud-minimized .gmaps-nav-bottom-bar {
+  display: none !important;
+}
+
+#live-travel-hud.hud-minimized .gmaps-nav-top-banner {
+  padding: 4px 10px;
+}
+
+/* Mobile Screens (< 640px) Specific Micro-HUD */
+@media (max-width: 639px) {
+  #live-travel-hud {
+    top: 6px;
+    width: 95%;
+    min-width: unset;
+    border-radius: 16px;
+  }
+  .gmaps-nav-top-banner {
+    padding: 5px 8px;
+    gap: 6px;
+  }
+  .gmaps-nav-bottom-bar {
+    padding: 4px 8px 5px 8px;
+    border-radius: 0 0 16px 16px;
+  }
+  #hud-instruction-text {
+    max-width: 140px !important;
+    font-size: 11px !important;
+  }
+  .gmaps-maneuver-box {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
 }
 
 @keyframes slideDownHud {

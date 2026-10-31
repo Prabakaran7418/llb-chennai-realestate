@@ -333,80 +333,76 @@
           <!-- GOOGLE MAPS REPLICA NAVIGATION HUD (Top Center Over Map) -->
           <div id="live-travel-hud" class="hidden">
             <div class="gmaps-nav-top-banner">
-              <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
                 <div id="hud-maneuver-icon" class="gmaps-maneuver-box">
                   <i class="fa-solid fa-arrow-up"></i>
                 </div>
-                <div>
-                  <div class="text-[10px] uppercase font-mono tracking-widest text-emerald-200 flex items-center gap-2">
-                    <span class="px-1.5 py-0.5 rounded bg-black border border-amber-400 text-amber-400 font-serif font-black text-[9px] shadow-sm tracking-wider">LLB</span>
-                    <span id="hud-nav-mode-badge" class="font-black text-white px-1.5 py-0.5 rounded bg-emerald-800">DRIVE</span>
+                <div class="leading-tight">
+                  <div class="flex items-center gap-1.5 text-[9.5px] font-mono text-emerald-300 font-bold">
                     <span id="hud-distance-to-turn">In 350 m</span>
-                    <span id="hud-road-tag" class="hidden sm:inline text-emerald-300 font-bold">• <i class="fa-solid fa-road text-[9px] mr-1"></i><span id="hud-active-road-name">GST Road (NH 45)</span></span>
+                    <span id="hud-remaining-distance" class="text-white bg-black/60 px-1 rounded">-- km</span>
+                    <span id="hud-remaining-time" class="text-emerald-400">-- mins</span>
                   </div>
-                  <div id="hud-instruction-text" class="text-xs sm:text-sm font-black text-white truncate max-w-[220px] sm:max-w-md">
+                  <div id="hud-instruction-text" class="text-xs font-black text-white truncate max-w-[170px] sm:max-w-xs">
                     Navigate onto arterial road towards plot
                   </div>
                 </div>
               </div>
 
-              <!-- Journey Controls: POV Toggle, Stop/Pause, Skip -->
-              <div class="flex items-center gap-1.5">
-                <button onclick="toggleRouteDirectionsDrawer()" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 text-xs font-bold transition border border-emerald-500/30 whitespace-nowrap flex items-center gap-1" title="Open Turn-by-Turn Directions Guide">
-                  <i class="fa-solid fa-list-ol"></i> <span class="hidden md:inline">Route Steps</span>
+              <!-- Compact Controls: Mode Selector, POV, Minimize, Close -->
+              <div class="flex items-center gap-1">
+                <!-- Vehicle Avatars Quick Selector -->
+                <div class="flex items-center gap-0.5 bg-neutral-900/90 p-0.5 rounded-md border border-neutral-700">
+                  <button onclick="setTravelMode('bike')" id="hud-btn-bike" class="w-6 h-6 rounded text-[11px] text-white bg-neutral-800 flex items-center justify-center transition" title="Bike Mode">
+                    <i class="fa-solid fa-motorcycle text-cyan-400"></i>
+                  </button>
+                  <button onclick="setTravelMode('car')" id="hud-btn-car" class="w-6 h-6 rounded text-[11px] text-neutral-400 hover:text-white flex items-center justify-center transition" title="Car Mode">
+                    <i class="fa-solid fa-car-side"></i>
+                  </button>
+                  <button onclick="setTravelMode('bus')" id="hud-btn-bus" class="w-6 h-6 rounded text-[11px] text-neutral-400 hover:text-white flex items-center justify-center transition" title="Bus Mode">
+                    <i class="fa-solid fa-bus-simple"></i>
+                  </button>
+                  <button onclick="setTravelMode('walk')" id="hud-btn-walk" class="w-6 h-6 rounded text-[11px] text-neutral-400 hover:text-white flex items-center justify-center transition" title="Walk Mode">
+                    <i class="fa-solid fa-person-walking"></i>
+                  </button>
+                </div>
+
+                <!-- Minimize Toggle Button -->
+                <button onclick="toggleHudMinimize()" id="hud-minimize-btn" class="w-7 h-7 rounded-lg bg-neutral-800/80 hover:bg-neutral-700 text-neutral-300 flex items-center justify-center text-xs transition" title="Minimize / Expand Overlay">
+                  <i class="fa-solid fa-chevron-up"></i>
                 </button>
-                <button id="hud-pov-btn" onclick="toggleDrivingPOV()" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 text-xs font-bold transition border border-emerald-500/30 whitespace-nowrap flex items-center gap-1" title="Toggle First-Person Driver POV / 3D Chase Cam">
-                  <i class="fa-solid fa-video"></i> <span id="hud-pov-label" class="hidden md:inline">Chase Cam</span>
+
+                <!-- Skip / Arrival -->
+                <button onclick="skipTravelToArrival()" class="w-7 h-7 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center text-xs transition shadow-sm" title="Skip to Plot Arrival">
+                  <i class="fa-solid fa-forward-step"></i>
                 </button>
-                <button id="hud-pause-btn" onclick="togglePauseJourney()" class="px-2.5 py-1.5 rounded-lg bg-amber-950/80 hover:bg-amber-900 text-amber-300 text-xs font-bold transition border border-amber-500/30 whitespace-nowrap flex items-center gap-1" title="Stop / Pause Journey">
-                  <i class="fa-solid fa-pause"></i> <span id="hud-pause-label" class="hidden md:inline">Stop</span>
-                </button>
-                <button onclick="skipTravelToArrival()" class="px-2.5 py-1.5 rounded-lg bg-black/40 hover:bg-black text-white text-xs font-bold transition border border-white/20 whitespace-nowrap flex items-center gap-1" title="Skip to Plot Arrival">
-                  <span class="hidden sm:inline">Skip</span> <i class="fa-solid fa-forward-step"></i>
+
+                <!-- Close / Hide HUD Button -->
+                <button onclick="closeNavigationHud()" class="w-7 h-7 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center text-xs transition" title="Close HUD Overlay">
+                  <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
             
-            <div class="gmaps-nav-bottom-bar">
-              <div class="flex items-center gap-3 sm:gap-4 text-xs font-mono">
-                <!-- Live Speedometer -->
-                <div class="hud-speedometer" title="Simulated Road Speed">
-                  <i class="fa-solid fa-gauge-high text-emerald-400 text-xs mr-0.5"></i>
+            <!-- Optional Expandable Bottom Bar (Hidden by default or toggled) -->
+            <div id="hud-details-sub-bar" class="gmaps-nav-bottom-bar hidden sm:flex">
+              <div class="flex items-center gap-3 text-[10px] font-mono">
+                <div class="hud-speedometer">
                   <span id="hud-live-speed">38</span>
                   <span class="unit">KM/H</span>
                 </div>
-
-                <div class="h-6 w-px bg-neutral-800"></div>
-
-                <div>
-                  <span class="text-neutral-400 text-[9px] block">TOTAL REMAINING</span>
-                  <span id="hud-remaining-distance" class="text-white font-black text-sm">-- km</span>
-                </div>
-                <div class="h-6 w-px bg-neutral-800"></div>
-                <div>
-                  <span class="text-neutral-400 text-[9px] block">ESTIMATED TIME</span>
-                  <span id="hud-remaining-time" class="text-emerald-400 font-black text-sm">-- mins</span>
-                </div>
-                <div class="h-6 w-px bg-neutral-800 hidden lg:block"></div>
-                <div class="hidden lg:block">
-                  <span class="text-neutral-400 text-[9px] block">DESTINATION</span>
-                  <span id="hud-destination-name" class="text-neutral-300 font-bold truncate max-w-[160px] inline-block">Plot Target</span>
-                </div>
+                <span class="text-neutral-400 truncate max-w-[150px]"><i class="fa-solid fa-road mr-1 text-emerald-400"></i><span id="hud-active-road-name">GST Road</span></span>
+                <span class="text-neutral-400 truncate max-w-[140px]"><i class="fa-solid fa-location-dot mr-1 text-amber-400"></i><span id="hud-destination-name">Target</span></span>
               </div>
-
-              <!-- Quick Mode Switcher while in Navigation -->
-              <div class="flex items-center gap-1 bg-neutral-900 p-0.5 rounded-lg border border-neutral-800">
-                <button onclick="setTravelMode('bike')" id="hud-btn-bike" class="px-2.5 py-1 rounded text-xs text-white bg-neutral-800 transition flex items-center gap-1 font-bold" title="Superbike Mode">
-                  <i class="fa-solid fa-motorcycle text-cyan-400"></i><span class="hidden sm:inline">Bike</span>
+              <div class="flex items-center gap-1">
+                <button onclick="toggleRouteDirectionsDrawer()" class="px-2 py-0.5 rounded text-[10px] bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold transition flex items-center gap-1">
+                  <i class="fa-solid fa-list-ol text-[9px]"></i> Steps
                 </button>
-                <button onclick="setTravelMode('car')" id="hud-btn-car" class="px-2.5 py-1 rounded text-xs text-neutral-400 hover:text-white transition flex items-center gap-1 font-bold" title="Car / AC Cab Mode">
-                  <i class="fa-solid fa-car-side"></i><span class="hidden sm:inline">Car</span>
+                <button id="hud-pov-btn" onclick="toggleDrivingPOV()" class="px-2 py-0.5 rounded text-[10px] bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold transition flex items-center gap-1">
+                  <i class="fa-solid fa-video text-[9px]"></i> <span id="hud-pov-label">3D Cam</span>
                 </button>
-                <button onclick="setTravelMode('bus')" id="hud-btn-bus" class="px-2.5 py-1 rounded text-xs text-neutral-400 hover:text-white transition flex items-center gap-1 font-bold" title="MTC City Bus Mode">
-                  <i class="fa-solid fa-bus-simple"></i><span class="hidden sm:inline">Bus</span>
-                </button>
-                <button onclick="setTravelMode('walk')" id="hud-btn-walk" class="px-2.5 py-1 rounded text-xs text-neutral-400 hover:text-white transition flex items-center gap-1 font-bold" title="Walking Pedestrian Mode">
-                  <i class="fa-solid fa-person-walking"></i><span class="hidden sm:inline">Walk</span>
+                <button id="hud-pause-btn" onclick="togglePauseJourney()" class="px-2 py-0.5 rounded text-[10px] bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold transition flex items-center gap-1">
+                  <i class="fa-solid fa-pause text-[9px]"></i> <span id="hud-pause-label">Pause</span>
                 </button>
               </div>
             </div>
