@@ -1,4 +1,51 @@
 
+// Major Chennai Regional Zones for clean, uncluttered city overview
+const CHENNAI_REGIONAL_ZONES = {
+  "Central Chennai": {
+    name: "Central Chennai",
+    subName: "Anna Nagar • T. Nagar • Koyambedu",
+    localities: ["Anna Nagar", "T. Nagar", "Koyambedu", "KK Nagar", "MGR Nagar"],
+    center: [13.0650, 80.2150]
+  },
+  "South Chennai & Coastal": {
+    name: "South Chennai (Coastal)",
+    subName: "Adyar • Besant Nagar • ECR",
+    localities: ["Adyar", "Besant Nagar", "ECR", "Velachery"],
+    center: [12.9850, 80.2520]
+  },
+  "West Chennai Corridor": {
+    name: "West Chennai Corridor",
+    subName: "Maduravoyal • Porur • Mogappair",
+    localities: ["Maduravoyal", "Porur", "Mogappair", "Poonamallee", "Avadi"],
+    center: [13.0550, 80.1450]
+  },
+  "GST & Airport Gateway": {
+    name: "GST & Airport Corridor",
+    subName: "Tambaram • Chromepet • Kundrathur",
+    localities: ["Tambaram", "Chromepet", "Kundrathur"],
+    center: [12.9550, 80.1250]
+  },
+  "OMR & Southern Suburbs": {
+    name: "OMR IT & Southern Hub",
+    subName: "Sholinganallur • Medavakkam",
+    localities: ["OMR / Sholinganallur", "Medavakkam"],
+    center: [12.9100, 80.2100]
+  },
+  "North Chennai Hub": {
+    name: "North Chennai",
+    subName: "Perambur Retteri Corridor",
+    localities: ["Perambur"],
+    center: [13.1075, 80.2334]
+  },
+  "Grand Southern Hub": {
+    name: "Southern Metropolis",
+    subName: "Guduvanchery KCBT",
+    localities: ["Guduvanchery"],
+    center: [12.8439, 80.0617]
+  }
+};
+
+
 function getPlotSpecificDescriptor(plot) {
   if (!plot) return { mainName: "Chennai", subName: "Residential Corridor", layoutName: "CMDA Approved" };
   
@@ -1139,7 +1186,7 @@ const MAP_LAYERS = {
 // High-Definition Photorealistic Infrastructure (Zero Missing Tiles Guaranteed)
 // ==========================================================================
 const CHENNAI_CENTER_LNG_LAT = [80.1800, 13.0450];
-const DEFAULT_CITY_ZOOM = 11.2;
+const DEFAULT_CITY_ZOOM = 11.0;
 
 const MAPLIBRE_STYLES = {
   // Google Hybrid (Real High-Resolution Photographic Satellite + Road Names & Landmarks)
@@ -1390,36 +1437,88 @@ function resetToChennaiOverview() {
 
 function renderPlotMarkersOnMap() {
   const filteredPlots = getFilteredPlots();
-  const currentZoom = mapEngine ? mapEngine.getZoom() : (leafletMap ? leafletMap.getZoom() : 11.2);
+  const currentZoom = mapEngine ? mapEngine.getZoom() : (leafletMap ? leafletMap.getZoom() : 11.0);
   const screenWidth = window.innerWidth;
   
-  // Device-aware threshold:
-  // Mobile (<640px): cluster when zoom < 13.0
-  // Tablet (640-1024px): cluster when zoom < 12.4
-  // Laptop/Desktop (>1024px): cluster when zoom < 11.8
-  const clusterThreshold = screenWidth < 640 ? 13.0 : (screenWidth < 1024 ? 12.4 : 11.8);
-  const shouldCluster = currentZoom < clusterThreshold;
+  // Update floating badge count
+  const badge = document.getElementById("filtered-plots-badge");
+  if (badge) badge.textContent = filteredPlots.length;
 
-  // Group plots by locality
-  const localityGroups = {};
-  filteredPlots.forEach(plot => {
-    const loc = plot.localityName;
-    if (!localityGroups[loc]) localityGroups[loc] = [];
-    localityGroups[loc].push(plot);
-  });
+  // Multi-tier Zoom Hierarchy:
+  // 1. Zoomed Out City Overview (zoom < 13.0 on mobile, < 12.4 on desktop):
+  //    Displays 7 clean, separated regional zone badges (100% zero overlap guaranteed)
+  // 2. Mid-Zoom (13.0 - 14.8):
+  //    Displays distinct locality pins with dynamic collision detection
+  // 3. Close Zoom (>= 14.8):
+  //    Displays individual plot pins with plot numbers, pricing and demarcated boundaries
+
+  const isCityLevel = currentZoom < (screenWidth < 640 ? 13.0 : 12.4);
+  const isLocalityLevel = currentZoom >= (screenWidth < 640 ? 13.0 : 12.4) && currentZoom < 14.8;
 
   if (mapEngine) {
     Object.values(plotMarkersMap).forEach(m => m.remove());
     plotMarkersMap = {};
 
-    if (shouldCluster) {
-      // Clear, separated uncollapsed badge with specific locality name + sub-locality descriptor
+    if (isCityLevel) {
+      // 7 Clean Regional Hubs - Guaranteed Spacing Across Greater Chennai
+      Object.entries(CHENNAI_REGIONAL_ZONES).forEach(([zoneKey, zone]) => {
+        const plotsInZone = filteredPlots.filter(p => zone.localities.includes(p.localityName));
+        if (plotsInZone.length === 0) return;
+
+        const el = document.createElement('div');
+        el.className = 'plot-marker-div';
+        el.innerHTML = `
+          <div class="plot-marker-container" id="map-zone-${zoneKey.replace(/\s+/g, '-')}">
+            <div class="plot-marker-pill available marker-pill-zone">
+              <i class="fa-solid fa-map-pin text-emerald-400 text-xs shrink-0"></i>
+              <div class="flex flex-col text-left leading-tight">
+                <span class="marker-area-name">${zone.name}</span>
+                <span class="marker-sub-name">${zone.subName}</span>
+              </div>
+              <span class="marker-count-badge">${plotsInZone.length} Plots</span>
+            </div>
+            <div class="plot-marker-arrow"></div>
+          </div>
+        `;
+
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          mapEngine.flyTo({
+            center: [zone.center[1], zone.center[0]],
+            zoom: 14.2,
+            duration: 1000
+          });
+        });
+
+        const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+          .setLngLat([zone.center[1], zone.center[0]])
+          .addTo(mapEngine);
+
+        plotMarkersMap['zone_' + zoneKey] = marker;
+      });
+    } else if (isLocalityLevel) {
+      // Clean Locality Badges with Dynamic Screen Collision Avoidance
+      const localityGroups = {};
+      filteredPlots.forEach(plot => {
+        const loc = plot.localityName;
+        if (!localityGroups[loc]) localityGroups[loc] = [];
+        localityGroups[loc].push(plot);
+      });
+
+      const placedPixels = [];
+
       Object.entries(localityGroups).forEach(([locName, plotsInLoc]) => {
         const repPlot = plotsInLoc.find(p => p.id === activePlotId) || plotsInLoc[0];
         const isSelected = plotsInLoc.some(p => p.id === activePlotId);
         const count = plotsInLoc.length;
         const statusClass = repPlot.availability || "available";
         const desc = getPlotSpecificDescriptor(repPlot);
+
+        // Screen collision check
+        const pt = mapEngine.project([repPlot.longitude, repPlot.latitude]);
+        const tooClose = placedPixels.some(p => Math.abs(p.x - pt.x) < 65 && Math.abs(p.y - pt.y) < 30);
+        if (tooClose && !isSelected) return; // Skip overlapping badge
+        placedPixels.push(pt);
 
         const el = document.createElement('div');
         el.className = 'plot-marker-div';
@@ -1432,7 +1531,7 @@ function renderPlotMarkersOnMap() {
                   <span class="marker-area-name">${desc.mainName}</span>
                   <span class="marker-sub-name">${desc.subName}</span>
                 </div>
-                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : '1 Plot'}</span>
+                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : repPlot.plotNumber}</span>
               </div>
             </div>
             <div class="plot-marker-arrow"></div>
@@ -1442,18 +1541,17 @@ function renderPlotMarkersOnMap() {
 
         el.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (plotsInLoc.length === 1 || currentZoom >= 13.0) {
+          if (plotsInLoc.length === 1) {
             navigateAndTravelToPlot(repPlot.id);
           } else {
             mapEngine.flyTo({
               center: [repPlot.longitude, repPlot.latitude],
-              zoom: 14.8,
-              pitch: 45,
-              duration: 1100
+              zoom: 15.2,
+              duration: 800
             });
             setTimeout(() => {
               navigateAndTravelToPlot(repPlot.id);
-            }, 600);
+            }, 400);
           }
         });
 
@@ -1464,7 +1562,7 @@ function renderPlotMarkersOnMap() {
         plotMarkersMap['loc_' + locName] = marker;
       });
     } else {
-      // Zoomed-in detailed individual markers with specific layout details, plot #, and price
+      // Detailed Individual Plots
       filteredPlots.forEach(plot => {
         const isSelected = activePlotId === plot.id;
         const statusClass = plot.availability || "available";
@@ -1506,20 +1604,65 @@ function renderPlotMarkersOnMap() {
         plotMarkersMap[plot.id] = marker;
       });
     }
-    return;
-  }
-
-  if (leafletMap) {
+  } else if (leafletMap) {
     Object.values(plotMarkersMap).forEach(m => leafletMap.removeLayer(m));
     plotMarkersMap = {};
 
-    if (shouldCluster) {
+    if (isCityLevel) {
+      Object.entries(CHENNAI_REGIONAL_ZONES).forEach(([zoneKey, zone]) => {
+        const plotsInZone = filteredPlots.filter(p => zone.localities.includes(p.localityName));
+        if (plotsInZone.length === 0) return;
+
+        const markerHtml = `
+          <div class="plot-marker-container" id="map-zone-${zoneKey.replace(/\s+/g, '-')}">
+            <div class="plot-marker-pill available marker-pill-zone">
+              <i class="fa-solid fa-map-pin text-emerald-400 text-xs shrink-0"></i>
+              <div class="flex flex-col text-left leading-tight">
+                <span class="marker-area-name">${zone.name}</span>
+                <span class="marker-sub-name">${zone.subName}</span>
+              </div>
+              <span class="marker-count-badge">${plotsInZone.length} Plots</span>
+            </div>
+            <div class="plot-marker-arrow"></div>
+          </div>
+        `;
+
+        const icon = L.divIcon({
+          className: "plot-marker-div",
+          html: markerHtml,
+          iconSize: [160, 44],
+          iconAnchor: [80, 42]
+        });
+
+        const marker = L.marker([zone.center[0], zone.center[1]], { icon, zIndexOffset: 800 }).addTo(leafletMap);
+        marker.on("click", (e) => {
+          L.DomEvent.stopPropagation(e);
+          leafletMap.flyTo([zone.center[0], zone.center[1]], 14.2);
+        });
+
+        plotMarkersMap['zone_' + zoneKey] = marker;
+      });
+    } else if (isLocalityLevel) {
+      const localityGroups = {};
+      filteredPlots.forEach(plot => {
+        const loc = plot.localityName;
+        if (!localityGroups[loc]) localityGroups[loc] = [];
+        localityGroups[loc].push(plot);
+      });
+
+      const placedPixels = [];
+
       Object.entries(localityGroups).forEach(([locName, plotsInLoc]) => {
         const repPlot = plotsInLoc.find(p => p.id === activePlotId) || plotsInLoc[0];
         const isSelected = plotsInLoc.some(p => p.id === activePlotId);
         const count = plotsInLoc.length;
         const statusClass = repPlot.availability || "available";
         const desc = getPlotSpecificDescriptor(repPlot);
+
+        const pt = leafletMap.latLngToContainerPoint([repPlot.latitude, repPlot.longitude]);
+        const tooClose = placedPixels.some(p => Math.abs(p.x - pt.x) < 65 && Math.abs(p.y - pt.y) < 30);
+        if (tooClose && !isSelected) return;
+        placedPixels.push(pt);
 
         const markerHtml = `
           <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}">
@@ -1530,7 +1673,7 @@ function renderPlotMarkersOnMap() {
                   <span class="marker-area-name">${desc.mainName}</span>
                   <span class="marker-sub-name">${desc.subName}</span>
                 </div>
-                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : '1 Plot'}</span>
+                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : repPlot.plotNumber}</span>
               </div>
             </div>
             <div class="plot-marker-arrow"></div>
@@ -1541,8 +1684,8 @@ function renderPlotMarkersOnMap() {
         const icon = L.divIcon({
           className: "plot-marker-div",
           html: markerHtml,
-          iconSize: [140, 42],
-          iconAnchor: [70, 40]
+          iconSize: [135, 42],
+          iconAnchor: [67, 40]
         });
 
         const marker = L.marker([repPlot.latitude, repPlot.longitude], {
@@ -1552,13 +1695,13 @@ function renderPlotMarkersOnMap() {
 
         marker.on("click", (e) => {
           L.DomEvent.stopPropagation(e);
-          if (plotsInLoc.length === 1 || currentZoom >= 13.0) {
+          if (plotsInLoc.length === 1) {
             navigateAndTravelToPlot(repPlot.id);
           } else {
-            leafletMap.flyTo([repPlot.latitude, repPlot.longitude], 14.8);
+            leafletMap.flyTo([repPlot.latitude, repPlot.longitude], 15.0);
             setTimeout(() => {
               navigateAndTravelToPlot(repPlot.id);
-            }, 600);
+            }, 400);
           }
         });
 
@@ -4218,11 +4361,20 @@ function openChennaiMapPage(targetLocality = null) {
     frontPage.classList.remove("flex");
   }
 
+  // On mobile (< 768px), keep map 100% full screen by hiding site header & footer
   if (mainHeader) {
-    mainHeader.classList.remove("hidden");
+    if (window.innerWidth < 768) {
+      mainHeader.classList.add("hidden");
+    } else {
+      mainHeader.classList.remove("hidden");
+    }
   }
   if (mainFooter) {
-    mainFooter.classList.remove("hidden");
+    if (window.innerWidth < 768) {
+      mainFooter.classList.add("hidden");
+    } else {
+      mainFooter.classList.remove("hidden");
+    }
   }
   if (whatsappBtn) {
     whatsappBtn.classList.remove("hidden");
@@ -4239,7 +4391,7 @@ function openChennaiMapPage(targetLocality = null) {
       setTimeout(() => {
         if (mapEngine && mapEngine.resize) mapEngine.resize();
         if (leafletMap && leafletMap.invalidateSize) leafletMap.invalidateSize();
-      }, 150);
+      }, 100);
     }
 
     if (targetLocality) {
@@ -5061,4 +5213,23 @@ function toggleHudMinimize() {
 function closeNavigationHud() {
   const hud = document.getElementById("live-travel-hud");
   if (hud) hud.classList.add("hidden");
+}
+
+
+function toggleMobileFilterDrawer() {
+  const drawer = document.getElementById("mobile-filter-drawer");
+  if (!drawer) return;
+  drawer.classList.toggle("drawer-open");
+}
+
+let activeLayerStyleIndex = 0;
+const AVAILABLE_LAYER_STYLES = ['hybrid', 'streets', 'satellite'];
+function cycleMapLayerStyle() {
+  activeLayerStyleIndex = (activeLayerStyleIndex + 1) % AVAILABLE_LAYER_STYLES.length;
+  const style = AVAILABLE_LAYER_STYLES[activeLayerStyleIndex];
+  setMapLayer(style);
+  const label = document.getElementById("layer-mode-label");
+  if (label) {
+    label.textContent = style.charAt(0).toUpperCase() + style.slice(1);
+  }
 }

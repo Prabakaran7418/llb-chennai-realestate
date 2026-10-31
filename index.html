@@ -135,285 +135,235 @@
     <!-- ========================================================================= -->
   <!-- 2. STAGE 2: CHENNAI MAP & CORRIDORS DISCOVERY PAGE (OPENS VIA LOGO / NAV) -->
   <!-- ========================================================================= -->
-  <main id="map-discovery-page" class="hidden">
-    
-    <!-- TOP SEARCH & FILTER CONTROL BAR (Scrolls smoothly with page) -->
-    <div class="bg-white border-b border-neutral-200 relative z-30 shadow-sm w-full">
-      <div class="max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 py-3">
-        
-        <!-- Row 1: Brand / Back, Search Bar, Mobile View Switcher -->
-        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3">
-          
-          <div class="flex items-center gap-2 sm:gap-3">
-            <button onclick="returnToFrontPage()" class="px-3 sm:px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-black hover:text-white text-xs font-black text-neutral-800 flex items-center gap-2 transition border border-neutral-200 shrink-0">
-              <i class="fa-solid fa-arrow-left"></i> Home
-            </button>
-            <div class="h-4 w-px bg-neutral-200 hidden sm:block"></div>
-            <div class="hidden sm:flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="text-xs font-black text-black uppercase tracking-wider">
-                Chennai Plot Geospatial Booking
-              </span>
-            </div>
-          </div>
+  <main id="map-discovery-page" class="hidden w-full relative">
 
-          <!-- Real-Time Search Input -->
-          <div class="relative flex-1 max-w-full md:max-w-lg">
-            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 text-xs"></i>
-            <input 
-              type="text" 
-              id="search-input" 
-              placeholder="Search Project, Locality (KK Nagar, Tambaram, Porur, OMR), or Plot #..." 
-              oninput="handleSearchFilterChange()"
-              class="w-full pl-9 pr-8 py-2 bg-neutral-50 border border-neutral-300 rounded-full text-xs text-black placeholder-neutral-400 focus:outline-none focus:border-black focus:bg-white transition"
-            />
-            <button id="search-clear-btn" onclick="clearSearchFilter()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black text-xs">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
-
-          <!-- Mobile View Switcher (Visible on mobile screens) -->
-          <div class="flex md:hidden items-center justify-center p-1 bg-neutral-100 rounded-xl border border-neutral-200 text-xs font-black">
-            <button id="mobile-toggle-map" onclick="setMobileView('map')" class="flex-1 py-1.5 px-3 rounded-lg bg-black text-white transition flex items-center justify-center gap-1.5">
-              <i class="fa-solid fa-map-location-dot"></i> Map View
-            </button>
-            <button id="mobile-toggle-list" onclick="setMobileView('list')" class="flex-1 py-1.5 px-3 rounded-lg text-neutral-700 hover:bg-neutral-200 transition flex items-center justify-center gap-1.5">
-              <i class="fa-solid fa-list-ul"></i> Plot List (<span id="mobile-plots-count">0</span>)
-            </button>
-          </div>
-
-        </div>
-
-        <!-- Row 2: Comprehensive Multi-Filter Bar (Locality, Budget, Size, Availability) -->
-        <div class="mt-3 pt-3 border-t border-neutral-100 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
-          
-          <div class="flex flex-wrap items-center gap-2">
-            
-            <!-- Locality Quick Selector -->
-            <div class="relative">
-              <select id="filter-locality" onchange="handleSearchFilterChange()" class="text-xs font-black bg-neutral-100 hover:bg-neutral-200 text-neutral-800 py-1.5 pl-3 pr-7 rounded-xl border border-neutral-200 focus:outline-none cursor-pointer">
-                <option value="all">📍 All Chennai Localities (24)</option>
-                <option value="kk-nagar">KK Nagar</option>
-                <option value="mgr-nagar">MGR Nagar</option>
-                <option value="tambaram">Tambaram</option>
-                <option value="porur">Porur</option>
-                <option value="velachery">Velachery</option>
-                <option value="omr">OMR / Sholinganallur</option>
-                <option value="mogappair">Mogappair</option>
-                <option value="medavakkam">Medavakkam</option>
-                <option value="koyambedu">Koyambedu</option>
-                <option value="anna-nagar">Anna Nagar</option>
-                <option value="t-nagar">T. Nagar</option>
-                <option value="adyar">Adyar</option>
-                <option value="besant-nagar">Besant Nagar</option>
-                <option value="ecr">ECR</option>
-                <option value="chromepet">Chromepet</option>
-                <option value="avadi">Avadi</option>
-                <option value="poonamallee">Poonamallee</option>
-                <option value="kundrathur">Kundrathur</option>
-                <option value="perambur">Perambur</option>
-                <option value="guduvanchery">Guduvanchery</option>
-                <option value="maduravoyal">Maduravoyal</option>
-              </select>
-            </div>
-
-            <!-- Budget Dropdown -->
-            <div class="relative">
-              <select id="filter-budget" onchange="handleSearchFilterChange()" class="text-xs font-black bg-neutral-100 hover:bg-neutral-200 text-neutral-800 py-1.5 pl-3 pr-7 rounded-xl border border-neutral-200 focus:outline-none cursor-pointer">
-                <option value="all">💰 All Budgets</option>
-                <option value="under-35">Under ₹ 35 Lakhs</option>
-                <option value="35-60">₹ 35 Lakhs - ₹ 60 Lakhs</option>
-                <option value="60-100">₹ 60 Lakhs - ₹ 1.0 Crore</option>
-                <option value="above-100">Above ₹ 1.0 Crore (Luxury)</option>
-              </select>
-            </div>
-
-            <!-- Plot Size Dropdown -->
-            <div class="relative">
-              <select id="filter-size" onchange="handleSearchFilterChange()" class="text-xs font-black bg-neutral-100 hover:bg-neutral-200 text-neutral-800 py-1.5 pl-3 pr-7 rounded-xl border border-neutral-200 focus:outline-none cursor-pointer">
-                <option value="all">📐 All Plot Sizes</option>
-                <option value="compact">Compact (&lt; 1,000 sq.ft)</option>
-                <option value="standard">Standard (1,000 - 1,500 sq.ft)</option>
-                <option value="large">Large (1,500 - 2,400 sq.ft)</option>
-                <option value="ground">1 Ground &amp; Above (≥ 2,400 sq.ft)</option>
-              </select>
-            </div>
-
-            <!-- Availability Status Chips -->
-            <div class="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-xl border border-neutral-200">
-              <button onclick="setAvailabilityFilter('all')" id="status-btn-all" class="px-2 sm:px-2.5 py-1 rounded-lg text-xs font-black bg-black text-white transition">
-                All
-              </button>
-              <button onclick="setAvailabilityFilter('available')" id="status-btn-available" class="px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span class="hidden xs:inline">Available</span>
-              </button>
-              <button onclick="setAvailabilityFilter('reserved')" id="status-btn-reserved" class="px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1">
-                <span class="w-2 h-2 rounded-full bg-amber-500"></span> <span class="hidden xs:inline">Reserved</span>
-              </button>
-              <button onclick="setAvailabilityFilter('sold')" id="status-btn-sold" class="px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1">
-                <span class="w-2 h-2 rounded-full bg-slate-500"></span> <span class="hidden xs:inline">Sold</span>
-              </button>
-            </div>
-
-            <!-- Travel Mode Selector (Car, Bike, Bus, Walk) -->
-            <div class="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-xl border border-neutral-200">
-              <span class="text-[10px] font-black uppercase text-neutral-400 px-1.5 hidden md:inline"><i class="fa-solid fa-route mr-1"></i>Travel:</span>
-              <button onclick="setTravelMode('car')" id="travel-btn-car" class="travel-mode-pill px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1" title="Navigate by Car">
-                <i class="fa-solid fa-car-side text-emerald-500"></i> <span class="hidden sm:inline">Car</span>
-              </button>
-              <button onclick="setTravelMode('bike')" id="travel-btn-bike" class="travel-mode-pill active px-2 sm:px-2.5 py-1 rounded-lg text-xs font-black transition flex items-center gap-1" title="Navigate by Superbike">
-                <i class="fa-solid fa-motorcycle text-sky-500"></i> <span class="hidden sm:inline">Bike</span>
-              </button>
-              <button onclick="setTravelMode('bus')" id="travel-btn-bus" class="travel-mode-pill px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1" title="Navigate by Bus">
-                <i class="fa-solid fa-bus-simple text-purple-500"></i> <span class="hidden sm:inline">Bus</span>
-              </button>
-              <button onclick="setTravelMode('walk')" id="travel-btn-walk" class="travel-mode-pill px-2 sm:px-2.5 py-1 rounded-lg text-xs font-bold text-neutral-700 hover:text-black transition flex items-center gap-1" title="Navigate by Walking">
-                <i class="fa-solid fa-person-walking text-amber-500"></i> <span class="hidden sm:inline">Walk</span>
-              </button>
-            </div>
-
-            <!-- Reset Filters -->
-            <button onclick="resetAllFilters()" class="text-neutral-500 hover:text-black text-xs font-bold px-2 py-1 transition" title="Reset all filters">
-              <i class="fa-solid fa-rotate-left mr-1"></i> <span class="hidden xs:inline">Reset</span>
-            </button>
-
-          </div>
-
-          <div class="text-xs font-bold text-neutral-500">
-            Showing <span id="filtered-plots-count" class="font-black text-black">0</span> plots
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
-    <!-- FULL-WIDTH IMMERSIVE TOP MAP (MAP AT TOP - ZERO CLUTTER) -->
-    <div class="max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
+    <!-- FULL VIEWPORT MAP CONTAINER (Takes 100dvh on mobile, 90vh on desktop) -->
+    <div class="map-fullscreen-wrapper max-w-[1700px] mx-auto px-0 sm:px-4 lg:px-6 py-0 sm:py-3 w-full">
       <div id="map-panel-container" class="w-full">
         
-        <div class="relative bg-neutral-900 rounded-2xl sm:rounded-3xl overflow-hidden border border-neutral-300 shadow-2xl h-[440px] sm:h-[540px] lg:h-[640px] min-h-[380px]">
+        <div class="relative bg-neutral-900 overflow-hidden sm:rounded-3xl border-0 sm:border border-neutral-300 shadow-2xl h-[100dvh] sm:h-[88vh] lg:h-[90vh] w-full">
           
-          <!-- Map Layer Switcher & Toolbar (Top Left) -->
-          <div class="absolute top-2 sm:top-4 left-2 sm:left-4 z-20 flex flex-wrap items-center gap-1.5 sm:gap-2 max-w-[calc(100%-16px)] sm:max-w-none">
-            <div class="bg-white/95 backdrop-blur-md p-0.5 sm:p-1 rounded-xl border border-neutral-200 flex items-center gap-0.5 sm:gap-1 shadow-md">
-              <button id="layer-hybrid" onclick="setMapLayer('hybrid')" class="map-layer-btn px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-black bg-black text-white transition flex items-center gap-1 sm:gap-1.5">
-                <i class="fa-solid fa-layer-group"></i> <span class="hidden xs:inline">Satellite + Roads</span><span class="xs:hidden">Hybrid</span>
-              </button>
-              <button id="layer-streets" onclick="setMapLayer('streets')" class="map-layer-btn px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold text-neutral-700 hover:bg-neutral-100 transition flex items-center gap-1 sm:gap-1.5">
-                <i class="fa-solid fa-map"></i> <span class="hidden xs:inline">Real Streets</span><span class="xs:hidden">Streets</span>
-              </button>
-              <button id="layer-satellite" onclick="setMapLayer('satellite')" class="map-layer-btn px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold text-neutral-700 hover:bg-neutral-100 transition flex items-center gap-1 sm:gap-1.5">
-                <i class="fa-solid fa-satellite"></i> <span class="hidden xs:inline">Pure Satellite</span><span class="xs:hidden">Sat</span>
-              </button>
-            </div>
-
-            <button onclick="resetToChennaiOverview()" class="bg-white/95 backdrop-blur-md px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border border-neutral-200 text-[11px] sm:text-xs font-black text-black hover:bg-neutral-100 transition shadow-md flex items-center gap-1 sm:gap-1.5" title="Return to Greater Chennai Overview">
-              <i class="fa-solid fa-arrows-rotate"></i> <span class="hidden sm:inline">Reset Overview</span><span class="sm:hidden">Reset</span>
-            </button>
-
-            <button id="toggle-3d-btn" onclick="toggle3DPerspective()" class="bg-white/95 backdrop-blur-md px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-neutral-200 text-[11px] sm:text-xs font-black text-neutral-800 hover:text-black hover:bg-neutral-100 transition shadow-md flex items-center gap-1 sm:gap-1.5" title="Toggle 3D Forward-Facing Camera Perspective">
-              <i class="fa-solid fa-cube text-emerald-600"></i> <span id="perspective-label">3D Tilt</span>
-            </button>
-
-            <!-- Motorcycle Navigation Journey Primary Button -->
-            <button id="toolbar-sv-btn" onclick="startMotorcycleMapJourney()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black transition shadow-md flex items-center gap-1.5" title="Start Animated Navigation along Chennai Roads to Selected Plot">
-              <i class="fa-solid fa-motorcycle text-white"></i> <span id="toolbar-sv-label">Ride to Plot</span>
-            </button>
-
-            <div class="hidden md:flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 text-[10px] font-black px-3 py-2 rounded-xl backdrop-blur-md">
-              <i class="fa-solid fa-shield-check text-emerald-600"></i> Zero API Key Required
-            </div>
-
-            <button onclick="openApiKeyModal()" class="bg-white/95 backdrop-blur-md px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-neutral-200 text-[11px] font-bold text-neutral-600 hover:text-black transition shadow-md flex items-center gap-1" title="Google Maps API Key Settings">
-              <i class="fa-brands fa-google text-xs text-emerald-600"></i> <span class="hidden sm:inline">Google Key</span>
-            </button>
-          </div>
-
-          <!-- GOOGLE MAPS REPLICA NAVIGATION HUD (Top Center Over Map) -->
-          <div id="live-travel-hud" class="hidden">
-            <div class="gmaps-nav-top-banner">
-              <div class="flex items-center gap-2">
-                <div id="hud-maneuver-icon" class="gmaps-maneuver-box">
-                  <i class="fa-solid fa-arrow-up"></i>
-                </div>
-                <div class="leading-tight">
-                  <div class="flex items-center gap-1.5 text-[9.5px] font-mono text-emerald-300 font-bold">
-                    <span id="hud-distance-to-turn">In 350 m</span>
-                    <span id="hud-remaining-distance" class="text-white bg-black/60 px-1 rounded">-- km</span>
-                    <span id="hud-remaining-time" class="text-emerald-400">-- mins</span>
-                  </div>
-                  <div id="hud-instruction-text" class="text-xs font-black text-white truncate max-w-[170px] sm:max-w-xs">
-                    Navigate onto arterial road towards plot
-                  </div>
-                </div>
-              </div>
-
-              <!-- Compact Controls: Mode Selector, POV, Minimize, Close -->
-              <div class="flex items-center gap-1">
-                <!-- Vehicle Avatars Quick Selector -->
-                <div class="flex items-center gap-0.5 bg-neutral-900/90 p-0.5 rounded-md border border-neutral-700">
-                  <button onclick="setTravelMode('bike')" id="hud-btn-bike" class="w-6 h-6 rounded text-[11px] text-white bg-neutral-800 flex items-center justify-center transition" title="Bike Mode">
-                    <i class="fa-solid fa-motorcycle text-cyan-400"></i>
-                  </button>
-                  <button onclick="setTravelMode('car')" id="hud-btn-car" class="w-6 h-6 rounded text-[11px] text-neutral-400 hover:text-white flex items-center justify-center transition" title="Car Mode">
-                    <i class="fa-solid fa-car-side"></i>
-                  </button>
-                  <button onclick="setTravelMode('bus')" id="hud-btn-bus" class="w-6 h-6 rounded text-[11px] text-neutral-400 hover:text-white flex items-center justify-center transition" title="Bus Mode">
-                    <i class="fa-solid fa-bus-simple"></i>
-                  </button>
-                  <button onclick="setTravelMode('walk')" id="hud-btn-walk" class="w-6 h-6 rounded text-[11px] text-neutral-400 hover:text-white flex items-center justify-center transition" title="Walk Mode">
-                    <i class="fa-solid fa-person-walking"></i>
-                  </button>
-                </div>
-
-                <!-- Minimize Toggle Button -->
-                <button onclick="toggleHudMinimize()" id="hud-minimize-btn" class="w-7 h-7 rounded-lg bg-neutral-800/80 hover:bg-neutral-700 text-neutral-300 flex items-center justify-center text-xs transition" title="Minimize / Expand Overlay">
-                  <i class="fa-solid fa-chevron-up"></i>
-                </button>
-
-                <!-- Skip / Arrival -->
-                <button onclick="skipTravelToArrival()" class="w-7 h-7 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center text-xs transition shadow-sm" title="Skip to Plot Arrival">
-                  <i class="fa-solid fa-forward-step"></i>
-                </button>
-
-                <!-- Close / Hide HUD Button -->
-                <button onclick="closeNavigationHud()" class="w-7 h-7 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center text-xs transition" title="Close HUD Overlay">
-                  <i class="fa-solid fa-xmark"></i>
-                </button>
-              </div>
-            </div>
+          <!-- TOP FLOATING AERODYNAMIC CONTROL BAR OVER MAP (Google Maps Style) -->
+          <div class="absolute top-2.5 sm:top-4 inset-x-2.5 sm:inset-x-4 z-30 flex items-center justify-between gap-1.5 sm:gap-3 pointer-events-none">
             
-            <!-- Optional Expandable Bottom Bar (Hidden by default or toggled) -->
-            <div id="hud-details-sub-bar" class="gmaps-nav-bottom-bar hidden sm:flex">
-              <div class="flex items-center gap-3 text-[10px] font-mono">
-                <div class="hud-speedometer">
-                  <span id="hud-live-speed">38</span>
-                  <span class="unit">KM/H</span>
+            <!-- Return to Home Page (House Facade + Emblem) -->
+            <button onclick="returnToFrontPage()" class="pointer-events-auto px-3 py-2 rounded-xl sm:rounded-2xl bg-black/90 hover:bg-black text-white text-xs font-black shadow-xl backdrop-blur-md flex items-center gap-1.5 border border-white/20 transition shrink-0" title="Return to House Showcase">
+              <i class="fa-solid fa-arrow-left"></i> <span>Home</span>
+            </button>
+
+            <!-- Floating Search Input Pill -->
+            <div class="pointer-events-auto flex-1 max-w-xs sm:max-w-md relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-xs"></i>
+              <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Search KK Nagar, OMR, Tambaram..." 
+                oninput="handleSearchFilterChange()"
+                class="w-full pl-8 sm:pl-9 pr-7 py-2 bg-white/95 backdrop-blur-md border border-neutral-200 rounded-xl sm:rounded-2xl text-xs font-bold text-black placeholder-neutral-500 shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+              />
+              <button id="search-clear-btn" onclick="clearSearchFilter()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black text-xs">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <!-- Floating Tool Buttons: Filters, Satellite, 3D Tilt, Reset -->
+            <div class="pointer-events-auto flex items-center gap-1 sm:gap-1.5 shrink-0">
+              
+              <!-- Filter Bottom Sheet Trigger -->
+              <button id="filter-drawer-btn" onclick="toggleMobileFilterDrawer()" class="px-2.5 sm:px-3 py-2 rounded-xl sm:rounded-2xl bg-white/95 hover:bg-neutral-100 text-black text-xs font-black shadow-xl backdrop-blur-md flex items-center gap-1.5 border border-neutral-200 transition">
+                <i class="fa-solid fa-sliders text-emerald-600"></i>
+                <span class="hidden sm:inline">Filters</span>
+                <span id="filtered-plots-badge" class="bg-black text-white text-[9.5px] px-1.5 py-0.2 rounded-full font-bold">24</span>
+              </button>
+
+              <!-- Layer Switcher (Hybrid / Satellite / Streets) -->
+              <button id="layer-hybrid" onclick="cycleMapLayerStyle()" class="px-2.5 py-2 rounded-xl sm:rounded-2xl bg-white/95 hover:bg-neutral-100 text-black text-xs font-black shadow-xl backdrop-blur-md flex items-center gap-1 border border-neutral-200 transition" title="Toggle Satellite / Streets">
+                <i class="fa-solid fa-layer-group text-sky-600"></i>
+                <span class="hidden md:inline" id="layer-mode-label">Hybrid</span>
+              </button>
+
+              <!-- 3D Camera Tilt -->
+              <button id="toggle-3d-btn" onclick="toggle3DPerspective()" class="px-2.5 py-2 rounded-xl sm:rounded-2xl bg-white/95 hover:bg-neutral-100 text-black text-xs font-black shadow-xl backdrop-blur-md flex items-center gap-1 border border-neutral-200 transition" title="Toggle 3D Forward-Facing Camera Tilt">
+                <i class="fa-solid fa-cube text-emerald-600"></i>
+                <span class="hidden md:inline" id="perspective-label">3D</span>
+              </button>
+
+              <!-- Reset Overview -->
+              <button onclick="resetToChennaiOverview()" class="px-2.5 py-2 rounded-xl sm:rounded-2xl bg-white/95 hover:bg-neutral-100 text-black text-xs font-black shadow-xl backdrop-blur-md flex items-center gap-1 border border-neutral-200 transition" title="Reset to Greater Chennai Overview">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- HIDDEN LEGACY BUTTONS FOR BACKWARD COMPATIBILITY -->
+          <div class="hidden">
+            <button id="layer-streets" onclick="setMapLayer('streets')"></button>
+            <button id="layer-satellite" onclick="setMapLayer('satellite')"></button>
+            <button id="toolbar-sv-btn" onclick="startMotorcycleMapJourney()"></button>
+            <button id="mobile-toggle-map" onclick="setMobileView('map')"></button>
+            <button id="mobile-toggle-list" onclick="setMobileView('list')"></button>
+            <span id="filtered-plots-count">24</span>
+            <span id="mobile-plots-count">24</span>
+          </div>
+
+          <!-- LIVE DRIVING / TRANSIT NAVIGATION HUD (Aerodynamic Floating Pill) -->
+          <div id="live-travel-hud" class="absolute top-14 sm:top-16 inset-x-2 sm:inset-x-4 z-20 hidden flex-col items-center pointer-events-none transition-all duration-300">
+            <div id="hud-card" class="pointer-events-auto bg-black/90 backdrop-blur-xl border border-emerald-500/40 rounded-2xl shadow-2xl px-3.5 py-2 sm:py-2.5 max-w-xl w-full text-white transition-all duration-300">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 flex-1 min-w-0">
+                  <div id="hud-nav-mode-badge" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-xs sm:text-sm shrink-0 shadow">
+                    <i class="fa-solid fa-diamond-turn-right"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 text-[10px] text-neutral-400 font-mono">
+                      <span id="hud-speed-pill" class="text-emerald-400 font-black">42 KM/H</span>
+                      <span>&bull;</span>
+                      <span id="hud-remaining-dist">-- km left</span>
+                      <span>&bull;</span>
+                      <span id="hud-remaining-time" class="text-amber-400 font-bold">-- mins</span>
+                    </div>
+                    <div id="hud-instruction-text" class="text-xs sm:text-sm font-black text-white truncate">
+                      Navigating towards Plot...
+                    </div>
+                  </div>
                 </div>
-                <span class="text-neutral-400 truncate max-w-[150px]"><i class="fa-solid fa-road mr-1 text-emerald-400"></i><span id="hud-active-road-name">GST Road</span></span>
-                <span class="text-neutral-400 truncate max-w-[140px]"><i class="fa-solid fa-location-dot mr-1 text-amber-400"></i><span id="hud-destination-name">Target</span></span>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button onclick="toggleRouteDirectionsDrawer()" class="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[10px] font-bold text-neutral-200 transition" title="Directions">
+                    <i class="fa-solid fa-list-ol"></i>
+                  </button>
+                  <button onclick="toggleDrivingPOV()" id="hud-pov-btn" class="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[10px] font-bold text-neutral-200 transition" title="POV">
+                    <i class="fa-solid fa-video text-[10px]"></i>
+                  </button>
+                  <button onclick="toggleHudMinimize()" id="hud-min-btn" class="w-6 h-6 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 flex items-center justify-center text-xs transition" title="Minimize HUD">
+                    <i id="hud-min-icon" class="fa-solid fa-chevron-up text-[10px]"></i>
+                  </button>
+                  <button onclick="closeNavigationHud()" class="w-6 h-6 rounded-lg bg-neutral-800 hover:bg-red-900/60 text-neutral-300 hover:text-white flex items-center justify-center text-xs transition" title="Close HUD">
+                    <i class="fa-solid fa-xmark text-[10px]"></i>
+                  </button>
+                </div>
               </div>
-              <div class="flex items-center gap-1">
-                <button onclick="toggleRouteDirectionsDrawer()" class="px-2 py-0.5 rounded text-[10px] bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold transition flex items-center gap-1">
-                  <i class="fa-solid fa-list-ol text-[9px]"></i> Steps
+            </div>
+          </div>
+
+          <!-- THE MAP VIEWPORT (Occupies 100% of container) -->
+          <div id="wall-mounted-map" class="w-full h-full"></div>
+
+          <!-- SLIDE-UP FILTER BOTTOM SHEET (Clean, Organized, Non-Intrusive) -->
+          <div id="mobile-filter-drawer">
+            <div class="flex items-center justify-between pb-3 border-b border-neutral-700 mb-4">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-emerald-400"></i>
+                <h3 class="text-sm font-black text-white">Filters &amp; Preferences</h3>
+              </div>
+              <button onclick="toggleMobileFilterDrawer()" class="w-7 h-7 rounded-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 flex items-center justify-center text-xs transition">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div class="space-y-4 text-white">
+              <!-- Locality -->
+              <div>
+                <label class="text-[11px] font-mono font-bold text-neutral-400 block mb-1">📍 CHENNAI LOCALITY</label>
+                <select id="filter-locality" onchange="handleSearchFilterChange()" class="w-full bg-neutral-800 border border-neutral-700 text-white text-xs font-bold py-2 px-3 rounded-xl focus:outline-none focus:border-emerald-500">
+                  <option value="all">📍 All Chennai Localities (24 Plots)</option>
+                  <option value="kk-nagar">KK Nagar</option>
+                  <option value="mgr-nagar">MGR Nagar</option>
+                  <option value="tambaram">Tambaram</option>
+                  <option value="porur">Porur</option>
+                  <option value="velachery">Velachery</option>
+                  <option value="omr">OMR / Sholinganallur</option>
+                  <option value="mogappair">Mogappair</option>
+                  <option value="medavakkam">Medavakkam</option>
+                  <option value="koyambedu">Koyambedu</option>
+                  <option value="anna-nagar">Anna Nagar</option>
+                  <option value="t-nagar">T. Nagar</option>
+                  <option value="adyar">Adyar</option>
+                  <option value="besant-nagar">Besant Nagar</option>
+                  <option value="ecr">ECR</option>
+                  <option value="chromepet">Chromepet</option>
+                  <option value="avadi">Avadi</option>
+                  <option value="poonamallee">Poonamallee</option>
+                  <option value="kundrathur">Kundrathur</option>
+                  <option value="perambur">Perambur</option>
+                  <option value="guduvanchery">Guduvanchery</option>
+                  <option value="maduravoyal">Maduravoyal</option>
+                </select>
+              </div>
+
+              <!-- Budget & Size Grid -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-[11px] font-mono font-bold text-neutral-400 block mb-1">💰 BUDGET</label>
+                  <select id="filter-budget" onchange="handleSearchFilterChange()" class="w-full bg-neutral-800 border border-neutral-700 text-white text-xs font-bold py-2 px-3 rounded-xl focus:outline-none focus:border-emerald-500">
+                    <option value="all">All Budgets</option>
+                    <option value="under-35">Under ₹35 Lakhs</option>
+                    <option value="35-60">₹35L - ₹60L</option>
+                    <option value="60-100">₹60L - ₹1.0 Cr</option>
+                    <option value="above-100">Above ₹1.0 Cr</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[11px] font-mono font-bold text-neutral-400 block mb-1">📐 PLOT SIZE</label>
+                  <select id="filter-size" onchange="handleSearchFilterChange()" class="w-full bg-neutral-800 border border-neutral-700 text-white text-xs font-bold py-2 px-3 rounded-xl focus:outline-none focus:border-emerald-500">
+                    <option value="all">All Sizes</option>
+                    <option value="compact">Compact (&lt;1,000 sq.ft)</option>
+                    <option value="standard">Standard (1k-1.5k)</option>
+                    <option value="large">Large (1.5k-2.4k)</option>
+                    <option value="ground">1 Ground &amp; Above</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Availability -->
+              <div>
+                <label class="text-[11px] font-mono font-bold text-neutral-400 block mb-1">AVAILABILITY</label>
+                <div class="flex items-center gap-1.5 bg-neutral-900 p-1 rounded-xl border border-neutral-800">
+                  <button onclick="setAvailabilityFilter('all')" id="status-btn-all" class="flex-1 py-1.5 rounded-lg text-xs font-black bg-white text-black transition text-center">All</button>
+                  <button onclick="setAvailabilityFilter('available')" id="status-btn-available" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-neutral-300 hover:text-white transition text-center">Available</button>
+                  <button onclick="setAvailabilityFilter('reserved')" id="status-btn-reserved" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-neutral-300 hover:text-white transition text-center">Reserved</button>
+                  <button onclick="setAvailabilityFilter('sold')" id="status-btn-sold" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-neutral-300 hover:text-white transition text-center">Sold</button>
+                </div>
+              </div>
+
+              <!-- Travel Mode -->
+              <div>
+                <label class="text-[11px] font-mono font-bold text-neutral-400 block mb-1">TRAVEL MODE</label>
+                <div class="flex items-center gap-1.5 bg-neutral-900 p-1 rounded-xl border border-neutral-800">
+                  <button onclick="setTravelMode('car')" id="travel-btn-car" class="travel-mode-pill flex-1 py-1.5 rounded-lg text-xs font-bold text-neutral-300 transition text-center flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-car-side text-emerald-400"></i> Car
+                  </button>
+                  <button onclick="setTravelMode('bike')" id="travel-btn-bike" class="travel-mode-pill active flex-1 py-1.5 rounded-lg text-xs font-black transition text-center flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-motorcycle text-sky-400"></i> Bike
+                  </button>
+                  <button onclick="setTravelMode('bus')" id="travel-btn-bus" class="travel-mode-pill flex-1 py-1.5 rounded-lg text-xs font-bold text-neutral-300 transition text-center flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-bus-simple text-purple-400"></i> Bus
+                  </button>
+                  <button onclick="setTravelMode('walk')" id="travel-btn-walk" class="travel-mode-pill flex-1 py-1.5 rounded-lg text-xs font-bold text-neutral-300 transition text-center flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-person-walking text-amber-400"></i> Walk
+                  </button>
+                </div>
+              </div>
+
+              <!-- Actions: Reset + Apply -->
+              <div class="pt-2 flex items-center gap-2">
+                <button onclick="resetAllFilters()" class="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs font-bold text-neutral-300 transition">
+                  Reset
                 </button>
-                <button id="hud-pov-btn" onclick="toggleDrivingPOV()" class="px-2 py-0.5 rounded text-[10px] bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold transition flex items-center gap-1">
-                  <i class="fa-solid fa-video text-[9px]"></i> <span id="hud-pov-label">3D Cam</span>
-                </button>
-                <button id="hud-pause-btn" onclick="togglePauseJourney()" class="px-2 py-0.5 rounded text-[10px] bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold transition flex items-center gap-1">
-                  <i class="fa-solid fa-pause text-[9px]"></i> <span id="hud-pause-label">Pause</span>
+                <button onclick="toggleMobileFilterDrawer()" class="flex-1 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-black transition text-center shadow-lg">
+                  Show Matching Plots
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- Leaflet Map Viewport -->
-          <div id="wall-mounted-map" class="w-full h-full"></div>
+          <!-- SLIM MOBILE PLOT DRAWER (Slides up when a plot is tapped) -->
+          <div id="mobile-plot-drawer" class="drawer-closed absolute bottom-3 inset-x-3 z-30 sm:hidden bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-2xl border border-emerald-500">
+            <div id="mobile-drawer-content"></div>
+          </div>
 
           <!-- EXPANDABLE TURN-BY-TURN PROPER DIRECTIONS SHEET -->
           <div id="route-directions-drawer" class="absolute top-16 right-4 z-20 hidden w-80 sm:w-96 max-h-[480px] bg-neutral-900/95 backdrop-blur-xl border border-neutral-700/80 rounded-2xl shadow-2xl flex flex-col text-white overflow-hidden transition-all duration-300">
-            <!-- Drawer Header -->
             <div class="px-4 py-3 bg-neutral-800/90 border-b border-neutral-700 flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <div id="drawer-mode-icon" class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
@@ -428,8 +378,6 @@
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
-
-            <!-- Route Metrics Bar -->
             <div class="px-4 py-2 bg-neutral-950/60 border-b border-neutral-800 flex items-center justify-between text-xs font-mono">
               <div>
                 <span class="text-neutral-400 text-[9px] block">TOTAL DISTANCE</span>
@@ -446,16 +394,11 @@
                 <span id="drawer-mode-name" class="text-cyan-400 font-bold uppercase text-[10px]">MOTORCYCLE</span>
               </div>
             </div>
-
-            <!-- Route Steps List -->
-            <div id="drawer-steps-list" class="flex-1 overflow-y-auto p-3 space-y-2 max-h-[320px] custom-scrollbar">
-              <!-- Populated dynamically with turn-by-turn guidance -->
-            </div>
+            <div id="drawer-steps-list" class="flex-1 overflow-y-auto p-3 space-y-2 max-h-[320px] custom-scrollbar"></div>
           </div>
 
           <!-- REAL STREET-LEVEL IMAGERY JOURNEY STAGE -->
           <div id="street-view-stage" class="absolute inset-0 z-30 hidden flex-col bg-neutral-950 overflow-hidden">
-            <!-- Top Controls Bar -->
             <div class="street-view-top-bar flex items-center justify-between px-3 sm:px-4 py-2.5 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800 text-white z-30 shrink-0">
               <div class="flex items-center gap-2 sm:gap-3">
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 font-mono text-[11px] font-black tracking-wide border border-emerald-500/30">
@@ -466,8 +409,6 @@
                   Munusamy Salai, KK Nagar
                 </span>
               </div>
-
-              <!-- View Mode Switcher -->
               <div class="flex items-center gap-1 bg-black/60 p-1 rounded-xl border border-neutral-700 text-xs font-bold">
                 <button id="sv-mode-btn-full" onclick="setStreetViewDisplayMode('full')" class="px-2.5 py-1 rounded-lg bg-white/20 text-white transition hover:bg-white/30" title="Full Street View">
                   <i class="fa-solid fa-expand mr-1"></i><span class="hidden md:inline">Full Street</span>
@@ -479,284 +420,18 @@
                   <i class="fa-solid fa-map mr-1"></i><span class="hidden md:inline">Overhead Map</span>
                 </button>
               </div>
-
-              <div class="flex items-center gap-2">
-                <button onclick="exitStreetViewJourney()" class="px-3 py-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-neutral-700">
-                  <i class="fa-solid fa-xmark"></i> <span class="hidden sm:inline">Close</span>
-                </button>
-              </div>
+              <button onclick="exitStreetViewJourney()" class="px-3 py-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-neutral-700">
+                <i class="fa-solid fa-xmark"></i> <span class="hidden sm:inline">Close</span>
+              </button>
             </div>
-
-            <!-- Main Stage Body -->
             <div id="street-view-body" class="relative flex-1 w-full h-full overflow-hidden flex flex-row">
-              <!-- Left/Main: 360 Panorama Viewport -->
               <div id="street-view-pano-container" class="relative flex-1 w-full h-full bg-black overflow-hidden">
-                <!-- Panorama Iframe (Official Google Street View Interactive 360 Embed) -->
                 <iframe id="street-view-iframe" class="w-full h-full border-0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-
-                <!-- Loading / Transition Overlay -->
                 <div id="street-view-loading" class="absolute inset-0 bg-neutral-950/80 backdrop-blur-sm flex flex-col items-center justify-center text-white transition-opacity duration-300 pointer-events-none opacity-0 z-30">
                   <i class="fa-solid fa-circle-notch fa-spin text-3xl text-emerald-400 mb-3"></i>
                   <span id="street-view-loading-text" class="text-xs font-mono font-bold tracking-wider">NAVIGATING TO CHENNAI WAYPOINT...</span>
                 </div>
-
-                <!-- Floating Street View HUD (Turn-by-turn guidance overlay) -->
-                <div id="street-view-floating-hud" class="absolute top-4 left-4 right-4 sm:right-auto sm:max-w-md z-20 pointer-events-auto">
-                  <div class="bg-black/85 backdrop-blur-md rounded-2xl border border-white/15 p-3.5 shadow-2xl text-white">
-                    <div class="flex items-start gap-3">
-                      <div id="sv-hud-maneuver" class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-lg shrink-0 shadow-lg">
-                        <i class="fa-solid fa-arrow-up"></i>
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between gap-2 text-[10px] font-mono uppercase text-emerald-400 tracking-wider">
-                          <span id="sv-hud-waypoint-badge">VIEWPOINT 1 OF 6</span>
-                          <span id="sv-hud-dist">0.8 KM TO NEXT</span>
-                        </div>
-                        <div id="sv-hud-road-name" class="font-black text-sm text-white truncate mt-0.5">
-                          Kathipara Flyover (GST Road NH-45)
-                        </div>
-                        <div id="sv-hud-instructions" class="text-xs text-neutral-300 truncate mt-0.5">
-                          Continue onto Inner Ring Road towards KK Nagar
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Progress Dots along Road Route -->
-                    <div class="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between gap-2">
-                      <div id="sv-progress-dots" class="flex items-center gap-1.5 flex-1 overflow-x-auto py-1">
-                        <!-- Dots populated dynamically -->
-                      </div>
-                      <div class="text-[10px] font-mono text-neutral-400 shrink-0">
-                        <span id="sv-compass-heading">🧭 045° NE</span>
-                      </div>
-                    </div>
-
-                    <!-- Controls: Prev, Play/Pause Tour, Next, Jump to Plot -->
-                    <div class="mt-3 flex items-center justify-between gap-2">
-                      <div class="flex items-center gap-1.5">
-                        <button onclick="prevStreetWaypoint()" id="sv-btn-prev" class="px-2.5 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-bold text-white transition flex items-center gap-1">
-                          <i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Prev</span>
-                        </button>
-                        <button onclick="toggleStreetTourAutoplay()" id="sv-btn-play" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-black text-white transition flex items-center gap-1.5 shadow-md">
-                          <i id="sv-btn-play-icon" class="fa-solid fa-play"></i> <span id="sv-btn-play-label">Auto Tour</span>
-                        </button>
-                        <button onclick="nextStreetWaypoint()" id="sv-btn-next" class="px-2.5 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-bold text-white transition flex items-center gap-1">
-                          <span class="hidden sm:inline">Next</span> <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                      </div>
-
-                      <button onclick="jumpToPlotStreetArrival()" class="px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition border border-amber-500/40 flex items-center gap-1">
-                        <i class="fa-solid fa-flag-checkered"></i> <span class="hidden sm:inline">Arrival View</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- FIRST-PERSON MOTORCYCLE COCKPIT & CONTROLS OVERLAY -->
-                <div id="motorcycle-cockpit-overlay" class="absolute inset-x-0 bottom-0 pointer-events-none z-20 flex flex-col items-center select-none overflow-hidden transition-transform duration-300">
-                  
-                  <!-- Dynamic Motorcycle Handlebar Assembly (Steers & Leans on Turns!) -->
-                  <div id="motorcycle-handlebar-rig" class="relative w-full max-w-[850px] flex flex-col items-center transition-transform duration-500 ease-out origin-bottom">
-                    
-                    <!-- Left & Right Rearview Mirrors with Road Reflections -->
-                    <div class="w-full flex justify-between px-6 sm:px-14 mb-[-12px] relative z-10">
-                      <!-- Left Mirror -->
-                      <div class="motorcycle-mirror left-mirror pointer-events-auto" title="Left Rearview Mirror (Chennai Traffic Horizon)">
-                        <div class="mirror-housing">
-                          <div class="mirror-glass">
-                            <div class="mirror-reflection"></div>
-                            <div class="mirror-glare"></div>
-                            <span class="mirror-tag">L</span>
-                          </div>
-                        </div>
-                        <div class="mirror-stem left-stem"></div>
-                      </div>
-
-                      <!-- Right Mirror -->
-                      <div class="motorcycle-mirror right-mirror pointer-events-auto" title="Right Rearview Mirror (Chennai Traffic Horizon)">
-                        <div class="mirror-housing">
-                          <div class="mirror-glass">
-                            <div class="mirror-reflection"></div>
-                            <div class="mirror-glare"></div>
-                            <span class="mirror-tag">R</span>
-                          </div>
-                        </div>
-                        <div class="mirror-stem right-stem"></div>
-                      </div>
-                    </div>
-
-                    <!-- Center Digital Motorcycle Instrument Cluster / Cockpit Dashboard -->
-                    <div class="motorcycle-dashboard relative z-20 pointer-events-auto">
-                      <div class="dashboard-bezel">
-                        <!-- Dashboard Top Row: Turn Signals & Gear -->
-                        <div class="flex items-center justify-between px-3 pt-2 pb-1 text-xs">
-                          <!-- Left Blinker -->
-                          <div id="bike-blinker-left" class="bike-blinker"><i class="fa-solid fa-arrow-left"></i></div>
-                          
-                          <!-- Gear Indicator: N, 1, 2, 3, 4, 5 -->
-                          <div class="flex items-center gap-1.5 font-mono">
-                            <span id="bike-gear-badge" class="px-2 py-0.5 rounded font-black text-xs bg-emerald-500 text-black shadow-[0_0_8px_#10b981]">GEAR 4</span>
-                            <span id="bike-rpm-display" class="text-[10px] text-emerald-400 font-bold hidden sm:inline">5,400 RPM</span>
-                          </div>
-
-                          <!-- Right Blinker -->
-                          <div id="bike-blinker-right" class="bike-blinker"><i class="fa-solid fa-arrow-right"></i></div>
-                        </div>
-
-                        <!-- Dashboard Center: Digital Speedometer & Tachometer Bar -->
-                        <div class="flex items-center justify-between px-4 py-1 bg-black/60 border-y border-emerald-500/30">
-                          <div class="flex items-baseline gap-1 font-mono">
-                            <span id="bike-digital-speed" class="text-3xl sm:text-4xl font-black text-white tracking-tight drop-shadow-[0_0_10px_#10b981]">48</span>
-                            <span class="text-emerald-400 text-xs font-bold">KM/H</span>
-                          </div>
-                          
-                          <!-- Live Chennai Trip Telemetry -->
-                          <div class="text-right font-mono text-[10px]">
-                            <div class="text-neutral-400">CHENNAI ROAD NAV</div>
-                            <div id="bike-road-telemetry" class="text-emerald-300 font-bold truncate max-w-[140px] sm:max-w-[190px]">Kathipara &rarr; GST Road</div>
-                          </div>
-                        </div>
-
-                        <!-- Dashboard Bottom: Tachometer LED Strip & Sound / POV Controls -->
-                        <div class="flex items-center justify-between px-3 py-1 bg-neutral-950/80 text-[10px] font-mono">
-                          <!-- RPM LED Bar -->
-                          <div class="flex items-center gap-0.5 flex-1 max-w-[110px] sm:max-w-[150px]">
-                            <div id="bike-tacho-fill" class="tacho-bar" style="width: 72%;"></div>
-                          </div>
-
-                          <!-- Quick Motorcycle Actions: Sound, POV, Leaning -->
-                          <div class="flex items-center gap-1.5 ml-2">
-                            <button id="bike-sound-btn" onclick="toggleMotorcycleEngineSound()" class="px-2 py-0.5 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition flex items-center gap-1" title="Toggle Realistic Motorcycle Engine Rumble">
-                              <i id="bike-sound-icon" class="fa-solid fa-volume-xmark text-[10px]"></i>
-                              <span class="hidden sm:inline text-[9px]">Audio</span>
-                            </button>
-                            <button onclick="toggleMotorcycleCockpitVisibility()" class="px-2 py-0.5 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition" title="Toggle Handlebars View">
-                              <i class="fa-solid fa-eye text-[10px]"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Handlebar Stem & Triple Tree Clamp -->
-                    <div class="handlebar-triple-tree relative w-full flex items-center justify-between px-2 sm:px-6">
-                      <!-- Left Handlebar Grip & Clutch Lever with Rider Gloved Hand -->
-                      <div class="handlebar-side left-side flex items-center">
-                        <div class="rider-hand left-hand">
-                          <div class="glove-palm"></div>
-                          <div class="glove-fingers"></div>
-                          <div class="glove-cuff"></div>
-                        </div>
-                        <div class="handlebar-grip left-grip">
-                          <div class="clutch-lever"></div>
-                          <div class="bar-end-weight"></div>
-                        </div>
-                      </div>
-
-                      <!-- Center Metallic Handlebar Bar -->
-                      <div class="handlebar-center-bar"></div>
-
-                      <!-- Right Handlebar Grip & Throttle Lever with Rider Gloved Hand -->
-                      <div class="handlebar-side right-side flex items-center justify-end">
-                        <div class="handlebar-grip right-grip">
-                          <div class="front-brake-lever"></div>
-                          <div class="bar-end-weight"></div>
-                        </div>
-                        <div class="rider-hand right-hand">
-                          <div class="glove-palm"></div>
-                          <div class="glove-fingers"></div>
-                          <div class="glove-cuff"></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Fuel Tank Top Arc -->
-                    <div class="motorcycle-tank-crest"></div>
-
-                  </div>
-                </div>
-
-                <!-- 360 Drag Interaction Badge (Bottom Center) -->
-                <div class="sv-drag-badge absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white text-[11px] font-medium shadow-lg pointer-events-none flex items-center gap-2">
-                  <i class="fa-solid fa-arrows-up-down-left-right text-emerald-400"></i>
-                  <span>Click &amp; drag inside view to look 360° around Chennai streets</span>
-                </div>
-
-                <!-- Arrival Banner Overlay (when reaching plot viewpoint) -->
-                <div id="street-view-arrival-banner" class="hidden absolute inset-x-4 bottom-14 sm:bottom-6 sm:inset-x-auto sm:left-4 sm:max-w-md z-30 bg-emerald-950/95 backdrop-blur-md border-2 border-emerald-500 p-4 rounded-2xl shadow-2xl text-white">
-                  <div class="flex items-start gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white text-lg shrink-0 shadow-lg">
-                      <i class="fa-solid fa-award"></i>
-                    </div>
-                    <div>
-                      <div class="text-[10px] font-mono uppercase text-emerald-300 font-bold tracking-wider">
-                        DESTINATION ARRIVAL • REAL STREET VIEW
-                      </div>
-                      <div id="sv-arrival-plot-title" class="text-sm font-black text-white mt-0.5">
-                        Plot #14 - Munusamy Grand Layout
-                      </div>
-                      <p id="sv-arrival-coverage-note" class="text-xs text-emerald-100 mt-1">
-                        Verified authentic street-level photograph captured outside property entrance.
-                      </p>
-                      <div class="mt-3 flex items-center gap-2">
-                        <button onclick="viewPlotDetailsFromStreetView()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-neutral-100 text-black text-xs font-black transition shadow-lg flex items-center gap-1.5">
-                          <i class="fa-solid fa-file-contract text-emerald-600"></i> View Plot Dossier
-                        </button>
-                        <button onclick="switchToMapMode()" class="px-3 py-2 rounded-xl bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 text-xs font-bold transition border border-emerald-600">
-                          <i class="fa-solid fa-map-location-dot"></i> Boundary Map
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
               </div>
-
-              <!-- Right/Inset: Synchronized Mini Route Map -->
-              <div id="street-view-minimap-wrapper" class="absolute bottom-4 right-4 z-20 w-64 h-52 sm:w-80 sm:h-64 rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl bg-neutral-900 transition-all duration-300">
-                <div class="w-full h-full relative">
-                  <div id="street-view-minimap" class="w-full h-full"></div>
-                  <!-- Mini-map Header -->
-                  <div class="absolute top-2 left-2 z-10 bg-black/80 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-mono text-white font-bold flex items-center gap-1.5 border border-white/10">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> ROUTE TRACKER
-                  </div>
-                  <!-- Expand/Contract Button -->
-                  <button onclick="toggleMinimapSize()" class="absolute top-2 right-2 z-10 w-7 h-7 rounded-lg bg-black/80 hover:bg-black text-white text-xs flex items-center justify-center transition border border-white/10" title="Toggle Size">
-                    <i id="minimap-size-icon" class="fa-solid fa-up-right-and-down-left-from-center text-[10px]"></i>
-                  </button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Floating Map Legend -->
-          <div class="absolute bottom-4 left-4 z-20 hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl border border-neutral-200 text-[11px] shadow-lg">
-            <div class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-              <span class="font-bold text-neutral-800">Available</span>
-            </div>
-            <span class="text-neutral-300">|</span>
-            <div class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-              <span class="font-bold text-neutral-800">Reserved</span>
-            </div>
-            <span class="text-neutral-300">|</span>
-            <div class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
-              <span class="font-bold text-neutral-800">Sold</span>
-            </div>
-            <span class="text-neutral-300">|</span>
-            <div class="flex items-center gap-1.5">
-              <span class="w-3 h-2 border-2 border-dashed border-emerald-600 bg-emerald-200 rounded-sm"></span>
-              <span class="font-bold text-neutral-800">Demarcated Boundary</span>
-            </div>
-          </div>
-
-          <!-- Mobile Bottom Sheet Drawer (Slides up on plot marker tap on small screens) -->
-          <div id="mobile-plot-drawer" class="drawer-closed absolute bottom-3 inset-x-3 z-30 sm:hidden bg-white rounded-3xl p-4 shadow-2xl border-2 border-emerald-500">
-            <div id="mobile-drawer-content">
-              <!-- Rendered dynamically by app.js -->
             </div>
           </div>
 
@@ -764,43 +439,17 @@
 
       </div>
 
-      <!-- Hidden internal container for legacy filter count references -->
+      <!-- Hidden internal containers -->
       <div id="plots-panel-container" class="hidden">
         <div id="active-directions-panel" class="hidden"></div>
         <div id="plots-list-scroll-area" class="hidden"></div>
       </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- DEDICATED PLOT DETAILS SECTION (SHOWS DIRECTLY BELOW THE MAP ON CLICK)   -->
-    <!-- ========================================================================= -->
-    <section id="selected-plot-detail-section" class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-500">
-      
-      <!-- Unselected Initial State (Inviting the customer to click any plot on the map above) -->
-      <div id="plot-unselected-placeholder" class="bg-gradient-to-br from-neutral-900 via-neutral-950 to-black text-white rounded-3xl p-8 sm:p-12 border border-neutral-800 shadow-2xl text-center relative overflow-hidden">
-        <div class="max-w-2xl mx-auto">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-black uppercase tracking-wider mb-4">
-            <i class="fa-solid fa-map-location-dot"></i> Interactive Geospatial Explorer
-          </div>
-          <h3 class="text-2xl sm:text-4xl font-black font-serif-luxury text-white">Click Any Plot on the Map Above</h3>
-          <p class="text-xs sm:text-sm text-neutral-400 mt-3 leading-relaxed">
-            Select any verified residential plot on the map above. You will travel inside the map along real Chennai roads by <strong class="text-white">Car, Bike, Bus, or Walk</strong>. Upon reaching the location, the full plot specifications, 4-corner boundary demarcation, photo gallery, and instant email enquiry form will load right here!
-          </p>
-          <div class="mt-6 flex flex-wrap justify-center gap-2 text-xs">
-            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-shield-check text-emerald-400 mr-1.5"></i> CMDA &amp; RERA Approved</span>
-            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-droplet text-sky-400 mr-1.5"></i> Potable Drinking Water</span>
-            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-road text-amber-400 mr-1.5"></i> 30-Ft Tar Roads</span>
-            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-bolt text-purple-400 mr-1.5"></i> 3-Phase Underground EB</span>
-            <span class="px-3.5 py-1.5 rounded-xl bg-white/10 text-white border border-white/10 font-bold"><i class="fa-solid fa-building-columns text-emerald-400 mr-1.5"></i> 90% Bank Loans</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Selected Plot Detailed Content (Rendered dynamically by app.js below the map) -->
-      <div id="plot-selected-container" class="hidden">
-        <!-- Injected dynamically on plot arrival -->
-      </div>
-
+    <!-- DEDICATED PLOT DETAILS SECTION (SHOWS DIRECTLY BELOW THE MAP ON CLICK) -->
+    <section id="selected-plot-detail-section" class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 transition-all duration-500">
+      <div id="plot-unselected-placeholder" class="hidden"></div>
+      <div id="plot-selected-container" class="hidden"></div>
     </section>
 
   </main>
