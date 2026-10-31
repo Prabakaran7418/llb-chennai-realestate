@@ -1,3 +1,39 @@
+
+function getPlotSpecificDescriptor(plot) {
+  if (!plot) return { mainName: "Chennai", subName: "Residential Corridor", layoutName: "CMDA Approved" };
+  
+  // Specific layouts and landmarks for each Chennai area
+  const descriptors = {
+    "KK Nagar": { mainName: "KK Nagar", subName: "Munusamy Salai", layoutName: "Grand Gated Layout" },
+    "MGR Nagar": { mainName: "MGR Nagar", subName: "Kamarajar Salai", layoutName: "Prime Enclave" },
+    "Tambaram": { mainName: "Tambaram West", subName: "GST Highway Corridor", layoutName: "Greenfield Sanctuary" },
+    "Velachery": { mainName: "Velachery", subName: "Phoenix Marketcity Zone", layoutName: "Phoenix Park Gardens" },
+    "Porur": { mainName: "Porur", subName: "Near DLF IT Park", layoutName: "Mount View Residency" },
+    "OMR / Sholinganallur": { mainName: "OMR Sholinganallur", subName: "ELCOT SEZ Corridor", layoutName: "Silicon Garden" },
+    "Mogappair": { mainName: "Mogappair West", subName: "Nolambur Extension", layoutName: "Golden West Avenue" },
+    "Medavakkam": { mainName: "Medavakkam", subName: "Nanmangalam Junction", layoutName: "Nanmangalam Meadows" },
+    "Koyambedu": { mainName: "Koyambedu", subName: "100-Ft Metro Hub", layoutName: "Metro Gateway Layout" },
+    "Anna Nagar": { mainName: "Anna Nagar West", subName: "Shanti Colony Corridor", layoutName: "Signature Villa Plot" },
+    "T. Nagar": { mainName: "T. Nagar", subName: "Habibullah Road", layoutName: "Central Luxury Ground" },
+    "Adyar": { mainName: "Adyar", subName: "Kasturba Nagar", layoutName: "Riverfront Enclave" },
+    "Besant Nagar": { mainName: "Besant Nagar", subName: "Elliot's Beach Road", layoutName: "Coastline Heritage" },
+    "ECR": { mainName: "Palavakkam ECR", subName: "East Coast Road", layoutName: "Seaside Pearl Gated" },
+    "Chromepet": { mainName: "Chromepet", subName: "MIT / GST Road", layoutName: "Central GST Enclave" },
+    "Avadi": { mainName: "Avadi", subName: "HVF Main Road", layoutName: "Defense Colony Plots" },
+    "Poonamallee": { mainName: "Poonamallee", subName: "Bengaluru Highway", layoutName: "Metro Highway Frontage" },
+    "Kundrathur": { mainName: "Kundrathur", subName: "Temple Town Bypass", layoutName: "Green View Enclave" },
+    "Perambur": { mainName: "Perambur", subName: "Venus / Retteri Road", layoutName: "Railway Enclave Plots" },
+    "Guduvanchery": { mainName: "Guduvanchery", subName: "Kilambakkam KCBT Hub", layoutName: "KCBT Boulevard" },
+    "Maduravoyal": { mainName: "Maduravoyal", subName: "MGR University Bypass", layoutName: "Metro City Layout" }
+  };
+
+  return descriptors[plot.localityName] || {
+    mainName: plot.localityName,
+    subName: plot.address ? plot.address.split(',')[1] || "Chennai Hub" : "Chennai Hub",
+    layoutName: plot.title ? plot.title.split('-')[1] || "Approved Plot" : "Approved Plot"
+  };
+}
+
 // ==========================================================================
 // LLB REALTY & PROMOTERS - GREATER CHENNAI PLOT BOOKING PLATFORM
 // Professional Interactive Geospatial Real Estate Platform
@@ -1355,8 +1391,16 @@ function resetToChennaiOverview() {
 function renderPlotMarkersOnMap() {
   const filteredPlots = getFilteredPlots();
   const currentZoom = mapEngine ? mapEngine.getZoom() : (leafletMap ? leafletMap.getZoom() : 11.2);
+  const screenWidth = window.innerWidth;
+  
+  // Device-aware threshold:
+  // Mobile (<640px): cluster when zoom < 13.0
+  // Tablet (640-1024px): cluster when zoom < 12.4
+  // Laptop/Desktop (>1024px): cluster when zoom < 11.8
+  const clusterThreshold = screenWidth < 640 ? 13.0 : (screenWidth < 1024 ? 12.4 : 11.8);
+  const shouldCluster = currentZoom < clusterThreshold;
 
-  // Group plots by locality so when zoomed out, each locality displays as ONE clear, distinct, uncollapsed marker
+  // Group plots by locality
   const localityGroups = {};
   filteredPlots.forEach(plot => {
     const loc = plot.localityName;
@@ -1364,29 +1408,31 @@ function renderPlotMarkersOnMap() {
     localityGroups[loc].push(plot);
   });
 
-  const shouldCluster = currentZoom < 12.8;
-
   if (mapEngine) {
     Object.values(plotMarkersMap).forEach(m => m.remove());
     plotMarkersMap = {};
 
     if (shouldCluster) {
-      // Clean, uncollapsed single badge per locality with plot count
+      // Clear, separated uncollapsed badge with specific locality name + sub-locality descriptor
       Object.entries(localityGroups).forEach(([locName, plotsInLoc]) => {
         const repPlot = plotsInLoc.find(p => p.id === activePlotId) || plotsInLoc[0];
         const isSelected = plotsInLoc.some(p => p.id === activePlotId);
         const count = plotsInLoc.length;
         const statusClass = repPlot.availability || "available";
+        const desc = getPlotSpecificDescriptor(repPlot);
 
         const el = document.createElement('div');
         el.className = 'plot-marker-div';
         el.innerHTML = `
           <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}">
-            <div class="plot-marker-pill ${statusClass}">
+            <div class="plot-marker-pill ${statusClass} marker-pill-specific">
               <div class="marker-area-row">
-                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
-                <span class="marker-area-name">${locName}</span>
-                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1 py-0.2 rounded font-mono font-bold">${count > 1 ? count + ' Plots' : repPlot.plotNumber}</span>
+                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px] shrink-0"></i>
+                <div class="flex flex-col text-left leading-tight">
+                  <span class="marker-area-name">${desc.mainName}</span>
+                  <span class="marker-sub-name">${desc.subName}</span>
+                </div>
+                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : '1 Plot'}</span>
               </div>
             </div>
             <div class="plot-marker-arrow"></div>
@@ -1396,15 +1442,14 @@ function renderPlotMarkersOnMap() {
 
         el.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (plotsInLoc.length === 1 || currentZoom >= 12.5) {
+          if (plotsInLoc.length === 1 || currentZoom >= 13.0) {
             navigateAndTravelToPlot(repPlot.id);
           } else {
-            // Zoom in smoothly to reveal individual plots
             mapEngine.flyTo({
               center: [repPlot.longitude, repPlot.latitude],
-              zoom: 14.5,
+              zoom: 14.8,
               pitch: 45,
-              duration: 1200
+              duration: 1100
             });
             setTimeout(() => {
               navigateAndTravelToPlot(repPlot.id);
@@ -1419,10 +1464,11 @@ function renderPlotMarkersOnMap() {
         plotMarkersMap['loc_' + locName] = marker;
       });
     } else {
-      // Zoomed-in detailed individual markers with plot numbers and pricing
+      // Zoomed-in detailed individual markers with specific layout details, plot #, and price
       filteredPlots.forEach(plot => {
         const isSelected = activePlotId === plot.id;
         const statusClass = plot.availability || "available";
+        const desc = getPlotSpecificDescriptor(plot);
 
         const el = document.createElement('div');
         el.className = 'plot-marker-div';
@@ -1430,8 +1476,11 @@ function renderPlotMarkersOnMap() {
           <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-marker-${plot.id}">
             <div class="plot-marker-pill ${statusClass}">
               <div class="marker-area-row">
-                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
-                <span class="marker-area-name">${plot.localityName}</span>
+                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px] shrink-0"></i>
+                <div class="flex flex-col text-left leading-tight">
+                  <span class="marker-area-name">${desc.mainName}</span>
+                  <span class="marker-sub-name">${desc.layoutName}</span>
+                </div>
                 <span class="marker-status-dot ${statusClass}"></span>
               </div>
               <div class="marker-details-row">
@@ -1470,14 +1519,18 @@ function renderPlotMarkersOnMap() {
         const isSelected = plotsInLoc.some(p => p.id === activePlotId);
         const count = plotsInLoc.length;
         const statusClass = repPlot.availability || "available";
+        const desc = getPlotSpecificDescriptor(repPlot);
 
         const markerHtml = `
           <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}">
-            <div class="plot-marker-pill ${statusClass}">
+            <div class="plot-marker-pill ${statusClass} marker-pill-specific">
               <div class="marker-area-row">
-                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
-                <span class="marker-area-name">${locName}</span>
-                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1 py-0.2 rounded font-mono font-bold">${count > 1 ? count + ' Plots' : repPlot.plotNumber}</span>
+                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px] shrink-0"></i>
+                <div class="flex flex-col text-left leading-tight">
+                  <span class="marker-area-name">${desc.mainName}</span>
+                  <span class="marker-sub-name">${desc.subName}</span>
+                </div>
+                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : '1 Plot'}</span>
               </div>
             </div>
             <div class="plot-marker-arrow"></div>
@@ -1488,8 +1541,8 @@ function renderPlotMarkersOnMap() {
         const icon = L.divIcon({
           className: "plot-marker-div",
           html: markerHtml,
-          iconSize: [110, 36],
-          iconAnchor: [55, 34]
+          iconSize: [140, 42],
+          iconAnchor: [70, 40]
         });
 
         const marker = L.marker([repPlot.latitude, repPlot.longitude], {
@@ -1499,10 +1552,10 @@ function renderPlotMarkersOnMap() {
 
         marker.on("click", (e) => {
           L.DomEvent.stopPropagation(e);
-          if (plotsInLoc.length === 1 || currentZoom >= 12.5) {
+          if (plotsInLoc.length === 1 || currentZoom >= 13.0) {
             navigateAndTravelToPlot(repPlot.id);
           } else {
-            leafletMap.flyTo([repPlot.latitude, repPlot.longitude], 14.5);
+            leafletMap.flyTo([repPlot.latitude, repPlot.longitude], 14.8);
             setTimeout(() => {
               navigateAndTravelToPlot(repPlot.id);
             }, 600);
@@ -1515,13 +1568,17 @@ function renderPlotMarkersOnMap() {
       filteredPlots.forEach(plot => {
         const isSelected = activePlotId === plot.id;
         const statusClass = plot.availability || "available";
+        const desc = getPlotSpecificDescriptor(plot);
 
         const markerHtml = `
           <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-marker-${plot.id}">
             <div class="plot-marker-pill ${statusClass}">
               <div class="marker-area-row">
-                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
-                <span class="marker-area-name">${plot.localityName}</span>
+                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px] shrink-0"></i>
+                <div class="flex flex-col text-left leading-tight">
+                  <span class="marker-area-name">${desc.mainName}</span>
+                  <span class="marker-sub-name">${desc.layoutName}</span>
+                </div>
                 <span class="marker-status-dot ${statusClass}"></span>
               </div>
               <div class="marker-details-row">
@@ -1538,8 +1595,8 @@ function renderPlotMarkersOnMap() {
         const icon = L.divIcon({
           className: "plot-marker-div",
           html: markerHtml,
-          iconSize: [120, 52],
-          iconAnchor: [60, 50]
+          iconSize: [130, 52],
+          iconAnchor: [65, 50]
         });
 
         const marker = L.marker([plot.latitude, plot.longitude], {

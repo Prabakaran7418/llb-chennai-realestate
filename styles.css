@@ -2240,3 +2240,58 @@ body {
 .map-super-zoomed-out .marker-area-name {
   font-size: 9px !important;
 }
+
+
+/* Specific Descriptor Badge Styling (Multi-Device Responsive) */
+.marker-sub-name {
+  font-size: 8px;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+  letter-spacing: 0.1px;
+}
+
+.marker-count-badge {
+  font-size: 8.5px;
+  background: rgba(16, 185, 129, 0.25);
+  color: #6ee7b7;
+  padding: 1px 5px;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-weight: 800;
+  margin-left: 3px;
+  white-space: nowrap;
+}
+
+.marker-pill-specific {
+  padding: 4px 8px !important;
+  min-width: unset !important;
+  gap: 1px !important;
+}
+
+/* Tablet & Desktop Optimizations (Width > 640px) */
+@media (min-width: 640px) {
+  .marker-area-name {
+    font-size: 11px !important;
+  }
+  .marker-sub-name {
+    font-size: 8.5px !important;
+  }
+  .marker-count-badge {
+    font-size: 9px !important;
+  }
+}
+
+/* Laptop & Large Desktop (Width > 1024px) */
+@media (min-width: 1024px) {
+  .marker-pill-specific {
+    padding: 5px 10px !important;
+  }
+  .marker-area-name {
+    font-size: 11.5px !important;
+  }
+  .marker-sub-name {
+    font-size: 9px !important;
+    color: #cbd5e1;
+  }
+}
