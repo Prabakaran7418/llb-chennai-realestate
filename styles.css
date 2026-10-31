@@ -92,6 +92,7 @@ body {
   background-position: center center;
   filter: brightness(0.92);
   transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
 }
 
 .house-facade-overlay {
@@ -99,6 +100,16 @@ body {
   inset: 0;
   background: radial-gradient(circle at 50% 50%, rgba(9, 9, 11, 0.35) 0%, rgba(9, 9, 11, 0.75) 100%);
   backdrop-filter: blur(1px);
+}
+
+/* Ambient Dust Canvas (Guide Step 2/3 Atmosphere) */
+#ambient-dust-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
 }
 
 /* Centered Luxury LLB Logo Crest */
@@ -114,7 +125,55 @@ body {
 }
 
 .llb-logo-container:hover {
-  transform: translateY(-6px) scale(1.03);
+  transform: translateY(-6px) scale(1.04);
+}
+
+/* Logo Glide-Out to Top Header during Transition (Guide Step: Logo Intro) */
+.llb-logo-container.gliding-to-header {
+  animation: logoGlideToHeader 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes logoGlideToHeader {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-30vh) scale(0.5);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(-50vh) scale(0.25);
+    opacity: 0;
+  }
+}
+
+/* Subtle Interactive Scroll Prompt below Logo (Guide Beat) */
+.home-scroll-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  background: rgba(9, 9, 11, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 1.25rem;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.llb-logo-container:hover .home-scroll-prompt {
+  background: rgba(255, 255, 255, 0.95);
+  color: #09090b;
+  border-color: #ffffff;
+  transform: scale(1.05);
 }
 
 .llb-emblem-box {

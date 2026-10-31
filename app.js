@@ -1223,6 +1223,7 @@ function initChennaiMap() {
 
       renderPlotMarkersOnMap();
       renderPlotCardsList();
+  initAmbientDust();
 
       mapEngine.on('load', () => {
         renderPlotMarkersOnMap();
@@ -4776,3 +4777,86 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+// ==========================================================================
+// CINEMATIC FLOW: AMBIENT DUST & SCROLL-DRIVEN TRANSITION (FROM 3D SCROLL GUIDE)
+// ==========================================================================
+let dustAnimFrameId = null;
+
+function initAmbientDust() {
+  const canvas = document.getElementById("ambient-dust-canvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  const particles = Array.from({ length: 45 }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    radius: Math.random() * 1.6 + 0.4,
+    speedX: (Math.random() - 0.5) * 0.3,
+    speedY: -Math.random() * 0.4 - 0.1,
+    opacity: Math.random() * 0.5 + 0.2
+  }));
+
+  function render() {
+    ctx.clearRect(0, 0, width, height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(212, 175, 55, ${p.opacity})`;
+      ctx.fill();
+      p.x += p.speedX;
+      p.y += p.speedY;
+      if (p.y < 0) p.y = height;
+      if (p.x < 0) p.x = width;
+      if (p.x > width) p.x = 0;
+    });
+    dustAnimFrameId = requestAnimationFrame(render);
+  }
+
+  window.addEventListener("resize", () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  render();
+}
+
+let isTransitioningToMap = false;
+window.addEventListener("wheel", (e) => {
+  const frontPage = document.getElementById("house-front-page");
+  if (frontPage && !frontPage.classList.contains("hidden") && e.deltaY > 25 && !isTransitioningToMap) {
+    isTransitioningToMap = true;
+    const logo = document.getElementById("main-llb-hero-logo");
+    if (logo) logo.classList.add("gliding-to-header");
+    setTimeout(() => {
+      openChennaiMapPage();
+      if (logo) logo.classList.remove("gliding-to-header");
+      isTransitioningToMap = false;
+    }, 450);
+  }
+}, { passive: true });
+
+let touchStartY = 0;
+window.addEventListener("touchstart", (e) => {
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener("touchend", (e) => {
+  const frontPage = document.getElementById("house-front-page");
+  if (frontPage && !frontPage.classList.contains("hidden") && !isTransitioningToMap) {
+    const touchEndY = e.changedTouches[0].clientY;
+    if (touchStartY - touchEndY > 50) {
+      isTransitioningToMap = true;
+      const logo = document.getElementById("main-llb-hero-logo");
+      if (logo) logo.classList.add("gliding-to-header");
+      setTimeout(() => {
+        openChennaiMapPage();
+        if (logo) logo.classList.remove("gliding-to-header");
+        isTransitioningToMap = false;
+      }, 450);
+    }
+  }
+}, { passive: true });

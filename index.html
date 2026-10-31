@@ -100,12 +100,14 @@
     <!-- Realistic House Front Facade Background -->
     <div class="house-facade-image"></div>
     <div class="house-facade-overlay"></div>
+    <!-- Ambient Floating Atmosphere Dust Canvas -->
+    <canvas id="ambient-dust-canvas"></canvas>
 
     <!-- Centered Content: Luxury LLB Logo Emblem ONLY -->
     <div class="relative z-20 flex flex-col items-center justify-center text-center p-4">
       
       <!-- THE LUXURY LLB LOGO EMBLEM (CLICKABLE TO OPEN NEXT PAGE) -->
-      <div class="llb-logo-container group" onclick="openChennaiMapPage()" title="Click to Enter LLB Realty Chennai">
+      <div id="main-llb-hero-logo" class="llb-logo-container group" onclick="openChennaiMapPage()" title="Click to Enter LLB Realty Chennai">
         
         <!-- Outer Glowing Pulse Ring -->
         <div class="logo-pulse-ring"></div>
@@ -116,6 +118,12 @@
             <span class="llb-lettermark">LLB</span>
             <span class="llb-submark">REALTY</span>
           </div>
+        </div>
+
+        <!-- Subtle Interactive Prompt (Scroll / Click to Enter) -->
+        <div class="home-scroll-prompt">
+          <span>SCROLL &bull; CLICK TO ENTER</span>
+          <i class="fa-solid fa-arrow-down text-emerald-400"></i>
         </div>
 
       </div>
