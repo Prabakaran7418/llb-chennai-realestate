@@ -1672,16 +1672,11 @@ function drawPlotBoundaryPolygon(plot) {
       activeBoundaryPegs.push(peg);
     });
 
-    // Add dimension popup tooltip
+    // Add micro dimension tooltip
     const popupEl = document.createElement('div');
     popupEl.className = 'plot-dim-tooltip';
-    popupEl.innerHTML = `
-      <div class="text-center font-bold text-xs">
-        <div class="text-emerald-400 font-black">${plot.plotNumber} (${plot.areaSqFt} sq.ft)</div>
-        <div class="text-white text-[10px]">${plot.dimensions} • ${plot.facing}</div>
-      </div>
-    `;
-    const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 15 })
+    popupEl.innerHTML = `<span>${plot.plotNumber} (${plot.areaSqFt} sq.ft) &bull; ${plot.dimensions}</span>`;
+    const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 10, className: 'plot-dim-popup' })
       .setLngLat([plot.longitude, plot.latitude])
       .setDOMContent(popupEl)
       .addTo(mapEngine);
@@ -1715,12 +1710,7 @@ function drawPlotBoundaryPolygon(plot) {
       activeBoundaryPegs.push(peg);
     });
 
-    activeBoundaryPolygon.bindTooltip(`
-      <div class="text-center font-bold text-xs">
-        <div class="text-emerald-400 font-black">${plot.plotNumber} (${plot.areaSqFt} sq.ft)</div>
-        <div class="text-white text-[10px]">${plot.dimensions} • ${plot.facing}</div>
-      </div>
-    `, {
+    activeBoundaryPolygon.bindTooltip(`<span>${plot.plotNumber} (${plot.areaSqFt} sq.ft) &bull; ${plot.dimensions}</span>`, {
       permanent: true,
       direction: "center",
       className: "plot-dim-tooltip"
@@ -3858,33 +3848,25 @@ function populateMobileDrawer(plot) {
   const content = document.getElementById("mobile-drawer-content");
   if (!drawer || !content) return;
 
+  // Ultra-slim minimal banner that doesn't block the map view
   content.innerHTML = `
-    <div class="flex items-start justify-between gap-3">
-      <div class="flex-1">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
-            plot.availability === 'available' ? 'bg-emerald-100 text-emerald-800' :
-            (plot.availability === 'reserved' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-800')
-          }">${plot.availability}</span>
-          <span class="text-[10px] font-mono font-bold text-neutral-500">${plot.localityName}</span>
-        </div>
-        <h4 class="font-black text-black text-sm mt-1 line-clamp-1">${plot.title}</h4>
-        <div class="text-xs font-black text-emerald-700 mt-0.5">${plot.price} <span class="text-neutral-500 font-normal">(${plot.dimensions})</span></div>
+    <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center gap-1.5 flex-1 min-w-0">
+        <span class="px-1.5 py-0.2 rounded text-[8.5px] font-black uppercase ${
+          plot.availability === 'available' ? 'bg-emerald-100 text-emerald-800' :
+          (plot.availability === 'reserved' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-800')
+        }">${plot.availability}</span>
+        <span class="text-xs font-black text-black truncate">${plot.localityName}</span>
+        <span class="text-xs font-bold text-emerald-700 font-mono shrink-0">${plot.price}</span>
       </div>
-      <button onclick="closeMobileDrawer()" class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-600 flex items-center justify-center text-xs">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
-    <div class="mt-3 flex gap-2">
-      <button onclick="startStreetViewJourneyForPlot('${plot.id}')" class="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow">
-        <i class="fa-solid fa-camera"></i> Real Street View
-      </button>
-      <button onclick="navigateAndTravelToPlot('${plot.id}')" class="flex-1 py-2 rounded-xl bg-black hover:bg-neutral-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow">
-        <i class="fa-solid fa-map"></i> 3D Map
-      </button>
-      <button onclick="openPropertyModal('${plot.id}')" class="px-3 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-xs">
-        <i class="fa-solid fa-circle-info"></i>
-      </button>
+      <div class="flex items-center gap-1 shrink-0">
+        <button onclick="openPropertyModal('${plot.id}')" class="px-2 py-1 rounded-lg bg-black text-white text-[11px] font-bold shadow flex items-center gap-1">
+          <span>Specs</span> &rarr;
+        </button>
+        <button onclick="closeMobileDrawer()" class="w-6 h-6 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-600 flex items-center justify-center text-xs">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
     </div>
   `;
 
