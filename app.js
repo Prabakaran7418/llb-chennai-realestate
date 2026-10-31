@@ -1225,6 +1225,19 @@ function initChennaiMap() {
       renderPlotCardsList();
   initAmbientDust();
 
+      
+      mapEngine.on('zoom', () => {
+        const z = mapEngine.getZoom();
+        const mapDiv = document.getElementById('wall-mounted-map');
+        if (mapDiv) {
+          if (z < 12.5) mapDiv.classList.add('map-zoomed-out');
+          else mapDiv.classList.remove('map-zoomed-out');
+          if (z < 11.2) mapDiv.classList.add('map-super-zoomed-out');
+          else mapDiv.classList.remove('map-super-zoomed-out');
+        }
+        renderPlotMarkersOnMap();
+      });
+    
       mapEngine.on('load', () => {
         renderPlotMarkersOnMap();
         renderPlotCardsList();
@@ -1248,6 +1261,19 @@ function initChennaiMap() {
   currentTileLayer = L.tileLayer(MAP_LAYERS.streets, { maxZoom: 19 }).addTo(leafletMap);
   renderPlotMarkersOnMap();
   renderPlotCardsList();
+
+  leafletMap.on('zoomend', () => {
+    const z = leafletMap.getZoom();
+    const mapDiv = document.getElementById('wall-mounted-map');
+    if (mapDiv) {
+      if (z < 12.5) mapDiv.classList.add('map-zoomed-out');
+      else mapDiv.classList.remove('map-zoomed-out');
+      if (z < 11.2) mapDiv.classList.add('map-super-zoomed-out');
+      else mapDiv.classList.remove('map-super-zoomed-out');
+    }
+    renderPlotMarkersOnMap();
+  });
+    
 }
 
 function setMapLayer(layerKey) {
@@ -1328,47 +1354,109 @@ function resetToChennaiOverview() {
 
 function renderPlotMarkersOnMap() {
   const filteredPlots = getFilteredPlots();
+  const currentZoom = mapEngine ? mapEngine.getZoom() : (leafletMap ? leafletMap.getZoom() : 11.2);
+
+  // Group plots by locality so when zoomed out, each locality displays as ONE clear, distinct, uncollapsed marker
+  const localityGroups = {};
+  filteredPlots.forEach(plot => {
+    const loc = plot.localityName;
+    if (!localityGroups[loc]) localityGroups[loc] = [];
+    localityGroups[loc].push(plot);
+  });
+
+  const shouldCluster = currentZoom < 12.8;
 
   if (mapEngine) {
     Object.values(plotMarkersMap).forEach(m => m.remove());
     plotMarkersMap = {};
 
-    filteredPlots.forEach(plot => {
-      const isSelected = activePlotId === plot.id;
-      const statusClass = plot.availability || "available";
+    if (shouldCluster) {
+      // Clean, uncollapsed single badge per locality with plot count
+      Object.entries(localityGroups).forEach(([locName, plotsInLoc]) => {
+        const repPlot = plotsInLoc.find(p => p.id === activePlotId) || plotsInLoc[0];
+        const isSelected = plotsInLoc.some(p => p.id === activePlotId);
+        const count = plotsInLoc.length;
+        const statusClass = repPlot.availability || "available";
 
-      const el = document.createElement('div');
-      el.className = 'plot-marker-div';
-      el.innerHTML = `
-        <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-marker-${plot.id}">
-          <div class="plot-marker-pill ${statusClass}">
-            <div class="marker-area-row">
-              <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
-              <span class="marker-area-name">${plot.localityName}</span>
-              <span class="marker-status-dot ${statusClass}"></span>
+        const el = document.createElement('div');
+        el.className = 'plot-marker-div';
+        el.innerHTML = `
+          <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}">
+            <div class="plot-marker-pill ${statusClass}">
+              <div class="marker-area-row">
+                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
+                <span class="marker-area-name">${locName}</span>
+                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1 py-0.2 rounded font-mono font-bold">${count > 1 ? count + ' Plots' : repPlot.plotNumber}</span>
+              </div>
             </div>
-            <div class="marker-details-row">
-              <span class="marker-plot-no">${plot.plotNumber}</span>
-              <span class="text-neutral-500">•</span>
-              <span class="marker-price">${plot.price}</span>
-            </div>
+            <div class="plot-marker-arrow"></div>
+            ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
           </div>
-          <div class="plot-marker-arrow"></div>
-          ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
-        </div>
-      `;
+        `;
 
-      el.addEventListener('click', (e) => {
-        e.stopPropagation();
-        navigateAndTravelToPlot(plot.id);
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (plotsInLoc.length === 1 || currentZoom >= 12.5) {
+            navigateAndTravelToPlot(repPlot.id);
+          } else {
+            // Zoom in smoothly to reveal individual plots
+            mapEngine.flyTo({
+              center: [repPlot.longitude, repPlot.latitude],
+              zoom: 14.5,
+              pitch: 45,
+              duration: 1200
+            });
+            setTimeout(() => {
+              navigateAndTravelToPlot(repPlot.id);
+            }, 600);
+          }
+        });
+
+        const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+          .setLngLat([repPlot.longitude, repPlot.latitude])
+          .addTo(mapEngine);
+
+        plotMarkersMap['loc_' + locName] = marker;
       });
+    } else {
+      // Zoomed-in detailed individual markers with plot numbers and pricing
+      filteredPlots.forEach(plot => {
+        const isSelected = activePlotId === plot.id;
+        const statusClass = plot.availability || "available";
 
-      const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
-        .setLngLat([plot.longitude, plot.latitude])
-        .addTo(mapEngine);
+        const el = document.createElement('div');
+        el.className = 'plot-marker-div';
+        el.innerHTML = `
+          <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-marker-${plot.id}">
+            <div class="plot-marker-pill ${statusClass}">
+              <div class="marker-area-row">
+                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
+                <span class="marker-area-name">${plot.localityName}</span>
+                <span class="marker-status-dot ${statusClass}"></span>
+              </div>
+              <div class="marker-details-row">
+                <span class="marker-plot-no">${plot.plotNumber}</span>
+                <span class="text-neutral-500">•</span>
+                <span class="marker-price">${plot.price}</span>
+              </div>
+            </div>
+            <div class="plot-marker-arrow"></div>
+            ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
+          </div>
+        `;
 
-      plotMarkersMap[plot.id] = marker;
-    });
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          navigateAndTravelToPlot(plot.id);
+        });
+
+        const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+          .setLngLat([plot.longitude, plot.latitude])
+          .addTo(mapEngine);
+
+        plotMarkersMap[plot.id] = marker;
+      });
+    }
     return;
   }
 
@@ -1376,48 +1464,97 @@ function renderPlotMarkersOnMap() {
     Object.values(plotMarkersMap).forEach(m => leafletMap.removeLayer(m));
     plotMarkersMap = {};
 
-    filteredPlots.forEach(plot => {
-      const isSelected = activePlotId === plot.id;
-      const statusClass = plot.availability || "available";
+    if (shouldCluster) {
+      Object.entries(localityGroups).forEach(([locName, plotsInLoc]) => {
+        const repPlot = plotsInLoc.find(p => p.id === activePlotId) || plotsInLoc[0];
+        const isSelected = plotsInLoc.some(p => p.id === activePlotId);
+        const count = plotsInLoc.length;
+        const statusClass = repPlot.availability || "available";
 
-      const markerHtml = `
-        <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-marker-${plot.id}">
-          <div class="plot-marker-pill ${statusClass}">
-            <div class="marker-area-row">
-              <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
-              <span class="marker-area-name">${plot.localityName}</span>
-              <span class="marker-status-dot ${statusClass}"></span>
+        const markerHtml = `
+          <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}">
+            <div class="plot-marker-pill ${statusClass}">
+              <div class="marker-area-row">
+                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
+                <span class="marker-area-name">${locName}</span>
+                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1 py-0.2 rounded font-mono font-bold">${count > 1 ? count + ' Plots' : repPlot.plotNumber}</span>
+              </div>
             </div>
-            <div class="marker-details-row">
-              <span class="marker-plot-no">${plot.plotNumber}</span>
-              <span class="text-neutral-500">•</span>
-              <span class="marker-price">${plot.price}</span>
-            </div>
+            <div class="plot-marker-arrow"></div>
+            ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
           </div>
-          <div class="plot-marker-arrow"></div>
-          ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
-        </div>
-      `;
+        `;
 
-      const icon = L.divIcon({
-        className: "plot-marker-div",
-        html: markerHtml,
-        iconSize: [120, 52],
-        iconAnchor: [60, 50]
+        const icon = L.divIcon({
+          className: "plot-marker-div",
+          html: markerHtml,
+          iconSize: [110, 36],
+          iconAnchor: [55, 34]
+        });
+
+        const marker = L.marker([repPlot.latitude, repPlot.longitude], {
+          icon,
+          zIndexOffset: isSelected ? 3000 : 600
+        }).addTo(leafletMap);
+
+        marker.on("click", (e) => {
+          L.DomEvent.stopPropagation(e);
+          if (plotsInLoc.length === 1 || currentZoom >= 12.5) {
+            navigateAndTravelToPlot(repPlot.id);
+          } else {
+            leafletMap.flyTo([repPlot.latitude, repPlot.longitude], 14.5);
+            setTimeout(() => {
+              navigateAndTravelToPlot(repPlot.id);
+            }, 600);
+          }
+        });
+
+        plotMarkersMap['loc_' + locName] = marker;
       });
+    } else {
+      filteredPlots.forEach(plot => {
+        const isSelected = activePlotId === plot.id;
+        const statusClass = plot.availability || "available";
 
-      const marker = L.marker([plot.latitude, plot.longitude], {
-        icon,
-        zIndexOffset: isSelected ? 3000 : (plot.availability === "available" ? 600 : 100)
-      }).addTo(leafletMap);
+        const markerHtml = `
+          <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-marker-${plot.id}">
+            <div class="plot-marker-pill ${statusClass}">
+              <div class="marker-area-row">
+                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px]"></i>
+                <span class="marker-area-name">${plot.localityName}</span>
+                <span class="marker-status-dot ${statusClass}"></span>
+              </div>
+              <div class="marker-details-row">
+                <span class="marker-plot-no">${plot.plotNumber}</span>
+                <span class="text-neutral-500">•</span>
+                <span class="marker-price">${plot.price}</span>
+              </div>
+            </div>
+            <div class="plot-marker-arrow"></div>
+            ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
+          </div>
+        `;
 
-      marker.on("click", (e) => {
-        L.DomEvent.stopPropagation(e);
-        navigateAndTravelToPlot(plot.id);
+        const icon = L.divIcon({
+          className: "plot-marker-div",
+          html: markerHtml,
+          iconSize: [120, 52],
+          iconAnchor: [60, 50]
+        });
+
+        const marker = L.marker([plot.latitude, plot.longitude], {
+          icon,
+          zIndexOffset: isSelected ? 3000 : (plot.availability === "available" ? 600 : 100)
+        }).addTo(leafletMap);
+
+        marker.on("click", (e) => {
+          L.DomEvent.stopPropagation(e);
+          navigateAndTravelToPlot(plot.id);
+        });
+
+        plotMarkersMap[plot.id] = marker;
       });
-
-      plotMarkersMap[plot.id] = marker;
-    });
+    }
   }
 }
 
