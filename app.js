@@ -1830,9 +1830,8 @@ async function navigateAndTravelToPlot(plotId) {
   if (hudPauseBtn) hudPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> <span id="hud-pause-label" class="hidden md:inline">Stop</span>';
   if (hud) hud.classList.remove("hidden");
 
-  if (currentNavCameraMode === 'firstPerson' && cockpitOverlay) {
-    cockpitOverlay.classList.remove("hidden");
-  }
+  // Motorcycle cockpit disabled per user request for clean Google Map navigation
+  if (cockpitOverlay) cockpitOverlay.classList.add("hidden");
 
   // Starting location: Kathipara Flyover
   const startCoords = CHENNAI_TRANSIT_HUBS.kathipara.coords;
@@ -3115,8 +3114,8 @@ function start3DCameraNavigation(roadLngLats, plot, totalDistKm, totalMins, mode
   // Populate Proper Directions Sheet with full turn-by-turn guidance
   populateRouteDirectionsDrawer(routeSteps, totalDistKm, totalMins, plot);
 
-  let targetPitch = 48;
-  let targetZoom = 15.2;
+  let targetPitch = 38;
+  let targetZoom = 15.0;
   if (currentTravelMode === 'car') { targetPitch = 45; targetZoom = 15.0; }
   else if (currentTravelMode === 'bus') { targetPitch = 40; targetZoom = 14.8; }
   else if (currentTravelMode === 'walk') { targetPitch = 38; targetZoom = 16.0; }
@@ -3482,6 +3481,7 @@ function drawRoutePolylineOnMap(geojsonCoords, startCoords, destCoords, originNa
 
   if (mapEngine) {
     if (mapEngine.getLayer('route-core')) mapEngine.removeLayer('route-core');
+    if (mapEngine.getLayer('route-casing')) mapEngine.removeLayer('route-casing');
     if (mapEngine.getLayer('route-glow')) mapEngine.removeLayer('route-glow');
     if (mapEngine.getSource('route-source')) mapEngine.removeSource('route-source');
 
@@ -3496,13 +3496,13 @@ function drawRoutePolylineOnMap(geojsonCoords, startCoords, destCoords, originNa
       }
     });
 
-    // Realistic Highway Navigation Corridor: Cyan Glow + Core
+    // Official Google Maps Navigation Styling: Crisp White Border + Electric Blue Core
     mapEngine.addLayer({
-      id: 'route-glow',
+      id: 'route-casing',
       type: 'line',
       source: 'route-source',
       layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': '#0284c7', 'line-width': 10, 'line-opacity': 0.65 }
+      paint: { 'line-color': '#ffffff', 'line-width': 10, 'line-opacity': 0.95 }
     });
 
     mapEngine.addLayer({
@@ -3510,7 +3510,7 @@ function drawRoutePolylineOnMap(geojsonCoords, startCoords, destCoords, originNa
       type: 'line',
       source: 'route-source',
       layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': '#38bdf8', 'line-width': 5, 'line-opacity': 1 }
+      paint: { 'line-color': '#1a73e8', 'line-width': 6.5, 'line-opacity': 1 }
     });
     return;
   }
@@ -3518,8 +3518,8 @@ function drawRoutePolylineOnMap(geojsonCoords, startCoords, destCoords, originNa
   if (leafletMap) {
     const leafletLatLngs = geojsonCoords.map(pt => [pt[1], pt[0]]);
     activeRoutePolyline = L.layerGroup([
-      L.polyline(leafletLatLngs, { color: "#0284c7", weight: 9, opacity: 0.65, lineCap: "round", lineJoin: "round" }),
-      L.polyline(leafletLatLngs, { color: "#38bdf8", weight: 4.5, opacity: 1, lineCap: "round", lineJoin: "round" })
+      L.polyline(leafletLatLngs, { color: "#ffffff", weight: 10, opacity: 0.95, lineCap: "round", lineJoin: "round" }),
+      L.polyline(leafletLatLngs, { color: "#1a73e8", weight: 6, opacity: 1, lineCap: "round", lineJoin: "round" })
     ]).addTo(leafletMap);
   }
 }

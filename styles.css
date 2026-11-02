@@ -2532,3 +2532,93 @@ body {
     border-radius: 1.5rem !important;
   }
 }
+
+
+/* ==========================================================================
+   AUTHENTIC GOOGLE MAPS NAVIGATION & NAME CLARITY ENHANCEMENTS
+   ========================================================================== */
+
+/* Completely hide bike controlling gesture & cockpit overlays */
+#motorcycle-cockpit-overlay,
+#motorcycle-handlebar-rig,
+.motorcycle-mirror,
+.mirror-housing,
+.dashboard-bezel {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Clear, high-contrast locality markers on the map */
+.compact-zoom-pin {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 4px 10px !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 1.5px solid #10b981 !important;
+  border-radius: 9999px !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.3px !important;
+  white-space: nowrap !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 10px rgba(16, 185, 129, 0.3) !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transform: translate(-50%, -50%) !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease !important;
+}
+
+.compact-zoom-pin .pin-circle {
+  color: #10b981 !important;
+  font-size: 11px !important;
+}
+
+.compact-zoom-pin .pin-title {
+  font-weight: 800 !important;
+  text-transform: capitalize !important;
+}
+
+.compact-zoom-pin.selected {
+  background: #000000 !important;
+  border-color: #facc15 !important;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.4), 0 0 24px rgba(250, 204, 21, 0.8) !important;
+  transform: translate(-50%, -50%) scale(1.18) !important;
+  z-index: 10000 !important;
+}
+
+/* Enhanced Google Navigation HUD readability on mobile */
+.gmaps-nav-top-banner {
+  background: rgba(15, 23, 42, 0.96) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
+  padding: 8px 12px !important;
+}
+
+#hud-instruction-text {
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.2px !important;
+}
+
+#hud-active-road-name {
+  color: #34d399 !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+}
+
+#hud-destination-name {
+  color: #fbbf24 !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+}
+
+#hud-distance-to-turn {
+  color: #6ee7b7 !important;
+  font-weight: 900 !important;
+  font-size: 11px !important;
+}
