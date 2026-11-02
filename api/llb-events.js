@@ -150,9 +150,24 @@ module.exports = async (req, res) => {
     const property = payload.property || {};
     const recipient = String(customer.email || '').trim().toLowerCase();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!recipient || !emailRegex.test(recipient)) {
-      return res.status(400).json({ success: false, error: 'Please enter a valid email address (e.g. name@gmail.com)' });
+    const atIdx = recipient.indexOf("@");
+    const dotIdx = recipient.lastIndexOf(".");
+    const isEmailValid = atIdx > 0 && dotIdx > atIdx + 1 && dotIdx < recipient.length - 1 && !/\s/.test(recipient);
+
+    if (!recipient || !isEmailValid) {
+      return res.status(400).json({ success: false, error: "Please enter a valid email address (e.g. name@gmail.com)" });
+    }
+
+    // Optional n8n Webhook Forwarding
+    const n8nUrl = payload.n8nWebhookUrl || process.env.N8N_WEBHOOK_URL;
+    if (n8nUrl) {
+      try {
+        fetch(n8nUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).catch(() => {});
+      } catch (e) {}
     }
 
     const mailOptions = {

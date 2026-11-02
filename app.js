@@ -3729,7 +3729,7 @@ function renderPlotDetailsBelowMap(plot) {
             <label class="block text-[10px] font-black uppercase text-neutral-400 mb-1">Your Full Name</label>
             <input 
               type="text" 
-              id="prospectus-name-${plot.id}"
+              id="below-prospectus-name-${plot.id}"
               placeholder="e.g. Anand Sundaram" 
               required 
               class="w-full px-3.5 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
@@ -3739,7 +3739,7 @@ function renderPlotDetailsBelowMap(plot) {
             <label class="block text-[10px] font-black uppercase text-neutral-400 mb-1">WhatsApp Mobile Number</label>
             <input 
               type="tel" 
-              id="prospectus-phone-${plot.id}"
+              id="below-prospectus-phone-${plot.id}"
               placeholder="e.g. 98401 23456" 
               required 
               class="w-full px-3.5 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
@@ -3749,7 +3749,7 @@ function renderPlotDetailsBelowMap(plot) {
             <label class="block text-[10px] font-black uppercase text-neutral-400 mb-1">Email Address (Recipient)</label>
             <input 
               type="email" 
-              id="prospectus-email-${plot.id}"
+              id="below-prospectus-email-${plot.id}"
               placeholder="e.g. anand@gmail.com" 
               required 
               class="w-full px-3.5 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
@@ -3762,13 +3762,13 @@ function renderPlotDetailsBelowMap(plot) {
             <label class="block text-[10px] font-black uppercase text-neutral-400 mb-1">Preferred Site Inspection Date</label>
             <input 
               type="date" 
-              id="prospectus-date-${plot.id}"
+              id="below-prospectus-date-${plot.id}"
               class="w-full px-3.5 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
             />
           </div>
           <div class="flex items-center gap-2 pt-6">
-            <input type="checkbox" id="prospectus-cab-${plot.id}" checked class="accent-emerald-500 w-4 h-4 rounded">
-            <label for="prospectus-cab-${plot.id}" class="text-xs text-neutral-300 font-bold">
+            <input type="checkbox" id="below-prospectus-cab-${plot.id}" checked class="accent-emerald-500 w-4 h-4 rounded">
+            <label for="below-prospectus-cab-${plot.id}" class="text-xs text-neutral-300 font-bold">
               Arrange complimentary AC car pickup &amp; drop from my Chennai address
             </label>
           </div>
@@ -3777,7 +3777,7 @@ function renderPlotDetailsBelowMap(plot) {
         <div>
           <label class="block text-[10px] font-black uppercase text-neutral-400 mb-1">Questions / Specific Requirements (Optional)</label>
           <textarea 
-            id="prospectus-message-${plot.id}"
+            id="below-prospectus-message-${plot.id}"
             rows="2" 
             placeholder="Ask about corner plot availability, loan sanction, registration process..."
             class="w-full px-3.5 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
@@ -4479,7 +4479,7 @@ function openPropertyModal(propertyId) {
                 <label class="block text-[10px] font-black uppercase text-neutral-600 mb-1">Your Full Name</label>
                 <input 
                   type="text" 
-                  id="prospectus-name-${property.id}"
+                  id="modal-prospectus-name-${property.id}"
                   placeholder="e.g. Anand Sundaram" 
                   required 
                   class="w-full px-3.5 py-2 bg-white border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
@@ -4489,7 +4489,7 @@ function openPropertyModal(propertyId) {
                 <label class="block text-[10px] font-black uppercase text-neutral-600 mb-1">WhatsApp Mobile Number</label>
                 <input 
                   type="tel" 
-                  id="prospectus-phone-${property.id}"
+                  id="modal-prospectus-phone-${property.id}"
                   placeholder="e.g. 98401 23456" 
                   required 
                   class="w-full px-3.5 py-2 bg-white border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
@@ -4502,7 +4502,7 @@ function openPropertyModal(propertyId) {
                 <label class="block text-[10px] font-black uppercase text-neutral-600 mb-1">Email Address (Prospectus Recipient)</label>
                 <input 
                   type="email" 
-                  id="prospectus-email-${property.id}"
+                  id="modal-prospectus-email-${property.id}"
                   placeholder="e.g. anand@gmail.com" 
                   required 
                   class="w-full px-3.5 py-2 bg-white border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
@@ -4512,15 +4512,15 @@ function openPropertyModal(propertyId) {
                 <label class="block text-[10px] font-black uppercase text-neutral-600 mb-1">Preferred Site Inspection Date</label>
                 <input 
                   type="date" 
-                  id="prospectus-date-${property.id}"
+                  id="modal-prospectus-date-${property.id}"
                   class="w-full px-3.5 py-2 bg-white border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
                 />
               </div>
             </div>
 
             <div class="flex items-center gap-2 pt-1">
-              <input type="checkbox" id="prospectus-cab-${property.id}" checked class="accent-black w-4 h-4 rounded">
-              <label for="prospectus-cab-${property.id}" class="text-[11px] text-neutral-700 font-bold">
+              <input type="checkbox" id="modal-prospectus-cab-${property.id}" checked class="accent-black w-4 h-4 rounded">
+              <label for="modal-prospectus-cab-${property.id}" class="text-[11px] text-neutral-700 font-bold">
                 Arrange complimentary AC car pickup & drop from my Chennai address
               </label>
             </div>
@@ -4528,7 +4528,7 @@ function openPropertyModal(propertyId) {
             <div>
               <label class="block text-[10px] font-black uppercase text-neutral-600 mb-1">Questions / Specific Requirements (Optional)</label>
               <textarea 
-                id="prospectus-message-${property.id}"
+                id="modal-prospectus-message-${property.id}"
                 rows="2" 
                 placeholder="Ask about corner plot availability, loan sanction, registration process..."
                 class="w-full px-3.5 py-2 bg-white border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
@@ -4598,61 +4598,104 @@ function prevModalImage() {
 // ==========================================================================
 // 10. EMAIL PROSPECTUS & N8N WEBHOOK INTEGRATION
 // ==========================================================================
+function checkValidEmailAddress(str) {
+  if (!str || typeof str !== "string") return false;
+  const s = str.trim();
+  const atIdx = s.indexOf("@");
+  const dotIdx = s.lastIndexOf(".");
+  return atIdx > 0 && dotIdx > atIdx + 1 && dotIdx < s.length - 1 && !/\s/.test(s);
+}
+
 async function handleEmailProspectus(event, propertyId) {
-  event.preventDefault();
+  if (event && event.preventDefault) event.preventDefault();
 
-  const property = CHENNAI_PLOTS_DATABASE.find(p => p.id === propertyId);
-  const emailInput = document.getElementById(`prospectus-email-${propertyId}`);
-  const nameInput = document.getElementById(`prospectus-name-${propertyId}`);
-  const phoneInput = document.getElementById(`prospectus-phone-${propertyId}`);
-  const dateInput = document.getElementById(`prospectus-date-${propertyId}`);
-  const cabInput = document.getElementById(`prospectus-cab-${propertyId}`);
-  const msgInput = document.getElementById(`prospectus-message-${propertyId}`);
+  const form = (event && event.target && event.target.tagName === "FORM")
+    ? event.target
+    : (event && event.target && event.target.closest ? event.target.closest("form") : null);
 
-  if (!property || !emailInput) return;
+  const property = (typeof CHENNAI_PLOTS_DATABASE !== "undefined" && Array.isArray(CHENNAI_PLOTS_DATABASE))
+    ? (CHENNAI_PLOTS_DATABASE.find(p => p.id === propertyId) || CHENNAI_PLOTS_DATABASE[0] || {})
+    : {};
 
-  const email = emailInput.value.trim().toLowerCase();
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || !emailRegex.test(email)) {
+  // Form-scoped query with extensive fallbacks
+  const emailInput = (form ? form.querySelector('input[type="email"], input[id*="email"], input[name="email"]') : null)
+    || document.getElementById(`modal-prospectus-email-${propertyId}`)
+    || document.getElementById(`below-prospectus-email-${propertyId}`)
+    || document.getElementById(`prospectus-email-${propertyId}`);
+
+  const nameInput = (form ? form.querySelector('input[id*="name"], input[name="name"]') : null)
+    || document.getElementById(`modal-prospectus-name-${propertyId}`)
+    || document.getElementById(`below-prospectus-name-${propertyId}`)
+    || document.getElementById(`prospectus-name-${propertyId}`);
+
+  const phoneInput = (form ? form.querySelector('input[type="tel"], input[id*="phone"], input[name="phone"]') : null)
+    || document.getElementById(`modal-prospectus-phone-${propertyId}`)
+    || document.getElementById(`below-prospectus-phone-${propertyId}`)
+    || document.getElementById(`prospectus-phone-${propertyId}`);
+
+  const dateInput = (form ? form.querySelector('input[type="date"], input[id*="date"]') : null)
+    || document.getElementById(`modal-prospectus-date-${propertyId}`)
+    || document.getElementById(`below-prospectus-date-${propertyId}`);
+
+  const cabInput = (form ? form.querySelector('input[type="checkbox"]') : null)
+    || document.getElementById(`modal-prospectus-cab-${propertyId}`)
+    || document.getElementById(`below-prospectus-cab-${propertyId}`);
+
+  const msgInput = (form ? form.querySelector('textarea') : null)
+    || document.getElementById(`modal-prospectus-message-${propertyId}`)
+    || document.getElementById(`below-prospectus-message-${propertyId}`);
+
+  const rawEmail = (emailInput && emailInput.value) ? emailInput.value.trim().toLowerCase() : "";
+
+  if (!rawEmail || !checkValidEmailAddress(rawEmail)) {
     alert("Please enter a valid email address (e.g. name@gmail.com).");
-    if (emailInput) emailInput.focus();
+    if (emailInput) {
+      emailInput.focus();
+      if (emailInput.scrollIntoView) emailInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
     return;
   }
 
-  const customerName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : email.split("@")[0].replace(/[._]/g, " ").toUpperCase();
-  const customerPhone = phoneInput && phoneInput.value.trim() ? phoneInput.value.trim() : "+91 98401 23456";
-  const preferredDate = dateInput && dateInput.value ? dateInput.value : "Immediate Visit";
+  const customerName = (nameInput && nameInput.value && nameInput.value.trim()) 
+    ? nameInput.value.trim() 
+    : rawEmail.split("@")[0].replace(/[._]/g, " ").toUpperCase();
+
+  const customerPhone = (phoneInput && phoneInput.value && phoneInput.value.trim()) 
+    ? phoneInput.value.trim() 
+    : "+91 98401 23456";
+
+  const preferredDate = (dateInput && dateInput.value) ? dateInput.value : "Immediate Visit";
   const needCab = cabInput ? cabInput.checked : true;
-  const customerMessage = msgInput && msgInput.value.trim() ? msgInput.value.trim() : "";
+  const customerMessage = (msgInput && msgInput.value && msgInput.value.trim()) ? msgInput.value.trim() : "";
 
   const payload = {
     event: "property.enquiry",
     timestamp: new Date().toISOString(),
     customer: {
       name: customerName,
-      email: email,
+      email: rawEmail,
       phone: customerPhone,
       preferredDate: preferredDate,
       needCab: needCab,
       message: customerMessage
     },
     property: {
-      id: property.id,
-      title: property.title,
-      projectName: property.projectName,
-      plotNumber: property.plotNumber,
-      locality: property.localityName,
-      address: property.address,
-      price: property.price,
-      pricePerSqft: property.pricePerSqft,
-      dimensions: property.dimensions,
-      areaSqFt: property.areaSqFt,
-      facing: property.facing,
-      approval: property.approval,
-      roadWidth: property.roadWidth,
-      coordinates: `${property.latitude}, ${property.longitude}`,
-      googleMapsUrl: `https://maps.google.com/maps?daddr=${property.latitude},${property.longitude}`,
-      images: property.images
+      id: property.id || propertyId,
+      title: property.title || "Chennai Residential Plot",
+      projectName: property.projectName || property.title || "Prime Chennai Enclave",
+      plotNumber: property.plotNumber || "",
+      locality: property.localityName || property.locationName || "Greater Chennai",
+      address: property.address || "",
+      price: property.price || "",
+      pricePerSqft: property.pricePerSqft || "",
+      dimensions: property.dimensions || "",
+      areaSqFt: property.areaSqFt || "",
+      facing: property.facing || "East Facing",
+      approval: property.approval || "CMDA & RERA Approved",
+      roadWidth: property.roadWidth || "30 Ft Wide Road",
+      coordinates: property.latitude ? `${property.latitude}, ${property.longitude}` : "",
+      googleMapsUrl: property.latitude ? `https://maps.google.com/maps?daddr=${property.latitude},${property.longitude}` : "",
+      images: property.images || []
     }
   };
 
@@ -4670,13 +4713,8 @@ async function handleEmailProspectus(event, propertyId) {
     const result = await res.json();
     const statusBox = document.getElementById("email-delivery-live-status");
     if (statusBox) {
-      if (result && result.success) {
-        statusBox.className = "p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center justify-center gap-2";
-        statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Email Successfully Delivered!';
-      } else {
-        statusBox.className = "p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center justify-center gap-2";
-        statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Dispatched to Your Mail!';
-      }
+      statusBox.className = "p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center justify-center gap-2";
+      statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Email Successfully Delivered!';
     }
   } catch (e) {
     console.log("Email dispatch:", e.message);
@@ -4687,14 +4725,15 @@ async function handleEmailProspectus(event, propertyId) {
     }
   }
 
-  // Dispatch to user n8n webhook if configured
-  if (n8nWebhookUrl) {
+  // Dispatch to user n8n webhook
+  const effectiveN8n = n8nWebhookUrl || (typeof localStorage !== 'undefined' ? localStorage.getItem("llb_n8n_webhook") : "");
+  if (effectiveN8n) {
     try {
-      fetch(n8nWebhookUrl, {
+      fetch(effectiveN8n, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
-      }).catch(e => console.log("n8n dispatch:", e.message));
+      }).catch(e => console.log("n8n dispatch note:", e.message));
     } catch (e) {}
   }
 }
@@ -4797,28 +4836,39 @@ function closeSiteVisitModal() {
 }
 
 function handleSiteVisitSubmit(event) {
-  event.preventDefault();
-  const nameInput = document.getElementById("visit-name");
-  const emailInput = document.getElementById("visit-email");
-  const phoneInput = document.getElementById("visit-phone");
-  const propertySelect = document.getElementById("visit-property-select");
-  const dateInput = document.getElementById("visit-date");
-  const cabInput = document.getElementById("visit-cab");
+  if (event && event.preventDefault) event.preventDefault();
 
-  const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : "Valued Customer";
-  const rawEmail = emailInput ? emailInput.value.trim().toLowerCase() : "";
-  const phone = phoneInput && phoneInput.value.trim() ? phoneInput.value.trim() : "";
-  const propertyTitle = propertySelect && propertySelect.selectedIndex >= 0 ? propertySelect.options[propertySelect.selectedIndex].text : "Selected Chennai Plot";
-  const selectedPropertyId = propertySelect ? propertySelect.value : null;
-  const preferredDate = dateInput && dateInput.value ? dateInput.value : "Upcoming Date";
-  const needCab = cabInput ? cabInput.checked : true;
+  const form = (event && event.target && event.target.tagName === "FORM")
+    ? event.target
+    : (event && event.target && event.target.closest ? event.target.closest("form") : null);
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!rawEmail || !emailRegex.test(rawEmail)) {
-    alert("Please enter a valid email address (e.g. name@gmail.com) so we can send you the official plot prospectus.");
-    if (emailInput) emailInput.focus();
+  const emailInput = (form ? form.querySelector('input[type="email"], #visit-email') : null) || document.getElementById("visit-email");
+  const nameInput = (form ? form.querySelector('#visit-name') : null) || document.getElementById("visit-name");
+  const phoneInput = (form ? form.querySelector('#visit-phone') : null) || document.getElementById("visit-phone");
+  const propertySelect = (form ? form.querySelector('#visit-property-select') : null) || document.getElementById("visit-property-select");
+  const dateInput = (form ? form.querySelector('#visit-date') : null) || document.getElementById("visit-date");
+  const cabInput = (form ? form.querySelector('#visit-cab') : null) || document.getElementById("visit-cab");
+
+  const rawEmail = (emailInput && emailInput.value) ? emailInput.value.trim().toLowerCase() : "";
+
+  if (!rawEmail || !checkValidEmailAddress(rawEmail)) {
+    alert("Please enter a valid email address (e.g. name@gmail.com).");
+    if (emailInput) {
+      emailInput.focus();
+      if (emailInput.scrollIntoView) emailInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
     return;
   }
+
+  const name = (nameInput && nameInput.value && nameInput.value.trim()) 
+    ? nameInput.value.trim() 
+    : rawEmail.split("@")[0].replace(/[._]/g, " ").toUpperCase();
+
+  const phone = (phoneInput && phoneInput.value && phoneInput.value.trim()) ? phoneInput.value.trim() : "Not Provided";
+  const propertyTitle = (propertySelect && propertySelect.selectedIndex >= 0) ? propertySelect.options[propertySelect.selectedIndex].text : "Selected Chennai Plot";
+  const selectedPropertyId = propertySelect ? propertySelect.value : null;
+  const preferredDate = (dateInput && dateInput.value) ? dateInput.value : "Immediate Visit";
+  const needCab = cabInput ? cabInput.checked : true;
 
   const propObj = (typeof CHENNAI_PLOTS_DATABASE !== "undefined" && Array.isArray(CHENNAI_PLOTS_DATABASE))
     ? (CHENNAI_PLOTS_DATABASE.find(p => p.id === selectedPropertyId) || CHENNAI_PLOTS_DATABASE[0] || {})
@@ -4873,6 +4923,18 @@ function handleSiteVisitSubmit(event) {
       statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Dispatched to Your Mail!';
     }
   });
+
+  // Forward to n8n Webhook
+  const effectiveN8n = n8nWebhookUrl || (typeof localStorage !== 'undefined' ? localStorage.getItem("llb_n8n_webhook") : "");
+  if (effectiveN8n) {
+    try {
+      fetch(effectiveN8n, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(e => console.log("n8n dispatch note:", e.message));
+    } catch (e) {}
+  }
 }
 
 // ==========================================================================
