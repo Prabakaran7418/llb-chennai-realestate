@@ -3104,10 +3104,14 @@ function start3DCameraNavigation(roadLngLats, plot, totalDistKm, totalMins, mode
     .addTo(mapEngine);
 
   // Set realistic cruising durations per transit mode
-  let cruiseDurationMs = 14000;
-  if (currentTravelMode === 'car') cruiseDurationMs = 15000;
-  else if (currentTravelMode === 'bus') cruiseDurationMs = 20000;
-  else if (currentTravelMode === 'walk') cruiseDurationMs = 28000;
+  // Set realistic cruising durations scaled to road distance so map tiles load flawlessly
+  const distKm = totalDistanceMeters / 1000;
+  let baseSeconds = Math.max(22, Math.min(36, 18 + (distKm * 1.0)));
+  if (currentTravelMode === 'car') baseSeconds *= 1.05;
+  else if (currentTravelMode === 'bus') baseSeconds *= 1.25;
+  else if (currentTravelMode === 'walk') baseSeconds *= 1.5;
+
+  let cruiseDurationMs = Math.round(baseSeconds * 1000);
 
   // Initialize Journey State
   journeyState = {
@@ -3129,11 +3133,11 @@ function start3DCameraNavigation(roadLngLats, plot, totalDistKm, totalMins, mode
   // Populate Proper Directions Sheet with full turn-by-turn guidance
   populateRouteDirectionsDrawer(routeSteps, totalDistKm, totalMins, plot);
 
-  let targetPitch = 58;
-  let targetZoom = 16.9;
-  if (currentTravelMode === 'car') { targetPitch = 54; targetZoom = 16.6; }
-  else if (currentTravelMode === 'bus') { targetPitch = 48; targetZoom = 16.2; }
-  else if (currentTravelMode === 'walk') { targetPitch = 42; targetZoom = 17.5; }
+  let targetPitch = 48;
+  let targetZoom = 15.2;
+  if (currentTravelMode === 'car') { targetPitch = 45; targetZoom = 15.0; }
+  else if (currentTravelMode === 'bus') { targetPitch = 40; targetZoom = 14.8; }
+  else if (currentTravelMode === 'walk') { targetPitch = 38; targetZoom = 16.0; }
 
   // STAGE C: Smoothly dive from city altitude down into the road-level driving seat
   mapEngine.flyTo({
@@ -3224,12 +3228,19 @@ function runCruiseFrame() {
     const speedEl = document.getElementById("hud-live-speed");
     if (speedEl) speedEl.textContent = simSpeed;
 
-    // UPDATE 3D CAMERA: Elevated 3D Chase Camera following the traveler directly along the road
-    let currentPitch = 58;
-    let currentZoom = 16.9;
-    if (currentTravelMode === 'car') { currentPitch = 54; currentZoom = 16.6; }
-    else if (currentTravelMode === 'bus') { currentPitch = 48; currentZoom = 16.2; }
-    else if (currentTravelMode === 'walk') { currentPitch = 42; currentZoom = 17.5; }
+        // UPDATE 3D CAMERA: Smooth chase camera synchronized with tile streaming
+    let currentPitch = 48;
+    let currentZoom = 15.2;
+    if (currentTravelMode === 'car') { currentPitch = 45; currentZoom = 15.0; }
+    else if (currentTravelMode === 'bus') { currentPitch = 40; currentZoom = 14.8; }
+    else if (currentTravelMode === 'walk') { currentPitch = 38; currentZoom = 16.0; }
+
+    // When approaching destination plot (final 12%), smoothly glide in to close architectural arrival view
+    if (progress > 0.88) {
+      const arrivalT = (progress - 0.88) / 0.12;
+      currentZoom = currentZoom + (17.2 - currentZoom) * arrivalT;
+      currentPitch = currentPitch + (54 - currentPitch) * arrivalT;
+    }
 
     if (mapEngine) {
       mapEngine.jumpTo({
