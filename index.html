@@ -687,84 +687,87 @@
   <!-- ========================================================================= -->
   <!-- MODAL 4: FREE SITE VISIT BOOKING                                          -->
   <!-- ========================================================================= -->
-  <div id="site-visit-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white border border-neutral-300 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+  <div id="site-visit-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-neutral-300 rounded-3xl p-5 sm:p-8 max-w-lg w-full shadow-2xl relative max-h-[92vh] overflow-y-auto">
       
-      <button onclick="closeSiteVisitModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-neutral-100 text-neutral-600 hover:text-black flex items-center justify-center transition">
+      <button onclick="closeSiteVisitModal()" class="absolute top-4 right-4 sm:top-5 sm:right-5 w-8 h-8 rounded-full bg-neutral-100 text-neutral-600 hover:text-black flex items-center justify-center transition">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
       <div class="flex items-center gap-2 text-xs font-black text-black uppercase tracking-widest">
-        <i class="fa-solid fa-car"></i> Complimentary Service
+        <i class="fa-solid fa-envelope-circle-check text-emerald-600"></i> Official Plot Prospectus &amp; Enquiry
       </div>
-      <h3 class="text-2xl font-black text-black font-serif-luxury mt-1">Book Free Site Visit</h3>
+      <h3 class="text-xl sm:text-2xl font-black text-black font-serif-luxury mt-1">Receive Plot Prospectus</h3>
       <p class="text-xs text-neutral-600 mt-1">
-        We provide air-conditioned car pickup and drop from anywhere in Chennai with our Senior Property Manager.
+        Enter your email to instantly receive official CMDA approval copies, layout map, verified GPS coordinates, and price breakup in your inbox.
       </p>
 
-      <form onsubmit="handleSiteVisitSubmit(event)" class="mt-6 space-y-4">
+      <form onsubmit="handleSiteVisitSubmit(event)" novalidate class="mt-5 space-y-3.5">
         <div>
-          <label class="block text-xs font-black text-neutral-700 mb-1">Your Full Name</label>
-          <input 
-            type="text" 
-            id="visit-name" 
-            required 
-            placeholder="e.g. Ramesh Kumar" 
-            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
-          />
-        </div>
-
-        <div>
-          <label class="block text-xs font-black text-neutral-700 mb-1">Email Address (To Receive Official Plot Details &amp; Prospectus)</label>
+          <label class="block text-xs font-black text-neutral-700 mb-1">
+            Your Email Address <span class="text-emerald-700 font-bold">* (To Receive Official Plot Details)</span>
+          </label>
           <input 
             type="email" 
             id="visit-email" 
             required 
             placeholder="e.g. name@gmail.com" 
-            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black font-medium" 
           />
         </div>
 
         <div>
-          <label class="block text-xs font-black text-neutral-700 mb-1">Mobile Number (WhatsApp Enabled)</label>
+          <label class="block text-xs font-black text-neutral-700 mb-1">
+            Your Full Name <span class="text-neutral-400 font-normal">(Optional)</span>
+          </label>
+          <input 
+            type="text" 
+            id="visit-name" 
+            placeholder="e.g. Ramesh Kumar" 
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black font-medium" 
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-black text-neutral-700 mb-1">
+            Mobile Number / WhatsApp <span class="text-neutral-400 font-normal">(Optional)</span>
+          </label>
           <input 
             type="tel" 
             id="visit-phone" 
-            required 
             placeholder="e.g. 98401 23456" 
-            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black font-medium" 
           />
         </div>
 
         <div>
-          <label class="block text-xs font-black text-neutral-700 mb-1">Select Property to Inspect</label>
+          <label class="block text-xs font-black text-neutral-700 mb-1">Select Property</label>
           <select 
             id="visit-property-select" 
-            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black font-medium" 
           >
             <!-- Populated dynamically -->
           </select>
         </div>
 
         <div>
-          <label class="block text-xs font-black text-neutral-700 mb-1">Preferred Date</label>
+          <label class="block text-xs font-black text-neutral-700 mb-1">Preferred Site Inspection Date <span class="text-neutral-400 font-normal">(Optional)</span></label>
           <input 
             type="date" 
             id="visit-date" 
-            required 
-            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black"
+            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-xl text-xs text-black focus:outline-none focus:border-black" 
           />
         </div>
 
-        <div class="flex items-center gap-2 pt-2">
+        <div class="flex items-center gap-2 pt-1">
           <input type="checkbox" id="visit-cab" checked class="accent-black w-4 h-4 rounded">
           <label for="visit-cab" class="text-xs text-neutral-700 font-semibold">
             Yes, please arrange complimentary AC Cab pickup from my residence
           </label>
         </div>
 
-        <button type="submit" class="w-full py-3 mt-4 rounded-xl bg-black hover:bg-neutral-800 text-white font-black text-xs uppercase tracking-wider shadow-md transition">
-          Confirm Free Site Visit &rarr;
+        <button type="submit" class="w-full py-3.5 mt-4 rounded-xl bg-black hover:bg-neutral-800 text-white font-black text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane text-emerald-400"></i> Send Official Plot Details to My Mail &rarr;
         </button>
       </form>
 

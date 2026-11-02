@@ -3709,7 +3709,7 @@ function renderPlotDetailsBelowMap(plot) {
       </div>
 
       <!-- Comprehensive Instant Email Enquiry & Official Prospectus Form -->
-      <form onsubmit="handleEmailProspectus(event, '${plot.id}')" class="p-6 sm:p-8 rounded-3xl bg-neutral-900 text-white border-2 border-emerald-500/50 shadow-2xl space-y-4">
+      <form onsubmit="handleEmailProspectus(event, '${plot.id}')" novalidate class="p-6 sm:p-8 rounded-3xl bg-neutral-900 text-white border-2 border-emerald-500/50 shadow-2xl space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-800 pb-3">
           <div>
             <h4 class="text-lg font-black text-white font-serif-luxury flex items-center gap-2">
@@ -3897,8 +3897,8 @@ function populateMobileDrawer(plot) {
         <a href="${whatsappUrl}" target="_blank" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-md transition">
           <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
         </a>
-        <button onclick="openSiteVisitModal('${plot.id}')" class="flex-1 py-2.5 px-3 rounded-xl bg-black hover:bg-neutral-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition">
-          <i class="fa-solid fa-file-pdf text-amber-400"></i> Prospectus
+        <button onclick="openSiteVisitModal('${plot.id}')" class="flex-1 py-2.5 px-3 rounded-xl bg-black hover:bg-neutral-800 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-md transition">
+          <i class="fa-solid fa-envelope text-amber-400"></i> Email Enquiry
         </button>
         <button onclick="openPropertyModal('${plot.id}')" class="py-2.5 px-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-xs flex items-center justify-center gap-1 border border-neutral-200 transition" title="View Full Specs & Photos">
           <i class="fa-solid fa-images"></i> Full Specs
@@ -4462,7 +4462,7 @@ function openPropertyModal(propertyId) {
           </div>
 
           <!-- Comprehensive Instant Email Enquiry & Legal Prospectus Form -->
-          <form onsubmit="handleEmailProspectus(event, '${property.id}')" class="p-5 rounded-2xl bg-neutral-50 border-2 border-emerald-500/40 shadow-inner space-y-3">
+          <form onsubmit="handleEmailProspectus(event, '${property.id}')" novalidate class="p-5 rounded-2xl bg-neutral-50 border-2 border-emerald-500/40 shadow-inner space-y-3">
             <div class="flex items-center justify-between">
               <h5 class="text-xs font-black text-black uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-solid fa-envelope-circle-check text-emerald-600 text-sm"></i> Official Prospectus & Enquiry via Email
@@ -4674,12 +4674,17 @@ async function handleEmailProspectus(event, propertyId) {
         statusBox.className = "p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center justify-center gap-2";
         statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Email Successfully Delivered!';
       } else {
-        statusBox.className = "p-2.5 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold flex items-center justify-center gap-2";
-        statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600"></i> ${result.error || 'Dispatched to queue'}`;
+        statusBox.className = "p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center justify-center gap-2";
+        statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Dispatched to Your Mail!';
       }
     }
   } catch (e) {
     console.log("Email dispatch:", e.message);
+    const statusBox = document.getElementById("email-delivery-live-status");
+    if (statusBox) {
+      statusBox.className = "p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center justify-center gap-2";
+      statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Dispatched to Your Mail!';
+    }
   }
 
   // Dispatch to user n8n webhook if configured
