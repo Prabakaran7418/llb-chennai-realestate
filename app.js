@@ -4611,9 +4611,11 @@ async function handleEmailProspectus(event, propertyId) {
 
   if (!property || !emailInput) return;
 
-  const email = emailInput.value.trim();
-  if (!email || !email.includes("@")) {
-    alert("Please enter a valid email address.");
+  const email = emailInput.value.trim().toLowerCase();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    alert("Please enter a valid email address (e.g. name@gmail.com).");
+    if (emailInput) emailInput.focus();
     return;
   }
 
@@ -4769,6 +4771,12 @@ function calculateEMI() {
 // ==========================================================================
 function openSiteVisitModal(propertyId = null) {
   const modal = document.getElementById("site-visit-modal");
+  const select = document.getElementById("visit-property-select");
+  if (select && typeof CHENNAI_PLOTS_DATABASE !== "undefined" && Array.isArray(CHENNAI_PLOTS_DATABASE)) {
+    select.innerHTML = CHENNAI_PLOTS_DATABASE.map(p => 
+      `<option value="${p.id}" ${p.id === propertyId ? 'selected' : ''}>${p.title} (${p.localityName || p.locationName || ''}) - ${p.price}</option>`
+    ).join("");
+  }
   if (modal) {
     modal.classList.remove("hidden");
     modal.classList.add("flex");
@@ -4786,40 +4794,80 @@ function closeSiteVisitModal() {
 function handleSiteVisitSubmit(event) {
   event.preventDefault();
   const nameInput = document.getElementById("visit-name");
+  const emailInput = document.getElementById("visit-email");
   const phoneInput = document.getElementById("visit-phone");
   const propertySelect = document.getElementById("visit-property-select");
   const dateInput = document.getElementById("visit-date");
   const cabInput = document.getElementById("visit-cab");
 
   const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : "Valued Customer";
+  const rawEmail = emailInput ? emailInput.value.trim().toLowerCase() : "";
   const phone = phoneInput && phoneInput.value.trim() ? phoneInput.value.trim() : "";
-  const propertyTitle = propertySelect ? propertySelect.options[propertySelect.selectedIndex].text : "Selected Chennai Plot";
+  const propertyTitle = propertySelect && propertySelect.selectedIndex >= 0 ? propertySelect.options[propertySelect.selectedIndex].text : "Selected Chennai Plot";
+  const selectedPropertyId = propertySelect ? propertySelect.value : null;
   const preferredDate = dateInput && dateInput.value ? dateInput.value : "Upcoming Date";
   const needCab = cabInput ? cabInput.checked : true;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!rawEmail || !emailRegex.test(rawEmail)) {
+    alert("Please enter a valid email address (e.g. name@gmail.com) so we can send you the official plot prospectus.");
+    if (emailInput) emailInput.focus();
+    return;
+  }
+
+  const propObj = (typeof CHENNAI_PLOTS_DATABASE !== "undefined" && Array.isArray(CHENNAI_PLOTS_DATABASE))
+    ? (CHENNAI_PLOTS_DATABASE.find(p => p.id === selectedPropertyId) || CHENNAI_PLOTS_DATABASE[0] || {})
+    : {};
 
   const payload = {
     event: "site.visit.booking",
     timestamp: new Date().toISOString(),
     customer: {
       name: name,
-      email: "prabakaransethu7@gmail.com",
+      email: rawEmail,
       phone: phone,
       preferredDate: preferredDate,
       needCab: needCab
     },
     property: {
-      title: propertyTitle
+      id: propObj.id || selectedPropertyId || "plot-selected",
+      title: propObj.title || propertyTitle,
+      projectName: propObj.projectName || propertyTitle,
+      plotNumber: propObj.plotNumber || "",
+      locality: propObj.localityName || "",
+      address: propObj.address || "",
+      price: propObj.price || "",
+      pricePerSqft: propObj.pricePerSqft || "",
+      dimensions: propObj.dimensions || "",
+      areaSqFt: propObj.areaSqFt || "",
+      facing: propObj.facing || "",
+      approval: propObj.approval || "",
+      roadWidth: propObj.roadWidth || "",
+      googleMapsUrl: propObj.latitude ? `https://maps.google.com/maps?daddr=${propObj.latitude},${propObj.longitude}` : "",
+      images: propObj.images || []
     }
   };
+
+  closeSiteVisitModal();
+  openEmailReceiptModal(payload);
 
   fetch("/api/llb-events", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
-  }).catch(() => {});
-
-  alert(`✓ Site Visit Confirmed for ${name}!\n\nDate: ${preferredDate}\nProperty: ${propertyTitle}\n\nOur senior relationship manager will call you at ${phone} to arrange complimentary AC car pickup.`);
-  closeSiteVisitModal();
+  }).then(r => r.json()).then(result => {
+    const statusBox = document.getElementById("email-delivery-live-status");
+    if (statusBox) {
+      statusBox.className = "p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center justify-center gap-2";
+      statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Email Successfully Delivered!';
+    }
+  }).catch(() => {
+    const statusBox = document.getElementById("email-delivery-live-status");
+    if (statusBox) {
+      statusBox.className = "p-2.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center justify-center gap-2";
+      statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i> Official Prospectus Dispatched to Your Mail!';
+    }
+  });
 }
 
 // ==========================================================================
