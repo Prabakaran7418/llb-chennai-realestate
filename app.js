@@ -3084,13 +3084,12 @@ function start3DCameraNavigation(roadLngLats, plot, totalDistKm, totalMins, mode
     .setRotation(initialBearing)
     .addTo(mapEngine);
 
-  // Set realistic cruising durations per transit mode
-  // Set brisk, snappy cruising duration (1x faster) perfectly balanced with tile streaming
+  // 1.5x Faster brisk navigation cruising
   const distKm = totalDistanceMeters / 1000;
-  let baseSeconds = Math.max(10, Math.min(16, 9 + (distKm * 0.45)));
-  if (currentTravelMode === 'car') baseSeconds *= 0.95;
-  else if (currentTravelMode === 'bus') baseSeconds *= 1.15;
-  else if (currentTravelMode === 'walk') baseSeconds *= 1.35;
+  let baseSeconds = Math.max(5.0, Math.min(8.0, (9 + (distKm * 0.45)) / 1.5));
+  if (currentTravelMode === 'car') baseSeconds *= 0.92;
+  else if (currentTravelMode === 'bus') baseSeconds *= 1.10;
+  else if (currentTravelMode === 'walk') baseSeconds *= 1.25;
 
   let cruiseDurationMs = Math.round(baseSeconds * 1000);
 
@@ -3126,7 +3125,7 @@ function start3DCameraNavigation(roadLngLats, plot, totalDistKm, totalMins, mode
     zoom: targetZoom,
     pitch: targetPitch,
     bearing: initialBearing,
-    duration: 1100,
+    duration: 550,
     essential: true
   });
 
@@ -3136,7 +3135,7 @@ function start3DCameraNavigation(roadLngLats, plot, totalDistKm, totalMins, mode
     journeyState.pauseElapsed = 0;
     isJourneyPaused = false;
     runCruiseFrame();
-  }, 1150);
+  }, 600);
 }
 
 function runCruiseFrame() {
@@ -3186,10 +3185,10 @@ function runCruiseFrame() {
 
     // Dynamic Speedometer (km/h)
     const bearingDiff = Math.abs((targetBearing - journeyState.smoothBearing + 540) % 360 - 180);
-    let baseSpeed = 68;
-    if (currentTravelMode === 'car') baseSpeed = 62;
-    else if (currentTravelMode === 'bus') baseSpeed = 44;
-    else if (currentTravelMode === 'walk') baseSpeed = 6;
+    let baseSpeed = 96;
+    if (currentTravelMode === 'car') baseSpeed = 88;
+    else if (currentTravelMode === 'bus') baseSpeed = 62;
+    else if (currentTravelMode === 'walk') baseSpeed = 9;
 
     let simSpeed = baseSpeed;
     if (currentTravelMode === 'walk') {
@@ -3833,30 +3832,82 @@ function prevBelowMapImage() {
 function populateMobileDrawer(plot) {
   const drawer = document.getElementById("mobile-plot-drawer");
   const content = document.getElementById("mobile-drawer-content");
-  if (!drawer || !content) return;
+  if (!drawer || !content || !plot) return;
 
-  // Ultra-slim minimal banner that doesn't block the map view
+  const whatsappMsg = encodeURIComponent("Hi LLB Realty, I am interested in " + plot.title + " (" + plot.plotNumber + ") priced at " + plot.price + ". Please share the layout demarcation and booking prospectus.");
+  const whatsappUrl = "https://wa.me/919840000000?text=" + whatsappMsg;
+  const statusBadge = plot.availability === 'available' 
+    ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> AVAILABLE</span>' 
+    : (plot.availability === 'reserved' 
+      ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300"><span class="w-2 h-2 rounded-full bg-amber-500"></span> RESERVED</span>' 
+      : '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-slate-100 text-slate-800 border border-slate-300">SOLD</span>');
+
+  // Automatic Available Plot Details Card (Convenient on all mobile views & desktop)
   content.innerHTML = `
-    <div class="flex items-center justify-between gap-2">
-      <div class="flex items-center gap-1.5 flex-1 min-w-0">
-        <span class="px-1.5 py-0.2 rounded text-[8.5px] font-black uppercase ${
-          plot.availability === 'available' ? 'bg-emerald-100 text-emerald-800' :
-          (plot.availability === 'reserved' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-800')
-        }">${plot.availability}</span>
-        <span class="text-xs font-black text-black truncate">${plot.localityName}</span>
-        <span class="text-xs font-bold text-emerald-700 font-mono shrink-0">${plot.price}</span>
-      </div>
-      <div class="flex items-center gap-1 shrink-0">
-        <button onclick="openPropertyModal('${plot.id}')" class="px-2 py-1 rounded-lg bg-black text-white text-[11px] font-bold shadow flex items-center gap-1">
-          <span>Specs</span> &rarr;
-        </button>
-        <button onclick="closeMobileDrawer()" class="w-6 h-6 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-600 flex items-center justify-center text-xs">
+    <div class="space-y-3">
+      <!-- Top Drag Bar & Status Header -->
+      <div class="flex items-center justify-between pb-2 border-b border-neutral-100">
+        <div class="flex items-center gap-2">
+          ${statusBadge}
+          <span class="text-xs font-mono font-bold text-neutral-500">${plot.projectName}</span>
+        </div>
+        <button onclick="closeMobileDrawer()" class="w-7 h-7 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-600 flex items-center justify-center text-xs transition" title="Dismiss Card">
           <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Plot Title & Price Highlight -->
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex-1 min-w-0">
+          <h3 class="text-base sm:text-lg font-black text-black font-serif-luxury truncate">${plot.plotNumber} – ${plot.localityName}</h3>
+          <p class="text-xs text-neutral-500 truncate mt-0.5">
+            <i class="fa-solid fa-location-dot text-emerald-600 mr-1"></i> ${plot.address}
+          </p>
+        </div>
+        <div class="text-right shrink-0">
+          <div class="text-lg sm:text-xl font-black text-emerald-700 font-mono">${plot.price}</div>
+          <div class="text-[10px] font-mono text-neutral-400 font-bold">${plot.pricePerSqft}</div>
+        </div>
+      </div>
+
+      <!-- Key Plot Attributes Grid -->
+      <div class="grid grid-cols-3 gap-2 text-xs font-mono">
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-2 text-center">
+          <span class="text-neutral-400 block text-[9px] uppercase font-bold">Dimensions</span>
+          <span class="font-bold text-neutral-800 truncate block text-[11px]">${plot.dimensions ? plot.dimensions.split('(')[0].trim() : '30x50 ft'}</span>
+        </div>
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-2 text-center">
+          <span class="text-neutral-400 block text-[9px] uppercase font-bold">Plot Area</span>
+          <span class="font-bold text-neutral-800 block text-[11px]">${plot.areaSqFt} sq.ft</span>
+        </div>
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-2 text-center">
+          <span class="text-neutral-400 block text-[9px] uppercase font-bold">Facing</span>
+          <span class="font-bold text-emerald-700 block truncate text-[11px]">${plot.facing ? plot.facing.split('(')[0].trim() : 'East'}</span>
+        </div>
+      </div>
+
+      <!-- Approval & Road Infrastructure Tag -->
+      <div class="flex items-center gap-2 text-[10px] text-neutral-600 bg-emerald-50/70 border border-emerald-200/60 px-2.5 py-1.5 rounded-xl">
+        <i class="fa-solid fa-shield-check text-emerald-600"></i>
+        <span class="font-bold truncate">${plot.approval || 'CMDA & RERA Approved'} • ${plot.roadWidth || '30-Ft Tar Road'}</span>
+      </div>
+
+      <!-- Quick Action Buttons: WhatsApp Enquiry, Prospectus, Specs -->
+      <div class="flex items-center gap-2 pt-1">
+        <a href="${whatsappUrl}" target="_blank" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-md transition">
+          <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+        </a>
+        <button onclick="openSiteVisitModal('${plot.id}')" class="flex-1 py-2.5 px-3 rounded-xl bg-black hover:bg-neutral-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition">
+          <i class="fa-solid fa-file-pdf text-amber-400"></i> Prospectus
+        </button>
+        <button onclick="openPropertyModal('${plot.id}')" class="py-2.5 px-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-xs flex items-center justify-center gap-1 border border-neutral-200 transition" title="View Full Specs & Photos">
+          <i class="fa-solid fa-images"></i> Full Specs
         </button>
       </div>
     </div>
   `;
 
+  drawer.style.display = "block";
   drawer.classList.remove("drawer-closed");
   drawer.classList.add("drawer-open");
 }

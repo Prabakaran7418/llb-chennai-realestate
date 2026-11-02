@@ -2622,3 +2622,51 @@ body {
   font-weight: 900 !important;
   font-size: 11px !important;
 }
+
+
+/* Prominent Plot Details Drawer on Arrival */
+#mobile-plot-drawer {
+  position: absolute !important;
+  z-index: 100 !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(16, 185, 129, 0.5) !important;
+  pointer-events: auto !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+}
+
+#mobile-plot-drawer.drawer-closed {
+  transform: translateY(130%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  display: none;
+}
+
+#mobile-plot-drawer.drawer-open {
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  display: block !important;
+}
+
+@media (max-width: 639px) {
+  #mobile-plot-drawer {
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    width: auto !important;
+    max-width: calc(100vw - 16px) !important;
+    padding: 14px 16px !important;
+    border-radius: 1.5rem !important;
+  }
+}
+
+@media (min-width: 640px) {
+  #mobile-plot-drawer {
+    right: 16px !important;
+    bottom: 16px !important;
+    width: 420px !important;
+    max-width: 90vw !important;
+    padding: 18px !important;
+    border-radius: 1.5rem !important;
+  }
+}
