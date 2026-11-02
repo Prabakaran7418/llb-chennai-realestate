@@ -2390,3 +2390,145 @@ body {
   font-size: 9.5px !important;
   font-weight: 800 !important;
 }
+
+
+/* ==========================================================================
+   DEDICATED FULL-PAGE GOOGLE MAP NAVIGATION & NON-CLUMSY MARKERS
+   ========================================================================== */
+
+#map-discovery-page.active {
+  display: block !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  z-index: 50 !important;
+  overflow: hidden !important;
+}
+
+#map-discovery-page #wall-mounted-map {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+}
+
+/* Compact Non-Clumping Zoom Pin Marker (City-Wide Overview) */
+.compact-zoom-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4.5px;
+  padding: 3.5px 8px;
+  background: rgba(9, 9, 11, 0.94);
+  border: 1.5px solid #10b981;
+  border-radius: 9999px;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 10px rgba(16, 185, 129, 0.25);
+  cursor: pointer;
+  user-select: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.compact-zoom-pin:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+  border-color: #34d399;
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.7);
+  z-index: 9999 !important;
+}
+
+.compact-zoom-pin.selected {
+  background: #000000;
+  border-color: #facc15 !important;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.4), 0 0 20px rgba(250, 204, 21, 0.7);
+  transform: translate(-50%, -50%) scale(1.2);
+  z-index: 10000 !important;
+}
+
+.compact-zoom-pin .pin-circle {
+  color: #34d399;
+  font-size: 10px;
+}
+
+.compact-zoom-pin .pin-title {
+  letter-spacing: 0.2px;
+}
+
+.compact-zoom-pin .pin-count {
+  font-size: 8.5px;
+  background: rgba(16, 185, 129, 0.25);
+  color: #6ee7b7;
+  padding: 1px 4.5px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+
+.compact-zoom-pin.reserved {
+  border-color: #f59e0b;
+}
+.compact-zoom-pin.reserved .pin-circle {
+  color: #fbbf24;
+}
+
+.compact-zoom-pin.sold {
+  border-color: #64748b;
+}
+.compact-zoom-pin.sold .pin-circle {
+  color: #94a3b8;
+}
+
+/* Super Zoomed-Out State (<11.2 Zoom) */
+.map-super-zoomed-out .compact-zoom-pin {
+  padding: 2.5px 6.5px;
+  font-size: 9px;
+  gap: 3px;
+}
+
+/* Modern Adaptive Floating Plot Details Card (Mobile & Desktop) */
+#mobile-plot-drawer {
+  position: absolute;
+  z-index: 40;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  pointer-events: auto;
+}
+
+#mobile-plot-drawer.drawer-closed {
+  transform: translateY(120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#mobile-plot-drawer.drawer-open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 639px) {
+  #mobile-plot-drawer {
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    width: auto !important;
+    max-width: calc(100vw - 16px) !important;
+    padding: 12px 14px !important;
+    border-radius: 1.25rem !important;
+  }
+}
+
+@media (min-width: 640px) {
+  #mobile-plot-drawer {
+    right: 16px !important;
+    bottom: 16px !important;
+    width: 390px !important;
+    max-width: 90vw !important;
+    padding: 16px !important;
+    border-radius: 1.5rem !important;
+  }
+}

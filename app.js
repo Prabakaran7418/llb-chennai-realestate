@@ -1424,19 +1424,10 @@ function renderPlotMarkersOnMap() {
         const el = document.createElement('div');
         el.className = 'plot-marker-div';
         el.innerHTML = `
-          <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}">
-            <div class="plot-marker-pill ${statusClass} marker-pill-specific">
-              <div class="marker-area-row">
-                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px] shrink-0"></i>
-                <div class="flex flex-col text-left leading-tight">
-                  <span class="marker-area-name">${desc.mainName}</span>
-                  <span class="marker-sub-name">${desc.subName}</span>
-                </div>
-                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : '1 Plot'}</span>
-              </div>
-            </div>
-            <div class="plot-marker-arrow"></div>
-            ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
+          <div class="compact-zoom-pin ${statusClass} ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}" title="${desc.mainName}">
+            <div class="pin-circle"><i class="fa-solid fa-location-dot"></i></div>
+            <span class="pin-title">${desc.mainName}</span>
+            ${count > 1 ? `<span class="pin-count">${count}</span>` : ''}
           </div>
         `;
 
@@ -1522,27 +1513,18 @@ function renderPlotMarkersOnMap() {
         const desc = getPlotSpecificDescriptor(repPlot);
 
         const markerHtml = `
-          <div class="plot-marker-container ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}">
-            <div class="plot-marker-pill ${statusClass} marker-pill-specific">
-              <div class="marker-area-row">
-                <i class="fa-solid fa-location-dot text-emerald-400 text-[10px] shrink-0"></i>
-                <div class="flex flex-col text-left leading-tight">
-                  <span class="marker-area-name">${desc.mainName}</span>
-                  <span class="marker-sub-name">${desc.subName}</span>
-                </div>
-                <span class="marker-count-badge">${count > 1 ? count + ' Plots' : '1 Plot'}</span>
-              </div>
-            </div>
-            <div class="plot-marker-arrow"></div>
-            ${isSelected ? '<div class="plot-pulse-ring"></div>' : ''}
+          <div class="compact-zoom-pin ${statusClass} ${isSelected ? 'selected' : ''}" id="map-loc-marker-${repPlot.id}" title="${desc.mainName}">
+            <div class="pin-circle"><i class="fa-solid fa-location-dot"></i></div>
+            <span class="pin-title">${desc.mainName}</span>
+            ${count > 1 ? `<span class="pin-count">${count}</span>` : ''}
           </div>
         `;
 
         const icon = L.divIcon({
           className: "plot-marker-div",
           html: markerHtml,
-          iconSize: [140, 42],
-          iconAnchor: [70, 40]
+          iconSize: [110, 28],
+          iconAnchor: [55, 14]
         });
 
         const marker = L.marker([repPlot.latitude, repPlot.longitude], {
@@ -3490,15 +3472,9 @@ function finishTravelArrival(plot) {
   if (roadNameEl) roadNameEl.textContent = plot.localityName;
   if (hudInstr) hudInstr.textContent = `Arrived at ${plot.plotNumber}, ${plot.localityName}! Plot Demarcated.`;
 
-  // Render the plot details directly BELOW the map
+  // Automatically display plot details in the floating drawer
+  populateMobileDrawer(plot);
   renderPlotDetailsBelowMap(plot);
-
-  setTimeout(() => {
-    const detailSection = document.getElementById("selected-plot-detail-section");
-    if (detailSection) {
-      detailSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, 950);
 }
 
 function drawRoutePolylineOnMap(geojsonCoords, startCoords, destCoords, originName, plot) {
@@ -4229,15 +4205,10 @@ function openChennaiMapPage(targetLocality = null) {
     frontPage.classList.remove("flex");
   }
 
-  if (mainHeader) {
-    mainHeader.classList.remove("hidden");
-  }
-  if (mainFooter) {
-    mainFooter.classList.remove("hidden");
-  }
-  if (whatsappBtn) {
-    whatsappBtn.classList.remove("hidden");
-  }
+  // Second page is exclusively dedicated to full-page Google Map navigation
+  if (mainHeader) mainHeader.classList.add("hidden");
+  if (mainFooter) mainFooter.classList.add("hidden");
+  if (whatsappBtn) whatsappBtn.classList.add("hidden");
 
   if (mapPage) {
     mapPage.style.display = "block";
@@ -5072,4 +5043,28 @@ function toggleHudMinimize() {
 function closeNavigationHud() {
   const hud = document.getElementById("live-travel-hud");
   if (hud) hud.classList.add("hidden");
+}
+
+
+// Helper: Direct locality selection from the floating top bar
+function handleLocalityDropdownSelect() {
+  const sel = document.getElementById("filter-locality");
+  if (!sel) return;
+  const val = sel.value;
+  if (val === "all") {
+    resetToChennaiOverview();
+    return;
+  }
+  const plot = CHENNAI_PLOTS_DATABASE.find(p => p.locality === val || p.id === val);
+  if (plot) {
+    navigateAndTravelToPlot(plot.id);
+  }
+}
+
+let isSatelliteActive = true;
+function toggleMapSatelliteStreets() {
+  isSatelliteActive = !isSatelliteActive;
+  setMapLayer(isSatelliteActive ? 'hybrid' : 'streets');
+  const txt = document.getElementById("layer-active-text");
+  if (txt) txt.textContent = isSatelliteActive ? "Satellite" : "Streets";
 }
