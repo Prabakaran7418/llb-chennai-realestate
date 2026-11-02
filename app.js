@@ -3104,12 +3104,12 @@ function start3DCameraNavigation(roadLngLats, plot, totalDistKm, totalMins, mode
     .addTo(mapEngine);
 
   // Set realistic cruising durations per transit mode
-  // Set realistic cruising durations scaled to road distance so map tiles load flawlessly
+  // Set brisk, snappy cruising duration (1x faster) perfectly balanced with tile streaming
   const distKm = totalDistanceMeters / 1000;
-  let baseSeconds = Math.max(22, Math.min(36, 18 + (distKm * 1.0)));
-  if (currentTravelMode === 'car') baseSeconds *= 1.05;
-  else if (currentTravelMode === 'bus') baseSeconds *= 1.25;
-  else if (currentTravelMode === 'walk') baseSeconds *= 1.5;
+  let baseSeconds = Math.max(10, Math.min(16, 9 + (distKm * 0.45)));
+  if (currentTravelMode === 'car') baseSeconds *= 0.95;
+  else if (currentTravelMode === 'bus') baseSeconds *= 1.15;
+  else if (currentTravelMode === 'walk') baseSeconds *= 1.35;
 
   let cruiseDurationMs = Math.round(baseSeconds * 1000);
 
@@ -3145,7 +3145,7 @@ function start3DCameraNavigation(roadLngLats, plot, totalDistKm, totalMins, mode
     zoom: targetZoom,
     pitch: targetPitch,
     bearing: initialBearing,
-    duration: 1600,
+    duration: 1100,
     essential: true
   });
 
@@ -3155,7 +3155,7 @@ function start3DCameraNavigation(roadLngLats, plot, totalDistKm, totalMins, mode
     journeyState.pauseElapsed = 0;
     isJourneyPaused = false;
     runCruiseFrame();
-  }, 1650);
+  }, 1150);
 }
 
 function runCruiseFrame() {
@@ -3205,10 +3205,10 @@ function runCruiseFrame() {
 
     // Dynamic Speedometer (km/h)
     const bearingDiff = Math.abs((targetBearing - journeyState.smoothBearing + 540) % 360 - 180);
-    let baseSpeed = 42;
-    if (currentTravelMode === 'car') baseSpeed = 38;
-    else if (currentTravelMode === 'bus') baseSpeed = 24;
-    else if (currentTravelMode === 'walk') baseSpeed = 5;
+    let baseSpeed = 68;
+    if (currentTravelMode === 'car') baseSpeed = 62;
+    else if (currentTravelMode === 'bus') baseSpeed = 44;
+    else if (currentTravelMode === 'walk') baseSpeed = 6;
 
     let simSpeed = baseSpeed;
     if (currentTravelMode === 'walk') {
